@@ -1,0 +1,24 @@
+Package: PICB
+Title: piRNA cluster builder
+Version: 0.0.0.9038
+Authors@R: c(person("Pavol", "Genzor",  role = c("aut")),
+    person("Aleksandr", "Friman", email="alex.friman@nih.gov",  role = c("aut", "cre")),
+    person("Daniel", "Stoyko", role = c("aut")),
+    person("Parthena", "Konstantinidou", email="konstantinidop2@nih.gov", role = c("aut")))
+Description: Set of functions to identify and analyze piRNA generating clusters 
+        from a bam file of short RNA reads.
+License: CC0
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Imports:
+    GenomicRanges,
+    GenomicAlignments,
+    GenomeInfoDb,
+    Biostrings,
+    Rsamtools,
+    data.table,
+    IRanges,
+    BSgenome,
+    seqinr,
+    openxlsx
