@@ -20,9 +20,9 @@ PICBbuild(
     (LIBRARY.SIZE/1e+06),
   MIN.UNIQUE.SEQUENCES.PER.WINDOW = min(MIN.UNIQUE.ALIGNMENTS.PER.WINDOW,
     round(UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH/50, 0)),
-  MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW = 4 *
+  MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW = 4 *
     (PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH/1000) * (LIBRARY.SIZE/1e+06),
-  MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW = 0.2 *
+  MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW = 0.2 *
     (SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH/1000) * (LIBRARY.SIZE/1e+06),
   MIN.SEED.LENGTH = 2 * UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH + 100,
   MIN.COVERED.SEED.LENGTH = 0,
@@ -36,7 +36,7 @@ PICBbuild(
 )
 }
 \arguments{
-\item{IN.ALIGNMENTS}{list of alignemnts from PICBload}
+\item{IN.ALIGNMENTS}{list of alignments from PICBload}
 
 \item{REFERENCE.GENOME}{name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"}
 
@@ -52,15 +52,15 @@ PICBbuild(
 
 \item{SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP}{step of sliding windows for secondary multimapping alignments. width/10 by default}
 
-\item{LIBRARY.SIZE}{number of reads in the library. By default computed as number of unique mapping alignemnts + number of primary multimapping alignments.}
+\item{LIBRARY.SIZE}{number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.}
 
 \item{MIN.UNIQUE.ALIGNMENTS.PER.WINDOW}{absolute number of unique mapping alignments per window to call it. By default computed as 2 FPKM.}
 
 \item{MIN.UNIQUE.SEQUENCES.PER.WINDOW}{absolute number of unique mapping sequences per window to call it. By default computed as width/50.}
 
-\item{MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW}{absolute number of primary multimapping alignments per window to call it. By default computed as 4 FPKM.}
+\item{MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW}{absolute number of primary multimapping alignments per window to call it. By default computed as 4 FPKM.}
 
-\item{MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW}{absolute number of secondary multimapping alignments per window to call it. By default computed as 0.2 FPKM.}
+\item{MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW}{absolute number of secondary multimapping alignments per window to call it. By default computed as 0.2 FPKM.}
 
 \item{MIN.SEED.LENGTH}{minimum length of a seed. By default computed as 2x unique mapper window size + 100.}
 
@@ -72,7 +72,7 @@ PICBbuild(
 
 \item{THRESHOLD.CLUSTERS.GAP}{minimum gap between clusters to not merge them. 0 by default.}
 
-\item{SEQ.LEVELS.STYLE}{style of chomosome names for BSgenome. "UCSC" by default.}
+\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
 
 \item{MIN.OVERLAP}{minimum overlap between seeds and cores, as well as between cores and clusters 5 nt by default.}
 

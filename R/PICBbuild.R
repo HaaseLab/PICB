@@ -1,6 +1,6 @@
 #' Build piRNA seeds/cores/clusters from alignments
 #'
-#' @param IN.ALIGNMENTS list of alignemnts from PICBload
+#' @param IN.ALIGNMENTS list of alignments from PICBload
 #' @param REFERENCE.GENOME name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"
 #' @param UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH width of sliding window for unique mappers. 350 nt by default
 #' @param UNIQUEMAPPERS.SLIDING.WINDOW.STEP step of sliding windows for unique mappers. width/10 by default
@@ -8,17 +8,17 @@
 #' @param PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP step of sliding windows for primary multimapping alignments. width/10 by default
 #' @param SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH width of sliding window for secondary multimapping alignments. 1000 nt by default
 #' @param SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP step of sliding windows for secondary multimapping alignments. width/10 by default
-#' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignemnts + number of primary multimapping alignments.
+#' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.
 #' @param MIN.UNIQUE.ALIGNMENTS.PER.WINDOW absolute number of unique mapping alignments per window to call it. By default computed as 2 FPKM.
 #' @param MIN.UNIQUE.SEQUENCES.PER.WINDOW absolute number of unique mapping sequences per window to call it. By default computed as width/50.
-#' @param MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW absolute number of primary multimapping alignments per window to call it. By default computed as 4 FPKM.
-#' @param MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW absolute number of secondary multimapping alignments per window to call it. By default computed as 0.2 FPKM.
+#' @param MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW absolute number of primary multimapping alignments per window to call it. By default computed as 4 FPKM.
+#' @param MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW absolute number of secondary multimapping alignments per window to call it. By default computed as 0.2 FPKM.
 #' @param MIN.SEED.LENGTH minimum length of a seed. By default computed as 2x unique mapper window size + 100.
 #' @param MIN.COVERED.SEED.LENGTH minimum number of seed nucleotides covered by unique mappers. 0 by default.
 #' @param THRESHOLD.SEEDS.GAP minimum gap between seeds to not merge them. 0 by default.
 #' @param THRESHOLD.CORES.GAP minimum gap between cores to not merge them. 0 by default.
 #' @param THRESHOLD.CLUSTERS.GAP minimum gap between clusters to not merge them. 0 by default.
-#' @param SEQ.LEVELS.STYLE style of chomosome names for BSgenome. "UCSC" by default.
+#' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
 #' @param MIN.OVERLAP minimum overlap between seeds and cores, as well as between cores and clusters 5 nt by default.
 #' @param PROVIDE.NON.NORMALIZED include non-normalized to the library size statistics in the output annotations
 #' @param VERBOSITY verbosity level 0/1/2/3. 2 by default.
@@ -44,8 +44,8 @@ PICBbuild <-
     LIBRARY.SIZE=length(IN.ALIGNMENTS$unique)+length(IN.ALIGNMENTS$multi.primary),
     MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=2*(UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH/1e3)*(LIBRARY.SIZE/1e6),
     MIN.UNIQUE.SEQUENCES.PER.WINDOW=min(MIN.UNIQUE.ALIGNMENTS.PER.WINDOW, round(UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH/50,0)),
-    MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW=4*(PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH/1e3)*(LIBRARY.SIZE/1e6),
-    MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW=0.2*(SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH/1e3)*(LIBRARY.SIZE/1e6),
+    MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW=4*(PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH/1e3)*(LIBRARY.SIZE/1e6),
+    MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW=0.2*(SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH/1e3)*(LIBRARY.SIZE/1e6),
     MIN.SEED.LENGTH=2*UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH+100,
     MIN.COVERED.SEED.LENGTH=0,
     ## CLUSTER FILTERS
@@ -159,15 +159,16 @@ PICBbuild <-
     }
     sw.UNIQ.RED<-GenomicRanges::reduce(sw.UNIQ.RED[GenomicRanges::width(sw.UNIQ.RED)>=MIN.SEED.LENGTH])
     if (VERBOSITY>1) message("Annotating seeds")
-    BM.SEEDS<-PICBannotate(sw.UNIQ.RED,IN.ALIGNMENTS, REFERENCE.GENOME = REFERENCE.GENOME, SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE)
+    BM.SEEDS<-PICBannotate(sw.UNIQ.RED,IN.ALIGNMENTS, REFERENCE.GENOME = REFERENCE.GENOME, LIBRARY.SIZE = LIBRARY.SIZE,
+                           SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE)
     if (VERBOSITY>1) message(paste("Removing seed with unique mapping coverage less than", MIN.COVERED.SEED.LENGTH, 'nt'))
     BM.SEEDS<-BM.SEEDS[GenomicRanges::mcols(BM.SEEDS)[['width_covered_by_unique_alignments']]>=MIN.COVERED.SEED.LENGTH]
     outputList<-list()
     outputList[[uniqueonly]]<-BM.SEEDS
 
-    if (VERBOSITY>1) message(paste0("\t\tMIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW >= ",MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW))
-    sw.PRIMARY.MULT.PLUS <- AG.sw.primary.mult[GenomicRanges::mcols(AG.sw.primary.mult)[["primary_mult_piRNA_plus"]] >= MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW]
-    sw.PRIMARY.MULT.MINUS <- AG.sw.primary.mult[GenomicRanges::mcols(AG.sw.primary.mult)[["primary_mult_piRNA_minus"]] >= MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW]
+    if (VERBOSITY>1) message(paste0("\t\tMIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW >= ",MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW))
+    sw.PRIMARY.MULT.PLUS <- AG.sw.primary.mult[GenomicRanges::mcols(AG.sw.primary.mult)[["primary_mult_piRNA_plus"]] >= MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
+    sw.PRIMARY.MULT.MINUS <- AG.sw.primary.mult[GenomicRanges::mcols(AG.sw.primary.mult)[["primary_mult_piRNA_minus"]] >= MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
     GenomicRanges::strand(sw.PRIMARY.MULT.PLUS) <- "+"; GenomicRanges::strand(sw.PRIMARY.MULT.MINUS) <- "-"
     sw.PRIMARY.MULT.PLUS.RED<-GenomicRanges::reduce(sw.PRIMARY.MULT.PLUS)
     sw.PRIMARY.MULT.MINUS.RED<-GenomicRanges::reduce(sw.PRIMARY.MULT.MINUS)
@@ -191,10 +192,10 @@ PICBbuild <-
     }
 
     ##Regions
-    if (VERBOSITY>1) message(paste0("\t\tMIN.SECODNARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW >= ",MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW))
+    if (VERBOSITY>1) message(paste0("\t\tMIN.SECODNARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW >= ",MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW))
 
-    sw.SECONDARY.MULT.PLUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_plus"]] >= MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW]
-    sw.SECONDARY.MULT.MINUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_minus"]] >= MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW]
+    sw.SECONDARY.MULT.PLUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_plus"]] >= MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
+    sw.SECONDARY.MULT.MINUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_minus"]] >= MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
     GenomicRanges::strand(sw.SECONDARY.MULT.PLUS) <- "+"; GenomicRanges::strand(sw.SECONDARY.MULT.MINUS) <- "-"
     sw.SECONDARY.MULT.PLUS.RED<-GenomicRanges::reduce(sw.SECONDARY.MULT.PLUS)
     sw.SECONDARY.MULT.MINUS.RED<-GenomicRanges::reduce(sw.SECONDARY.MULT.MINUS)
@@ -222,19 +223,19 @@ PICBbuild <-
     ##
     ## Annotate the cores
 
-    if (VERBOSITY>1) message("\tAnnotating cores")
+    if (VERBOSITY>1) message("\tAnnotating cores and clusters")
     outputList[[uniqueandprimary]]<-BM.CORES
-    outputList[[allaligments]]<-CLUSTERS
-    #BM.CORES<-PICBannotate(BM.CORES, IN.ALIGNMENTS, , REFERENCE.GENOME = REFERENCE.GENOME, SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE)
-    outputList<-PICBannotate(outputList, IN.ALIGNMENTS, , REFERENCE.GENOME = REFERENCE.GENOME, SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE)
+    outputList[[allalignments]]<-CLUSTERS
+    outputList<-PICBannotate(outputList, IN.ALIGNMENTS, , REFERENCE.GENOME = REFERENCE.GENOME, 
+                             SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE, LIBRARY.SIZE = LIBRARY.SIZE)
 
     ##
     ## REPORT
 
     if (VERBOSITY>1) message("\n\tClusters stats: ")
-    used_uniq <- sum(GenomicRanges::mcols(outputList[[allaligments]])[["uniq_reads"]])
+    used_uniq <- sum(GenomicRanges::mcols(outputList[[allalignments]])[["uniq_reads"]])
     used_uniq_piRNA <- round(((used_uniq/length(IN.ALIGNMENTS$unique))*100),3)
-    used_mult <- sum(GenomicRanges::mcols(outputList[[allaligments]])[["multimapping_reads_primary_alignments"]])
+    used_mult <- sum(GenomicRanges::mcols(outputList[[allalignments]])[["multimapping_reads_primary_alignments"]])
     used_mult_primary_piRNA <- round(((used_mult/length(WGRMP))*100),3)
     if (VERBOSITY>1) {
       message(paste0("\t\tAcomodated UNIQUE-mappers: ",used_uniq," (",used_uniq_piRNA," %)"))
@@ -245,7 +246,7 @@ PICBbuild <-
 
     if (VERBOSITY>0) message("\nFINISHED.")
     if (! PROVIDE.NON.NORMALIZED){ #removing stats hard to understand
-      for ( t in c(uniqueonly, uniqueandprimary, allaligments)){
+      for ( t in c(uniqueonly, uniqueandprimary, allalignments)){
         GenomicRanges::mcols(outputList[[t]])[["uniq_reads"]] <- NULL
         GenomicRanges::mcols(outputList[[t]])[["uniq_sequences"]]  <- NULL
         GenomicRanges::mcols(outputList[[t]])[["multimapping_reads_primary_alignments"]] <- NULL

@@ -23,7 +23,7 @@ PICBannotate(
 
 \item{REPLICATE.NAME}{name of the replicate. NULL by default.}
 
-\item{LIBRARY.SIZE}{number of reads in the library. By default computed as number of unique mapping alignemnts + number of primary multimapping alignments.}
+\item{LIBRARY.SIZE}{number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.}
 
 \item{PROVIDE.NON.NORMALIZED}{provide annotations in non-normalized format. False by default.}
 }

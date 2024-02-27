@@ -4,7 +4,7 @@
 #' @param ALIGNMENTS list of alignments from PICBload
 #' @param REFERENCE.GENOME name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"
 #' @param REPLICATE.NAME name of the replicate. NULL by default.
-#' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignemnts + number of primary multimapping alignments.
+#' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.
 #' @param PROVIDE.NON.NORMALIZED provide annotations in non-normalized format. False by default.
 #'
 #' @return Granges object with extra annotation columns
@@ -105,12 +105,12 @@ PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLI
   }
   #processing the input genomic intervals
   if (typeof(INPUT.GRANGES)=="list"){
-    for (t in c(uniqueonly, uniqueandprimary, allaligments)){
+    for (t in c(uniqueonly, uniqueandprimary, allalignments)){
       INPUT.GRANGES[[t]]<-PICBannotateGranges(INPUT.GRANGES[[t]], ALIGNMENTS,
                                               SI, LIBRARY.SIZE,
                                               PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE)
     }
-    INPUT.GRANGES[[allaligments]]<-PICBannotateTypesOfClusters(INPUT.GRANGES[[allaligments]], INPUT.GRANGES[[uniqueandprimary]], SI)
+    INPUT.GRANGES[[allalignments]]<-PICBannotateTypesOfClusters(INPUT.GRANGES[[allalignments]], INPUT.GRANGES[[uniqueandprimary]], SI)
   }else{
     INPUT.GRANGES<-PICBannotateGranges(INPUT.GRANGES, ALIGNMENTS,
                         SI, LIBRARY.SIZE,

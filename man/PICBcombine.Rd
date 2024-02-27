@@ -8,7 +8,7 @@ PICBcombine(
   rangesList = NULL,
   alignmentsList = NULL,
   REFERENCE.GENOME = NULL,
-  TYPE.OF.REGION = allaligments,
+  TYPE.OF.REGION = allalignments,
   SEQ.LEVELS.STYLE = "UCSC"
 )
 }
@@ -21,7 +21,7 @@ PICBcombine(
 
 \item{TYPE.OF.REGION}{"clusters" by default}
 
-\item{SEQ.LEVELS.STYLE}{style of chomosome names for BSgenome. "UCSC" by default.}
+\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
 }
 \value{
 Granges object annotated for every replicate.

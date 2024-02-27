@@ -3,21 +3,21 @@
 #' @param BAMFILE name of the bam file to load. Should be sorted and indexed.
 #' @param REFERENCE.GENOME name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"
 #' @param SIMPLE.CIGAR simpleCigar parameter of Rsamtools::ScanBamParam
-#' @param IS.SECONDARY.ALIGNEMNT defines loading of primary/secondary alignments. Default value NA loads both primary and secondary.
-#' @param STANDARD.CONTIGS.ONLY use only standard chormosomes
+#' @param IS.SECONDARY.ALIGNMENT defines loading of primary/secondary alignments. Default value NA loads both primary and secondary.
+#' @param STANDARD.CONTIGS.ONLY use only standard chromosomes
 #' @param PERFECT.MATCH.ONLY load only alignments without mismatches
 #' @param FILTER.BY.FLAG enables filtering by flag. TRUE by default.
 #' @param SELECT.FLAG vector of flags to use. Default value c(0,16, 272, 256).
-#' @param USE.SIZE.FILTER enables filter by alignemnt size. True by default.
+#' @param USE.SIZE.FILTER enables filter by alignment size. True by default.
 #' @param READ.SIZE.RANGE allowed alignment sizes. c(18,50) by default.
 #' @param TAGS tags to import from bam file. c("NH","NM") by default.
 #' @param WHAT "what" parameter of Rsamtools::ScanBamParam. c("flag") by default.
-#' @param SEQ.LEVELS.STYLE style of chomosome names for BSgenome. "UCSC" by default.
+#' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
 #' @param GET.ORIGINAL.SEQUENCE adds "seq" to WHAT. False by default.
 #' @param VERBOSE enables progress output. True by default.
 #'
-#' @return list of Granges objects named "unique" for unique mapping alignemnts,
-#' "multi.primary" for primary multimapping alignemnts,
+#' @return list of Granges objects named "unique" for unique mapping alignments,
+#' "multi.primary" for primary multimapping alignments,
 #' "multi.secondary" for secondary multimapping alignments
 #' @export
 #'
@@ -28,7 +28,7 @@ PICBload <- function(
   REFERENCE.GENOME=NULL,
   ## OPTIONS
   SIMPLE.CIGAR=TRUE,
-  IS.SECONDARY.ALIGNEMNT=NA,
+  IS.SECONDARY.ALIGNMENT=NA,
   STANDARD.CONTIGS.ONLY=TRUE,
   PERFECT.MATCH.ONLY=FALSE,
   FILTER.BY.FLAG=TRUE,
@@ -52,7 +52,7 @@ PICBload <- function(
   #suppressPackageStartupMessages({library("Rsamtools");
   #  library("GenomicAlignments");
   #})
-  outputAlignmets<-list()
+  outputAlignments<-list()
   ## check input
   if(is.null(BAMFILE)) stop("Please provide full path to a .bam file !!!")
   if(is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME")
@@ -61,7 +61,7 @@ PICBload <- function(
 
   if (VERBOSE) message("Processing ...")
 
-  justPrimaryOrSecondary<-function(IS.SECONDARY.ALIGNEMNT){
+  justPrimaryOrSecondary<-function(IS.SECONDARY.ALIGNMENT){
     ## PARAMETERS FOR LOADING BAM FILE
     if(isTRUE(STANDARD.CONTIGS.ONLY)){
       if (typeof(REFERENCE.GENOME)=="character"){
@@ -78,12 +78,12 @@ PICBload <- function(
                    ranges=IRanges::IRanges(start=rep(1, length(REG.CHR)), end=GenomeInfoDb::seqlengths(SI)),
                    strand=rep("*", length(REG.CHR)))
       PARAM = Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = FALSE,
-                                                                    isSecondaryAlignment = IS.SECONDARY.ALIGNEMNT),
+                                                                    isSecondaryAlignment = IS.SECONDARY.ALIGNMENT),
                                       tag = TAGS, simpleCigar = SIMPLE.CIGAR, what = WHAT, which =  WHICH)
 
     }else{
       PARAM = Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = FALSE,
-                                                                    isSecondaryAlignment = IS.SECONDARY.ALIGNEMNT),
+                                                                    isSecondaryAlignment = IS.SECONDARY.ALIGNMENT),
                                       tag = TAGS, simpleCigar = SIMPLE.CIGAR, what = WHAT)
     }
 
@@ -95,15 +95,15 @@ PICBload <- function(
       message(paste0("\tWHAT:\t",paste0(WHAT,collapse = ", ")))
       message("loading .bam file into GAlignemnts")
 
-        if(is.na(IS.SECONDARY.ALIGNEMNT)){
+        if(is.na(IS.SECONDARY.ALIGNMENT)){
           message("\n******"); message("SLOW - Loadding all reads");
           message(" => to load unique and primary alignments set")
           message(" => IS.SECONDARY.ALIGNMENT=FALSE"); message("******\n")
-        } else  if (!IS.SECONDARY.ALIGNEMNT){
-          message("\n******"); message("Loading unique and primary alignemnts !!!")
+        } else  if (!IS.SECONDARY.ALIGNMENT){
+          message("\n******"); message("Loading unique and primary alignments !!!")
           message("******\n")
-        } else  if (IS.SECONDARY.ALIGNEMNT){
-          message("\n******"); message("Loading secondary alignemnts only !!!")
+        } else  if (IS.SECONDARY.ALIGNMENT){
+          message("\n******"); message("Loading secondary alignments only !!!")
           message("******\n")
         }
     }
@@ -175,30 +175,30 @@ PICBload <- function(
     message("\nSorting into uniquemappers vs multimappers and primary vs secondary alignments")
   }
 
-  if (is.na(IS.SECONDARY.ALIGNEMNT)){#justPrimaryOrSecondary
+  if (is.na(IS.SECONDARY.ALIGNMENT)){#justPrimaryOrSecondary
     if (VERBOSE) message("Loading primary only")
-    PrimaryAlignemnts<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNEMNT=FALSE)
-    outputAlignmets[['unique']]<-PrimaryAlignemnts[GenomicRanges::mcols(PrimaryAlignemnts)[['NH']]==1]
-    outputAlignmets[['multi.primary']]<-PrimaryAlignemnts[(GenomicRanges::mcols(PrimaryAlignemnts)[['NH']]>1)]
+    PrimaryAlignments<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT=FALSE)
+    outputAlignments[['unique']]<-PrimaryAlignments[GenomicRanges::mcols(PrimaryAlignments)[['NH']]==1]
+    outputAlignments[['multi.primary']]<-PrimaryAlignments[(GenomicRanges::mcols(PrimaryAlignments)[['NH']]>1)]
     if (VERBOSE) message("Loading secondary only")
-    outputAlignmets[['multi.secondary']]<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNEMNT=TRUE)
-  }else if(IS.SECONDARY.ALIGNEMNT){
-    outputAlignmets[['unique']]<-NULL
-    outputAlignmets[['multi.primary']]<-NULL
+    outputAlignments[['multi.secondary']]<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT=TRUE)
+  }else if(IS.SECONDARY.ALIGNMENT){
+    outputAlignments[['unique']]<-NULL
+    outputAlignments[['multi.primary']]<-NULL
     if (VERBOSE) message("Loading secondary only")
-    outputAlignmets[['multi.secondary']]<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNEMNT=TRUE)
-  }else if(!IS.SECONDARY.ALIGNEMNT){
+    outputAlignments[['multi.secondary']]<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT=TRUE)
+  }else if(!IS.SECONDARY.ALIGNMENT){
     if (VERBOSE) message("Loading primary only")
-    PrimaryAlignemnts<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNEMNT=FALSE)
-    outputAlignmets[['unique']]<-PrimaryAlignemnts[GenomicRanges::mcols(PrimaryAlignemnts)[['NH']]==1]
-    outputAlignmets[['multi.primary']]<-PrimaryAlignemnts[(GenomicRanges::mcols(PrimaryAlignemnts)[['NH']]>1)]
-    outputAlignmets[['multi.secondary']]<-NULL
+    PrimaryAlignments<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT=FALSE)
+    outputAlignments[['unique']]<-PrimaryAlignments[GenomicRanges::mcols(PrimaryAlignments)[['NH']]==1]
+    outputAlignments[['multi.primary']]<-PrimaryAlignments[(GenomicRanges::mcols(PrimaryAlignments)[['NH']]>1)]
+    outputAlignments[['multi.secondary']]<-NULL
   }
   ## RETURN
   if (VERBOSE){
     message("\nDone!")
     message("")
   }
-  return(outputAlignmets)
+  return(outputAlignments)
 }
 

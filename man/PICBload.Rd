@@ -8,7 +8,7 @@ PICBload(
   BAMFILE = NULL,
   REFERENCE.GENOME = NULL,
   SIMPLE.CIGAR = TRUE,
-  IS.SECONDARY.ALIGNEMNT = NA,
+  IS.SECONDARY.ALIGNMENT = NA,
   STANDARD.CONTIGS.ONLY = TRUE,
   PERFECT.MATCH.ONLY = FALSE,
   FILTER.BY.FLAG = TRUE,
@@ -29,9 +29,9 @@ PICBload(
 
 \item{SIMPLE.CIGAR}{simpleCigar parameter of Rsamtools::ScanBamParam}
 
-\item{IS.SECONDARY.ALIGNEMNT}{defines loading of primary/secondary alignments. Default value NA loads both primary and secondary.}
+\item{IS.SECONDARY.ALIGNMENT}{defines loading of primary/secondary alignments. Default value NA loads both primary and secondary.}
 
-\item{STANDARD.CONTIGS.ONLY}{use only standard chormosomes}
+\item{STANDARD.CONTIGS.ONLY}{use only standard chromosomes}
 
 \item{PERFECT.MATCH.ONLY}{load only alignments without mismatches}
 
@@ -39,7 +39,7 @@ PICBload(
 
 \item{SELECT.FLAG}{vector of flags to use. Default value c(0,16, 272, 256).}
 
-\item{USE.SIZE.FILTER}{enables filter by alignemnt size. True by default.}
+\item{USE.SIZE.FILTER}{enables filter by alignment size. True by default.}
 
 \item{READ.SIZE.RANGE}{allowed alignment sizes. c(18,50) by default.}
 
@@ -47,15 +47,15 @@ PICBload(
 
 \item{WHAT}{"what" parameter of Rsamtools::ScanBamParam. c("flag") by default.}
 
-\item{SEQ.LEVELS.STYLE}{style of chomosome names for BSgenome. "UCSC" by default.}
+\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
 
 \item{GET.ORIGINAL.SEQUENCE}{adds "seq" to WHAT. False by default.}
 
 \item{VERBOSE}{enables progress output. True by default.}
 }
 \value{
-list of Granges objects named "unique" for unique mapping alignemnts,
-"multi.primary" for primary multimapping alignemnts,
+list of Granges objects named "unique" for unique mapping alignments,
+"multi.primary" for primary multimapping alignments,
 "multi.secondary" for secondary multimapping alignments
 }
 \description{

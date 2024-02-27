@@ -4,14 +4,14 @@
 #' @param alignmentsList named list of PICBload outputs. Names correspond to replicate names.
 #' @param REFERENCE.GENOME name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"
 #' @param TYPE.OF.REGION "clusters" by default
-#' @param SEQ.LEVELS.STYLE style of chomosome names for BSgenome. "UCSC" by default.
+#' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
 #'
 #' @return Granges object annotated for every replicate.
 #' @export
 #'
 #' @examples PICBcombine(list(OutputOfPICBbuildRepl1, OutputOfPICBbuildRepl2), list(Repl1=OutputOfPICBloadRepl1, Repl2=OutputOfPICBloadRepl2), TYPE.OF.REGION="regions")
 PICBcombine<-function(rangesList = NULL, alignmentsList = NULL,
-                      REFERENCE.GENOME = NULL, TYPE.OF.REGION=allaligments, SEQ.LEVELS.STYLE="UCSC"){
+                      REFERENCE.GENOME = NULL, TYPE.OF.REGION=allalignments, SEQ.LEVELS.STYLE="UCSC"){
   if(is.null(rangesList)) stop("Please provide rangesList !")
   if(is.null(alignmentsList)) stop("Please provide alignmentsList !")
   if(is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME !")
@@ -39,7 +39,7 @@ PICBcombine<-function(rangesList = NULL, alignmentsList = NULL,
       if (paste0("meanCoverage",sampleName) %in% colnames(GenomicRanges::mcols(commonRanges))){
         stop("Sample names duplication! Check names of alignmentsList.")
       }
-      if (TYPE.OF.REGION==allaligments){ #checking if type of cluster is relevant here
+      if (TYPE.OF.REGION==allalignments){ #checking if type of cluster is relevant here
         tmpRanges<-rangesList[[i]]
         tmpRanges[[TYPE.OF.REGION]]<-commonRanges
         tmpRanges<-PICBannotate(tmpRanges, alignmentsList[[i]],

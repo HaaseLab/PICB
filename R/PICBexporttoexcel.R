@@ -8,6 +8,6 @@
 #'
 #' @examples PICBexporttoexcel(myclusteringObject, "~/piRNAclustersFromUFOsamples.Area51.xlsx")
 PICBexporttoexcel <- function(RANGES = NULL, EXCEL.FILE.NAME = NULL){
-  allowedSheets = names(RANGES)[ names(RANGES) %in% c(uniqueonly, uniqueandprimary, allaligments) ]
+  allowedSheets = names(RANGES)[ names(RANGES) %in% c(uniqueonly, uniqueandprimary, allalignments) ]
   openxlsx::write.xlsx(RANGES[ allowedSheets ], file=EXCEL.FILE.NAME)
 }
