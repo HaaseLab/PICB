@@ -1,0 +1,48 @@
+PICB stands for “piRNA cluster builder”. It’s a R package allowing detection and characterization of piRNA source loci from short RNA sequencing libraries.
+
+Installation:
+install.package("data.table")
+install.package("seqinr")
+install.package("openxlsx")
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("IRanges")
+BiocManager::install("GenomicRanges")
+BiocManager::install("GenomicAlignments")
+BiocManager::install("Rsamtools")
+BiocManager::install("Biostrings")
+BiocManager::install("GenomeInfoDb")
+BiocManager::install("BSgenome")
+
+install.packages("/path/to/your/PICB_[version].tar.gz", repos = NULL, type="source")
+
+Loading the package is done by:
+library(PICB)
+
+The next steps depend on the genome you use. At the moment PICB can work with 3 different scenarios:
+Genome is part of BSgenome package. 
+For example: 
+mygenome<-”BSgenome.Dmelanogaster.UCSC.dm6”
+In this case the BSgenome should be installed
+The user types in the chromosome names and lengths.
+For example: 
+mygenome <- GenomeInfoDb::Seqinfo(seqnames = c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY"), seqlengths = c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352))
+The user provides an fasta with the assembled genome sequence.
+For example:
+mygenome <-PICBloadfasta(FASTA.NAME="/path/to/your/genome.fa")
+
+After that we need to load the bam file. It should be sorted by coordinate and indexed (bai).
+myallignments<-PICBload(BAMFILE="/path/to/your/alignments.bam", REFERENCE.GENOME= mygenome)
+
+When the alignments loaded, we can build the clusters:
+myloci<-PICBbuild(myallignments, REFERENCE.GENOME= mygenome)
+
+The “myloci” is a list of 3 GenomicRanges objects: seeds, cores, clusters
+Seeds are based on the unique mapping alignments only,
+Cores also include primary multimapping alignments,
+Clusters include all the alignments information.
+
+Each seed, core, cluster is annotated.
+The annotations can be used for filtering or ranking:
+myloci$clusters[ myloci$clusters$uniq_reads_FPM > 20 ]
+myloci$clusters[ order(myloci$clusters$uniq_reads_FPM, decreasing=TRUE) ]
