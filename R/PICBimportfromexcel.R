@@ -10,9 +10,9 @@
 #' @examples PICBimportfromexcel(="~/piRNAclustersFromUFOsamples.Area51.xlsx")
 PICBimportfromexcel <- function(EXCEL.FILE.NAME = NULL){
   output=list()
-  output$seeds<-GenomicRanges::GRanges(openxlsx::read.xlsx(EXCEL.FILE.NAME), sheet = "seeds")
-  output$cores<-GenomicRanges::GRanges(openxlsx::read.xlsx(EXCEL.FILE.NAME), sheet = "cores")
-  output$clusters<-GenomicRanges::GRanges(openxlsx::read.xlsx(EXCEL.FILE.NAME), sheet = "clusters")
+  output$seeds<-GenomicRanges::GRanges(openxlsx::read.xlsx(EXCEL.FILE.NAME, sheet = uniqueonly))
+  output$cores<-GenomicRanges::GRanges(openxlsx::read.xlsx(EXCEL.FILE.NAME, sheet = uniqueandprimary))
+  output$clusters<-GenomicRanges::GRanges(openxlsx::read.xlsx(EXCEL.FILE.NAME, sheet = uniqueandprimary))
   return(output)
 }
 
