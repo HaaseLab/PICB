@@ -6,6 +6,7 @@
 #' @return SeqInfo object with standard non-circular chromosome names
 #' @export
 #'
+#' @author Aleksandr Friman
 #' @examples mySI<-PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
 PICBgetchromosomes<-function(BS.SPECIES, SEQ.LEVELS.STYLE = "UCSC"){
   library(BS.SPECIES, character.only = TRUE)

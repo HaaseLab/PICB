@@ -16,6 +16,9 @@
 #' @param GET.ORIGINAL.SEQUENCE adds "seq" to WHAT. False by default.
 #' @param VERBOSE enables progress output. True by default.
 #'
+#' @author Pavol Genzor
+#' @author Daniel Stoyko
+#' @author Aleksandr Friman
 #' @return list of Granges objects named "unique" for unique mapping alignments,
 #' "multi.primary" for primary multimapping alignments,
 #' "multi.secondary" for secondary multimapping alignments

@@ -4,6 +4,7 @@
 #'
 #' @return SeqInfo object with all chromosome names and lengths from the fasta file
 #' @export
+#' @author Aleksandr Friman
 #'
 #' @examples mySI<-PICBloadfasta("~/path/to/your.fasta")
 PICBloadfasta<-function(FASTA.NAME = NULL){

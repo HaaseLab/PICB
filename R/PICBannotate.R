@@ -7,6 +7,7 @@
 #' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.
 #' @param PROVIDE.NON.NORMALIZED provide annotations in non-normalized format. False by default.
 #'
+#' @author Aleksandr Friman
 #' @return Granges object with extra annotation columns
 #' @export
 #'

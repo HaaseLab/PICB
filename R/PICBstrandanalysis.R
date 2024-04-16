@@ -8,6 +8,9 @@
 #'
 #' @return Granges object with extra annotation columns
 #' @export
+#' @author Aleksandr Friman
+#' @author Parthena Konstantinidou
+#' @author Zuzana Loubalova
 #'
 #' @examples outputOfPICBbuild$clusters<-PICBstrandanalysis(outputOfPICBbuild$clusters)
 PICBstrandanalysis<-function(INPUT.GRANGES, DUAL.STRAND.MIN.OVERLAP=1, PROD.FOLD=3,

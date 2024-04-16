@@ -3,6 +3,7 @@
 #' @param RANGES clustering object to export
 #' @param EXCEL.FILE.NAME file name to save
 #'
+#' @author Aleksandr Friman
 #' @return no values returned
 #' @export
 #'

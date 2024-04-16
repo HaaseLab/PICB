@@ -23,6 +23,9 @@
 #' @param PROVIDE.NON.NORMALIZED include non-normalized to the library size statistics in the output annotations
 #' @param VERBOSITY verbosity level 0/1/2/3. 2 by default.
 #'
+#' @author Pavol Genzor
+#' @author Daniel Stoyko
+#' @author Aleksandr Friman
 #' @return list of annotated Granges objects named "seeds" for seeds,
 #' "cores" for cores,
 #' "clusters" for clusters
