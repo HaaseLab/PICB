@@ -12,7 +12,7 @@
   <br /><br /><strong>piCB - <u>pi</u>RNA <u>C</u>luster <u>B</u>uilder</strong>
 </h1>
 
-## Introduction &nbsp; [![](images/double-helix-svgrepo-com.svg)](#introduction)
+## Introduction[![](images/double-helix-svgrepo-com.svg)](#introduction)
 
 **piCB** (*piRNA Cluster Builder*) is a flexible toolkit for assembling, prioritizing, and characterizing piRNA clusters. 
 
@@ -20,7 +20,7 @@
 
 ---
 
-## Table of contents &nbsp; [![](images/double-helix-svgrepo-com.svg)](#table-of-contents)
+## Table of contents[![](images/double-helix-svgrepo-com.svg)](#table-of-contents)
 - [Motivation](#motivation)
 - [Getting started](#getting-started)
 - [How to run piCB](#how-to-run-piCB)
@@ -33,7 +33,7 @@
 
 ---
 
-## Motivation &nbsp; [![](images/double-helix-svgrepo-com.svg)](#motivation)
+## Motivation[![](images/double-helix-svgrepo-com.svg)](#motivation)
 
 piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. PiRNAs originate from genomic regions which are called _piRNA clusters_.
 
@@ -51,7 +51,7 @@ Please visit our [publication]() for full context.
 
 ---
 
-## Getting started &nbsp; [![](images/double-helix-svgrepo-com.svg)](#getting-started)
+## Getting started[![](images/double-helix-svgrepo-com.svg)](#getting-started)
 
 piCB runs in R versions <span>&#8805;</span> 4.2. 
 
@@ -88,8 +88,8 @@ piCB is available to install from any of the following sources:
 | Where        | Source   | Command                                                                     |
 |-------------|----------|-----------------------------------------------------------------------------|
 | Web Browser | GitHub   | <a href="https://github.com/HaaseLab/PICB/archive/refs/heads/main.zip">Download GitHub repository here.</a> Now unzip the file and run `install.packages(“Downloads/PICB-main”, repos=NULL, type="source")` in R.                |
-| R | GitHub   | Soon: `remotes::install_github("HaaseLab/piCB")`                            |
-| Terminal | GitHub   | Soon: Clone Source Code: `git clone https://github.com/HaaseLab/PICB.git` <br> In R: `install.packages()` |
+| R | GitHub   | When GitHub repository is public: `remotes::install_github("HaaseLab/piCB")`                            |
+| Terminal | GitHub   | When GitHub repository is public: Clone Source Code: `git clone https://github.com/HaaseLab/PICB.git` <!--<br> In R: `install.packages()`--> |
 <!--| R     | Bioconductor     | Soon: BiocManager::install("piCB") |
 | R | rOpenSci | Soon: `install.packages("piCB", repos = "https://ropensci.r-universe.dev")` |-->
 <!--<img src="images/GitHubDownload.png" alt="Stepwise Integration for piCB" style="width:30%;height:30%"/> |Follow steps on image (green button is on top of this page) <br> Or  -->
@@ -98,7 +98,7 @@ piCB is available to install from any of the following sources:
 
 Now load piCB in your R environment: 
 ```R
-load('PICB')
+library('PICB')
 ```
 
 
@@ -106,7 +106,7 @@ From now on it gets even easier.
 
 ---
 
-## How to run piCB &nbsp; [![](images/double-helix-svgrepo-com.svg)](#how-to-run-piCB)
+## How to run piCB[![](images/double-helix-svgrepo-com.svg)](#how-to-run-piCB)
 
 There are just two required inputs: the **BAM File** and the **Reference Genome**.
 
@@ -118,7 +118,7 @@ Checklist for having the right **BAM File**
 - [ ] NH and NM tags are included
 - [ ] Indexed (.bai file required) 
 
-<details close><summary title="Click to show/hide details"> <u>Unsure how the bam-files were mapped?</u></summary><br/>
+<details close><summary title="Click to show/hide details"> <u>Click to show/hide solutions to the question: Unsure how the bam-files were mapped?</u></summary><br/>
 If you already mapped your sequencing data, but are unsure if these requirements are fulfilled, you can check them by using <a href=https://www.htslib.org/ target="_blank"> samtools</a>. 
 
 ```bash
@@ -183,7 +183,7 @@ myAlignments <- PICBload(bam_directory, mygenome)
 myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME= mygenome)$clusters
 ```
 
-> 💡 Both `PICBload` and `PICBbuild` allow wide-ranging adjustmetns: Read the below section [Parameter adjustments](#parameter-adjustments) to adapt to sparse reference genomes and specific limitations of the data set.
+> 💡 Both `PICBload` and `PICBbuild` allow wide-ranging adjustments: Read the below section [Parameter adjustments](#parameter-adjustments) to adapt to sparse reference genomes and specific limitations of the data set.
 
 > 💡 As described [here](#motivation), `PICBbuild` integrates unique mapping (seeds), primary multimapping (cores) and secondary alignments stepwise. You can access the outputs of the previous steps by using `$seeds` or `$cores` instead of `$clusters`.
 
@@ -191,7 +191,7 @@ myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME= mygenome)$clusters
 
 ---
 
-### Parameter adjustments &nbsp; [![](images/double-helix-svgrepo-com.svg)](#parameter-adjustments)
+### Parameter adjustments[![](images/double-helix-svgrepo-com.svg)](#parameter-adjustments)
 
 
 PiCB allows wide-ranging parameter adjustments to adapt to e.g. sparse reference genomes and specific limitations of the data set. Tables of adjustments for both functions are shown below. 
@@ -209,12 +209,12 @@ Adjustable parameters:
 
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
-| IS.SECONDARY.ALIGNEMNT  | TRUE, FALSE, NA | NA  (all 3 alignments) | Determines which alignment types (primary multimappers and secondary multimappers) will be loaded. |
+| IS.SECONDARY.ALIGNEMNT  | TRUE, FALSE, NA | NA  (all alignments) | Determines which alignment types (primary multimappers and secondary multimappers) will be loaded. |
 | STANDARD.CONTIGS.ONLY   | TRUE, FALSE  | TRUE        | Determines whether alignments from non-standard contigs are used. |
-| FILTER.BY.FLAG   | <p style="color: orange;">TRUE, FALSE </p> | <p style="color: orange;">TRUE </p> | Allows filtering of unmapped reads based on bits set in their flag field. Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG with default value of c(0,16, 272, 256). By default, the flags correspond to primary and secondary alignments from plus and minus strands but exclude unmapped reads and paired reads. |
-| USE.SIZE.FILTER   |<p style="color: orange;"> TRUE, FALSE </p> | <p style="color: orange;">TRUE</p> | Allows filtering of alignments with biologically non-relevant length outside the READ.SIZE.RANGE interval with default value of c(18,50) corresponding to 18-50 nt. |
+| FILTER.BY.FLAG   | TRUE, FALSE | TRUE | Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG. Default values of SELECT.FLAG are 0,16, 272 and 256 (primary and secondary alignments on plus and minus strands). If FALSE, includes all flags. |
+| USE.SIZE.FILTER   | TRUE, FALSE | TRUE | Allows filtering of alignments based on size. Default value is 18-50 nt. |
 | TAGS   | _vector_  | c("NH","NM")  | Indicates list of tags to be extracted from given bam file. The “NH” tag is required to deduce if the alignment is unique mapping or multimapping. The “NM” is required to identify mismatches if required in further analysis. |
-| GET.ORIGINAL.SEQUENCE | TRUE, FALSE  | FALSE  | Determines the additional information to be extracted from the bam file. |
+| GET.ORIGINAL.SEQUENCE | TRUE, FALSE  | FALSE  | Allows extraction of original read sequence from the bam file. |
 | SIMPLE.CIGAR  | TRUE, FALSE  | TRUE  | Allows filtering out spliced alignments. |
 | PERFECT.MATCH.ONLY   | TRUE, FALSE  | FALSE  | Allows filtering out alignments with mismatches. |
 | WHAT   | _vector_ | c(“flag”)         | Allows importing flags. Corresponds to “what” from ScanBamParam-class [Morgan M, Pagès H, Obenchain V, Hayden N (2023). Rsamtools: Binary alignment (BAM), FASTA, variant call (BCF), and tabix file import]  |
@@ -245,18 +245,18 @@ Adjustable parameters for processing **unique mapping alignments**:
 
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
-| UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH | _integer_  | 350 nt   | Sets lengths of sliding windows. |
-| UNIQUEMAPPERS.SLIDING.WINDOW.STEP | _integer_  | UNIQUEMAPPERS.SLIDING. WINDOW.WIDTH divided by 10 and rounded to the nearest integer | Sets distances between starts of the windows. |
-| MIN.UNIQUE.ALIGNMENTS.PER.WINDOW | _integer_ | 2 FPKM  | Allows filtering by the number of unique mapping alignments overlapping with the window (in FPKM). |
-| <p style="color: orange;">MIN.UNIQUE.SEQUENCES.PER.WINDOW </p>  | _integer_  | <p style="color: orange;">1 per 50 nt of window length </p> | Sets minimum requirement of unique sequences per window length. This parameter allows identification of productive genomic interval excluding PCR artifacts since the artifacts typically replicate only 1 sequence. |
+| UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH | _integer_  | 350 nt   | Sets length of sliding windows for uniquely mapping alignments. |
+| UNIQUEMAPPERS.SLIDING.WINDOW.STEP | _integer_  | UNIQUEMAPPERS.SLIDING. WINDOW.WIDTH divided by 10 and rounded to the nearest integer | Sets distance between starts of the windows for uniquely mapping alignments. |
+| MIN.UNIQUE.ALIGNMENTS.PER.WINDOW | _integer_ | Value corresponding to 2 FPKM  | Sets coverage threshold for seed discovery. Corresponds to normalized counts of uniquely mapping alignments throughout the window (in FPKM). |
+| MIN.UNIQUE.SEQUENCES.PER.WINDOW | _integer_  | 1 per 50 nt of window length or MIN.UNIQUE.ALIGNMENTS.PER.WINDOW whichever is smaller | Minimum number of distinct piRNA sequences within the sliding window. This parameter allows identification of clusters supported by a diverse set of piRNA sequences rather than a high number of reads from one or a few piRNA sequences.  |
 
 The called windows are reduced into **seeds** and further filtered: 
 
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
-| THRESHOLD.SEEDS.GAP  | _integer_  | 0 nt | Removes gaps between seeds if below a given length value (e.g. for low-quality genomes with non-mappable N streches). |
+| THRESHOLD.SEEDS.GAP  | _integer_  | 0 nt | Removes gaps between seeds if below the given length value. |
 | MIN.SEED.LENGTH | _integer_  | 2 * UNIQUEMAPPERS.SLIDING. WINDOW.WIDTH + 100 nt = 800 nt | Removes seeds below a certain length (Default requires an actual piRNA coverage of at least 100 nt: UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH (see above, default: 350 nt) at both the 5’ end and the 3’ end, thus making a 350+350+100=800 nt long seed). |
-| MIN.COVERED.SEED.LENGTH   | _integer_ | 0 nt | Allows filtering by minimum number of seed bases covered by unique mapping alignments. Can be used to eliminate influence of contaminating sequences such as miRNA. |
+| MIN.COVERED.SEED.LENGTH   | _integer_ | 0 nt | Allows filtering by minimum number of seed bases covered by unique mapping alignments. |
 
 The next step includes **primary multimapping alignments** using a similar but simplified algorithm. Following parameters can be adjusted:
 
@@ -264,14 +264,14 @@ The next step includes **primary multimapping alignments** using a similar but s
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
 | PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH  | _integer_  | 350 nt  | Sets lengths of sliding windows for primary multimapping alignments. |
-| PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP  | _integer_ | PRIMARY.MULTIMAPPERS. SLIDING.WINDOW.WIDTH divided by 10 and rounded to the nearest integer | Sets distances between starts of windows. |
-| MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW  | _integer_ | 4 FPKM | Allows filtering by the number of primary multimapping alignments overlapping with the window (in FPKM, 'calculated in absolute number of alignments').|
+| PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP  | _integer_ | PRIMARY.MULTIMAPPERS. SLIDING.WINDOW.WIDTH divided by 10 and rounded to the nearest integer | Sets distances between starts of windows for primary multimapping alignments. |
+| MIN.PRIMARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW  | _integer_ | Value corresponding to 4 FPKM | Sets coverage threshold for calling primary multimapping alignments windows. Corresponds to normalized counts of primary multimapping alignments throughout the window (in FPKM).|
 
 These resulting windows are being reduced into **cores** and are further filtered:
 
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
-| THRESHOLD.CORES.GAP  | _integer_ | 0 nt  | Removes gaps between cores if below a given length value. |
+| THRESHOLD.CORES.GAP  | _integer_ | 0 nt  | Removes gaps between cores if below the given length value. |
 
 **Seeds** and **primary multimapping windows** overlapping **seeds** merge into **cores**. Standalone **seeds** are also considered **cores**. **Cores** not overlapping with a **seed** are being filtered out as their transcription cannot be verified.
 
@@ -280,8 +280,8 @@ In the next step **secondary alignments** are processed identically as primary m
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
 | SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH  | _integer_  | 1000 nt  | Sets lengths of sliding windows for secondary alignments. |
-| SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP  | _integer_ | 100 nt | Sets distances between starts of the windows. |
-| MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW  | _integer_ | 0.2 FPKM | Sets a coverage threshold. |
+| SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP  | _integer_ | 100 nt | Sets distances between starts of the windows for secondary alignments. |
+| MIN.SECONDARY.MULTIMAPING.ALIGNMENTS.PER.WINDOW  | _integer_ | Value corresponding to  0.2 FPKM | Sets coverage threshold for calling secondary alignments windows. Corresponds to normalized counts of secondary alignments throughout the window (in FPKM). |
 
 **Cores** and **secondary alignments** overlapping **cores** merge into **clusters**. Standalone **cores** are also considered **clusters**. piRNA **clusters** were formed and include all alignment information. 
 
@@ -292,38 +292,44 @@ In the next step **secondary alignments** are processed identically as primary m
 
 ---
 
-## Output &nbsp; [![](images/double-helix-svgrepo-com.svg)](#output)
+## Output[![](images/double-helix-svgrepo-com.svg)](#output)
 
 The output of `PICBbuild` includes **seeds**, **cores** and  **clusters**, each in *GenomicRanges* format. In [Running piCB](#running-piCB), we extracted directly the **clusters** using `$clusters`. Extracting the **seeds** and **cores** can be done similarly using `$seeds` and `$cores`. 
 
-The **clusters** follow *GRanges* convension including the genomic coordinates (seqnames, ranges, and strand) and metacolumns. There are in total 14 metacolumns:
+The **clusters** follow *GRanges* convention including the genomic coordinates (seqnames, ranges, and strand) and metacolumns. There are in total 14 metacolumns:
+
+<details close><summary title="Click to show/hide details">Click to show / hide: Output columns of PICB</summary><br/>
+
 
 | Output Name | Explanation |
 |----------------|-----------------|
 | type | Type of cluster with possible values: 'SingleCore', 'ExtendedCore', 'MultiCore' |
 | width_in_nt | Width of the seed/core/cluster |
-| uniq_reads | Number of unique mapping piRNA reads aligned to the seed/core/cluster (requires PROVIDE.NON.NORMALIZED = TRUE) |
-| multimapping_reads_primary_alignments | Number of primary multimapping alinments ovellapping to the seed/core/cluster (requires PROVIDE.NON.NORMALIZED = TRUE)|
-| all_reads_primary_alignments | Number of primary alinments ovellapping the seed/core/cluster (requires PROVIDE.NON.NORMALIZED = TRUE) |
-| uniq_reads_FPM | Fragment per million of unique mapping piRNA reads aligned to the seed/core/cluster (normalized to number of all aligned reads) |
-| multimapping_reads_primary_alignments_FPM | Fragment per million of primary multimapping alignments overlapping the seed/core/cluster (normalized to number of all aligned reads) |
-| all_reads_primary_alignments_FPM | Fragment per million of all primary alignments overlapping the seed/core/cluster (normalized to number of all aligned reads)|
-| uniq_reads_FPKM | uniq_reads_FPM per kilobase of the seed/core/cluster length |
-| multimapping_reads_primary_alignments_FPKM | multimapping_reads_primary_alignments_FPM per kilobase of the seed/core/cluster length |
-| all_reads_primary_alignments_FPKM | all_reads_primary_alignments_FPM per kilobase of the seed/core/cluster length |
-| width_covered_by_unique_alignments | Number of base pairs of seed/core/cluster length coreved by at least 1 unique mapping piRNA read |
+| uniq_reads_FPM | Uniquely mapping piRNA reads aligned to the seed/core/cluster (normalized to the number of all aligned reads) |
+| multimapping_reads_primary_alignments | Number of primary multimapping alignments overlapping to the seed/core/cluster |
+| all_reads_primary_alignments | Number of primary alignments overlapping the seed/core/cluster |
+| uniq_reads_FPKM | Number of unique reads normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (unique reads FPM per kilobase) |
+| multimapping_reads_primary_alignments_FPKM | Number of multimapping reads normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (primary alignments of multimapping reads FPM per kilobase) |
+| all_reads_primary_alignments_FPKM | Number of all reads primary alignments normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (primary alignments of all reads FPM per kilobase) |
 | fraction_of_width_covered_by_unique_alignments | Fraction of seed/core/cluster length coreved by at least 1 unique mapping piRNA read |
-| uniq_sequences | Number of different unique mapping piRNA sequences aligned to the seed/core/cluster |
+
+<!-- 
+| uniq_reads | Number of uniquely mapping piRNA reads aligned to the seed/core/cluster |
+| uniq_reads_FPM | Uniquely mapping piRNA reads aligned to the seed/core/cluster (normalized to the number of all aligned reads) |
+| multimapping_reads_primary_alignments_FPM | Primary multimapping alignments overlapping the seed/core/cluster (normalized to the number of all aligned reads) |
+| all_reads_primary_alignments_FPM | All primary alignments overlapping the seed/core/cluster (normalized to the number of all aligned reads)|
+| width_covered_by_unique_alignments | Number of base pairs of seed/core/cluster length coreved by at least 1 unique mapping piRNA read | 
+| uniq_sequences | Number of different unique mapping piRNA sequences aligned to the seed/core/cluster |-->
 
 
-
+</details>
 <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
 
 ---
 
 
 
-## Let's give it a try - An Example &nbsp; [![](images/double-helix-svgrepo-com.svg)](#lets-give-it-a-try---an-example)
+## Let's give it a try - An Example[![](images/double-helix-svgrepo-com.svg)](#lets-give-it-a-try---an-example)
 
 In the following, we would like to show you how easy it is to run PICB!
 
@@ -373,7 +379,7 @@ Next, we want to form the piRNA clusters using the `PICBbuild` function. Usually
 myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME = mygenome, LIBRARY.SIZE = 12799826)$clusters
 ```
 
-Possibilities of verifying the resulting piRNA clusters are described in [paper](). We note that ranking piRNA clusters is essential for proper interpretation. 
+Possibilities of verifying the resulting piRNA clusters are described in the [paper](). We note that ranking piRNA clusters is essential for proper interpretation. 
 
 > 💡 Keep in mind that you just run a demo. These are not representative clusters! Though you can apply these steps to your organism of choice and sequencing data. Have fun with piCB and your piRNA clusters!
 
@@ -381,20 +387,21 @@ Possibilities of verifying the resulting piRNA clusters are described in [paper]
 
 
 
-## Authors, Citation and Acknowledgments &nbsp; [![](images/double-helix-svgrepo-com.svg)](#authors-citation-and-acknowledgments)
+## Authors, Citation and Acknowledgments[![](images/double-helix-svgrepo-com.svg)](#authors-citation-and-acknowledgments)
 
 Special thanks to all contributors and supporters that starred this repository.
 
 **Our author**:
 
 <a href="https://github.com/alexfriman"><img src="https://avatars.githubusercontent.com/u/20302553?v=4" alt="Aleksandr (Alex) Friman, M.Sc. M.Eng." style="width:8%"/></a>
+<a href="https://github.com/frahrend"><img src="https://avatars.githubusercontent.com/u/15805954?v=4" alt="Franziska Ahrend, M.Sc." style="width:8%"/></a>
 
 **Our piCB-team:**
 
 <a href="https://github.com/thenoulav"><img src="https://avatars.githubusercontent.com/u/79937315?v=4" alt="
 Parthena (Thenia) Konstantinidou, Ph.D." style="width:8%"/></a>
-<a href="https://github.com/loubalzu"><img src="https://avatars.githubusercontent.com/u/122292199?v=4" alt="Zuzana Loubalova, Ph.D." style="width:8%"/></a>
-<a href="https://github.com/frahrend"><img src="https://avatars.githubusercontent.com/u/15805954?s=70&v=4" alt="Franziska Ahrend, M.Sc." style="width:8%"/></a>
+<a href="https://github.com/LoubalovaZ"><img src="https://avatars.githubusercontent.com/u/120222151?v=4" alt="Zuzana Loubalova, Ph.D." style="width:8%"/></a>
+<a href="https://github.com/frahrend"><img src="https://avatars.githubusercontent.com/u/15805954?v=4" alt="Franziska Ahrend, M.Sc." style="width:8%"/></a>
 <a href="https://github.com/alexfriman"><img src="https://avatars.githubusercontent.com/u/20302553?v=4" alt="Aleksandr (Alex) Friman, M.Sc. M.Eng." style="width:8%"/></a>
 <a href="https://www.niddk.nih.gov/about-niddk/staff-directory/biography/haase-astrid"><img src="https://www.niddk.nih.gov/-/media/Images/About-NIDDK/Profile-Images/Profile-Images---Intramural/Haase-Astrid_square300.jpg" alt="Astrid D. Haase, M.D., Ph.D." style="width:8%"/></a><br>
 Visit the lab website of 
@@ -402,35 +409,41 @@ Visit the lab website of
 
 **Our Co-authors and support:**
 
-<a href="https://www.linkedin.com/in/miguel-vasconcelos-almeida-bb93b6140/?originalSubdomain=uk"><img src="https://media.licdn.com/dms/image/C4E03AQHJfbpdBxm_yA/profile-displayphoto-shrink_800_800/0/1633617003256?e=1717027200&v=beta&t=F-Do2TIQ-2GgWFgr5zAipxUXx4JfUAIQ4tMhX_TVdow" alt="Miguel Vasconcelos Almeida" style="width:8%"/></a>
-<a href="https://github.com/PouletAxel"><img src="https://avatars.githubusercontent.com/u/6670853?v=4" alt="Axel Poulet" style="width:8%"/></a>
-<a href="https://www.img.cas.cz/group/petr-svoboda/"><img src="https://bioinfo.medils.hr/images/5_Filip.png" alt="Filip Horvat" style="width:8%"/></a>
-<a href="https://github.com/yuejun-j-wang"><img src="https://avatars.githubusercontent.com/u/110154696?v=4" alt="Yuejun Wang" style="width:8%"/></a>
-<a href="https://umdphysics.umd.edu/people/faculty/current/item/318-wlosert.html"><img src="https://cmns.umd.edu/sites/default/files/styles/square/public/images/news/wolfgang_losert-featnews_1.jpg?itok=CxiFSmSQ" alt="Wolfgang Losert" style="width:8%"/></a>
-<a href="https://www.niddk.nih.gov/about-niddk/staff-directory/biography/lorenzi-hernan"><img src="https://www.niddk.nih.gov/-/media/Images/About-NIDDK/Profile-Images/Profile-Images---Intramural/Lorenzi_Hernan_600x600.jpg?h=600&iar=0&w=600&hash=98CDD384341B767DA39C3BA3D2F298C5" alt="Hernan Lorenzi" style="width:8%"/></a>
-<a href="https://www.img.cas.cz/group/petr-svoboda/"><img src="https://www.img.cas.cz/files/2022/02/portrait-svoboda.jpg" alt="Petr Svoboda" style="width:8%"/></a>
-<a href="https://www.gen.cam.ac.uk/directory/eric-miska"><img src="https://www.sanger.ac.uk/userpics/400/em13.jpg" alt="Eric A. Miska" style="width:8%"/></a>
-<a href="https://mcdb.yale.edu/people/josien-van-wolfswinkel"><img src="https://vanwolfswinkellab.org/wp-content/uploads/bb-plugin/cache/WebsitePic_alt-circle.png" alt="Josien van Wolfswinkel" style="width:8%"/></a>
+<a href="https://www.linkedin.com/in/miguel-vasconcelos-almeida-bb93b6140/?originalSubdomain=uk"><img src="https://media.licdn.com/dms/image/C4E03AQHJfbpdBxm_yA/profile-displayphoto-shrink_800_800/0/1633617003256?e=1717027200&v=beta&t=F-Do2TIQ-2GgWFgr5zAipxUXx4JfUAIQ4tMhX_TVdow" alt="Miguel Vasconcelos Almeida" style="width: 8%;"/></a>
+<a href="https://github.com/PouletAxel"><img src="https://avatars.githubusercontent.com/u/6670853?v=4" alt="Axel Poulet" style="width: 8%;"/></a>
+<a href="https://www.img.cas.cz/group/petr-svoboda/"><img src="https://bioinfo.medils.hr/images/5_Filip.png" alt="Filip Horvat" style="width: 8%;"/></a>
+<a href="https://github.com/yuejun-j-wang"><img src="https://avatars.githubusercontent.com/u/110154696?v=4" alt="Yuejun Wang" style="width: 8%;"/></a>
+<a href="https://umdphysics.umd.edu/people/faculty/current/item/318-wlosert.html"><img src="https://cmns.umd.edu/sites/default/files/styles/square/public/images/news/wolfgang_losert-featnews_1.jpg?itok=CxiFSmSQ" alt="Wolfgang Losert" style="width: 8%;"/></a>
+<a href="https://www.niddk.nih.gov/about-niddk/staff-directory/biography/lorenzi-hernan"><img src="https://www.niddk.nih.gov/-/media/Images/About-NIDDK/Profile-Images/Profile-Images---Intramural/Lorenzi_Hernan_600x600.jpg?h=600&iar=0&w=600&hash=98CDD384341B767DA39C3BA3D2F298C5" alt="Hernan Lorenzi" style="width: 8%;"/></a>
+<a href="https://www.img.cas.cz/group/petr-svoboda/"><img src="https://www.img.cas.cz/files/2022/02/portrait-svoboda.jpg" alt="Petr Svoboda" style="width: 8%;"/></a>
+<a href="https://www.gen.cam.ac.uk/directory/eric-miska"><img src="https://www.sanger.ac.uk/userpics/400/em13.jpg" alt="Eric A. Miska" style="width: 8%;"/></a>
+<a href="https://mcdb.yale.edu/people/josien-van-wolfswinkel"><img src="https://vanwolfswinkellab.org/wp-content/uploads/bb-plugin/cache/WebsitePic_alt-circle.png" alt="Josien van Wolfswinkel" style="width: 8%;"/></a>
 
 <br>
 
 **How to cite piCB**
 
-_Citation_
+<i>Citation</i>
 <br><br>
 
-This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details.
+This project is licensed under the CC0.1.0 license - see the [LICENSE](/LICENSE.md) file for details.
 
+<!--
 Do you like this project? Please join us or [give a ⭐](/stargazers). Let us make piRNA clusters more comparable and easy to build!<br/>
-
+-->
 <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
-
 
 ---
 
+<br><br>
+
+<br><br>
+<br><br>
+<!--
+
+
 **Share** the project link with your network on social media.
 
-<!--Currently doesnt work bc GitHub page is not yet public-->
 <a href="https://www.linkedin.com/sharing/share-offsite/?url=github.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=LinkedIn&logo=LinkedIn&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk" alt="Share on LinkedIn"/></a>&nbsp;
 <a href="https://twitter.com/intent/tweet?text=Check%20out%20%23PICB%20-%20The%20new%20piRNA%20Cluster%20Builder%20%0A%0Ahttps%3A//github.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=Twitter&logo=Twitter&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk" alt="Shared on Twitter"/></a>&nbsp;
 <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A//github.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=Facebook&logo=Facebook&style=social&url=https%3A%2F%2Fgithub.com%2HaaseLab%2PICB" alt="Share on Facebook"/></a>&nbsp;
@@ -439,7 +452,7 @@ Do you like this project? Please join us or [give a ⭐](/stargazers). Let us ma
 <a href="mailto:?subject=piRNA%20Cluster%20Builder&body=Check%20out%20this%20new%20piRNA%20Cluster%20Builder%20-%20PICB%20%3A%0Ahttps%3A//github.com/HaaseLab/PICB%0A" target="_blank"><img src="https://img.shields.io/twitter/url?label=GMail&logo=GMail&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk"/></a>
 
 
-<!--
+
 ### Used by 
 
 List of paper that used or refer to PICB
