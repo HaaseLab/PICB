@@ -236,7 +236,7 @@ The library size can be adjusted as shown in our [piCB demo](#lets-give-it-a-try
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
 | LIBRARY.SIZE | _integer_  |  number of unique mapping alignments + number of primary multimapping alignments  | number of reads in the library |
-| VERBOSITY | 0,1,2,3  |  2  | Allows choosing the quantity of progress messages while running `PICBbuild`. Depending on VERBOSITY's value, printed messages are missing (0), include current processing step (1), include additionally current processing sub-step (2) or include additionally chosen parameters for `PICBbuild`)|
+| VERBOSITY | 0,1,2,3  |  2  | Allows choosing the quantity of progress messages while running `PICBbuild`. Depending on VERBOSITY's value, printed messages are missing (0), include current processing step (1), include additionally current processing sub-step (2) or include chosen parameters for `PICBbuild`)|
 
 <br>
 
