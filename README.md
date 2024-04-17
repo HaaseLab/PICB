@@ -308,8 +308,8 @@ The **clusters** follow *GRanges* convention including the genomic coordinates (
 | type | Type of cluster with possible values: 'SingleCore', 'ExtendedCore', 'MultiCore' |
 | width_in_nt | Width of the seed/core/cluster |
 | uniq_reads_FPM | Uniquely mapping piRNA reads aligned to the seed/core/cluster (normalized to the number of all aligned reads) |
-| multimapping_reads_primary_alignments | Number of primary multimapping alignments overlapping to the seed/core/cluster |
-| all_reads_primary_alignments | Number of primary alignments overlapping the seed/core/cluster |
+| multimapping_reads_primary_alignments_FPM | Number of primary multimapping alignments overlapping to the seed/core/cluster (normalized to the number of all aligned reads) |
+| all_reads_primary_alignments_FPM | Number of primary alignments overlapping the seed/core/cluster (normalized to the number of all aligned reads) |
 | uniq_reads_FPKM | Number of unique reads normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (unique reads FPM per kilobase) |
 | multimapping_reads_primary_alignments_FPKM | Number of multimapping reads normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (primary alignments of multimapping reads FPM per kilobase) |
 | all_reads_primary_alignments_FPKM | Number of all reads primary alignments normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (primary alignments of all reads FPM per kilobase) |
