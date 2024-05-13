@@ -21,6 +21,7 @@
 #' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
 #' @param MIN.OVERLAP minimum overlap between seeds and cores, as well as between cores and clusters 5 nt by default.
 #' @param PROVIDE.NON.NORMALIZED include non-normalized to the library size statistics in the output annotations
+#' @param COMPUTE.1T.10A.BIASES for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1T and 10A containing reads overlapping the locus. Default FALSE.
 #' @param VERBOSITY verbosity level 0/1/2/3. 2 by default.
 #'
 #' @author Pavol Genzor
@@ -57,6 +58,7 @@ PICBbuild <-
     SEQ.LEVELS.STYLE="UCSC",
     MIN.OVERLAP=5,
     PROVIDE.NON.NORMALIZED = FALSE,
+    COMPUTE.1T.10A.BIASES = FALSE,
     VERBOSITY=2){
 
 
@@ -229,8 +231,8 @@ PICBbuild <-
     if (VERBOSITY>1) message("\tAnnotating cores and clusters")
     outputList[[uniqueandprimary]]<-BM.CORES
     outputList[[allalignments]]<-CLUSTERS
-    outputList<-PICBannotate(outputList, IN.ALIGNMENTS, , REFERENCE.GENOME = REFERENCE.GENOME, 
-                             SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE, LIBRARY.SIZE = LIBRARY.SIZE)
+    outputList<-PICBannotate(outputList, IN.ALIGNMENTS, , REFERENCE.GENOME = REFERENCE.GENOME,
+                             SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = PROVIDE.NON.NORMALIZED, COMPUTE.1T.10A.BIASES = COMPUTE.1T.10A.BIASES, LIBRARY.SIZE = LIBRARY.SIZE)
 
     ##
     ## REPORT

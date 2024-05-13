@@ -2,6 +2,8 @@
 #'
 #' @param EXCEL.FILE.NAME file name to import from
 #'
+#' @author Aleksandr Friman
+#'
 #' @return list of annotated Granges objects named "seeds" for seeds,
 #' "cores" for cores,
 #' "clusters" for clusters

@@ -6,6 +6,7 @@
 #' @param REPLICATE.NAME name of the replicate. NULL by default.
 #' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.
 #' @param PROVIDE.NON.NORMALIZED provide annotations in non-normalized format. False by default.
+#' @param COMPUTE.1T.10A.BIASES for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1T and 10A containing reads overlapping the locus. Default FALSE.
 #'
 #' @author Aleksandr Friman
 #' @return Granges object with extra annotation columns
@@ -14,7 +15,7 @@
 #' @examples outputOfPICBbuild$seeds<-PICBannotate(outputOfPICBbuild$seeds, outputOfPICBload, REPLICATE.NAME="Replicate1")
 PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLICATE.NAME = NULL,
                            LIBRARY.SIZE=length(ALIGNMENTS$unique)+length(ALIGNMENTS$multi.primary),
-                           PROVIDE.NON.NORMALIZED = FALSE, SEQ.LEVELS.STYLE = "UCSC"){
+                           PROVIDE.NON.NORMALIZED = FALSE, SEQ.LEVELS.STYLE = "UCSC", COMPUTE.1T.10A.BIASES = FALSE){
 
   if(is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME")
   if (!is.null(REPLICATE.NAME)){
@@ -46,7 +47,7 @@ PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLI
 
   PICBannotateGranges<-function(INPUT.GRANGES, ALIGNMENTS,
                                 SI, LIBRARY.SIZE,
-                                PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE){
+                                PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE, COMPUTE.1T.10A.BIASES){
     GenomicRanges::mcols(INPUT.GRANGES)[["width_in_nt"]]<-GenomicRanges::width(INPUT.GRANGES)
     GenomicRanges::mcols(INPUT.GRANGES)[[paste0("uniq_reads",SUFFIX)]]<-GenomicRanges::countOverlaps(INPUT.GRANGES, ALIGNMENTS$unique)
     GenomicRanges::mcols(INPUT.GRANGES)[[paste0("multimapping_reads_primary_alignments",SUFFIX)]]<-GenomicRanges::countOverlaps(INPUT.GRANGES, ALIGNMENTS$multi.primary)
@@ -67,6 +68,32 @@ PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLI
     GenomicRanges::mcols(INPUT.GRANGES)[[paste0("width_covered_by_unique_alignments",SUFFIX)]][as.vector(GenomicRanges::strand(INPUT.GRANGES)=="+")]<-sum(UniqueMappingCoveragePlus[INPUT.GRANGES[GenomicRanges::strand(INPUT.GRANGES)=="+"]]>0)
     GenomicRanges::mcols(INPUT.GRANGES)[[paste0("width_covered_by_unique_alignments",SUFFIX)]][as.vector(GenomicRanges::strand(INPUT.GRANGES)=="-")]<-sum(UniqueMappingCoverageMinus[INPUT.GRANGES[GenomicRanges::strand(INPUT.GRANGES)=="-"]]>0)
     GenomicRanges::mcols(INPUT.GRANGES)[[paste0("fraction_of_width_covered_by_unique_alignments",SUFFIX)]]<-GenomicRanges::mcols(INPUT.GRANGES)[[paste0("width_covered_by_unique_alignments",SUFFIX)]]/GenomicRanges::width(INPUT.GRANGES)
+
+    if (COMPUTE.1T.10A.BIASES){
+      for ( alignmentType in c('unique', 'multi.primary', 'multi.secondary')){
+        alignmentsAtWork = ALIGNMENTS[[alignmentType]]
+        GenomicRanges::mcols(alignmentsAtWork)[['seq']]= as.character(GenomicRanges::mcols(alignmentsAtWork)[['seq']])
+        if ("seq" %in% colnames(GenomicRanges::mcols(alignmentsAtWork))){
+          pairsAtWork = GenomicRanges::findOverlaps(INPUT.GRANGES, alignmentsAtWork)
+          pairsAtWork.DF = as.data.frame(pairsAtWork)
+          pairsAtWork.DF$seq = GenomicRanges::mcols(alignmentsAtWork)[['seq']][pairsAtWork.DF$subjectHits]
+          pairsAtWork.DF$oneT = (substring(pairsAtWork.DF$seq, 1, 1) == "T")
+          pairsAtWork.DF$tenA = (substring(pairsAtWork.DF$seq, 10, 10) == "A")
+          pairsAtWork.DF_by_cluster <- dplyr::group_by(pairsAtWork.DF, queryHits)
+          summedDF = dplyr::summarise(pairsAtWork.DF_by_cluster, oneT = sum(oneT), tenA = sum(tenA), normCoef = dplyr::n())
+          summedDF$oneT = summedDF$oneT/summedDF$normCoef
+          summedDF$tenA = summedDF$tenA/summedDF$normCoef
+
+          GenomicRanges::mcols(INPUT.GRANGES)[[paste0("oneT.frac.",alignmentType,SUFFIX)]] = 0
+          GenomicRanges::mcols(INPUT.GRANGES)[[paste0("oneT.frac.",alignmentType,SUFFIX)]][ summedDF$queryHits ] = summedDF$oneT
+          GenomicRanges::mcols(INPUT.GRANGES)[[paste0("tenA.frac.",alignmentType,SUFFIX)]] = 0
+          GenomicRanges::mcols(INPUT.GRANGES)[[paste0("tenA.frac.",alignmentType,SUFFIX)]][ summedDF$queryHits ] = summedDF$tenA
+
+        }else{
+          stop("Alignments '",alignmentType,"' does not contain sequence ('seq' field). Cannot COMPUTE.1T.10A.BIASES")
+        }
+      }
+    }
 
     if (! PROVIDE.NON.NORMALIZED){
       GenomicRanges::mcols(INPUT.GRANGES)[[paste0("uniq_reads",SUFFIX)]] <- NULL
@@ -109,13 +136,13 @@ PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLI
     for (t in c(uniqueonly, uniqueandprimary, allalignments)){
       INPUT.GRANGES[[t]]<-PICBannotateGranges(INPUT.GRANGES[[t]], ALIGNMENTS,
                                               SI, LIBRARY.SIZE,
-                                              PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE)
+                                              PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE, COMPUTE.1T.10A.BIASES = COMPUTE.1T.10A.BIASES)
     }
     INPUT.GRANGES[[allalignments]]<-PICBannotateTypesOfClusters(INPUT.GRANGES[[allalignments]], INPUT.GRANGES[[uniqueandprimary]], SI)
   }else{
     INPUT.GRANGES<-PICBannotateGranges(INPUT.GRANGES, ALIGNMENTS,
                         SI, LIBRARY.SIZE,
-                        PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE)
+                        PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE, COMPUTE.1T.10A.BIASES = COMPUTE.1T.10A.BIASES)
   }
 
   return(INPUT.GRANGES)
