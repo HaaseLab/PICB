@@ -99,7 +99,7 @@ PICBload <- function(
       message("loading .bam file into GAlignemnts")
 
         if(is.na(IS.SECONDARY.ALIGNMENT)){
-          message("\n******"); message("SLOW - Loadding all reads");
+          message("\n******"); message("SLOW - Loading all reads");
           message(" => to load unique and primary alignments set")
           message(" => IS.SECONDARY.ALIGNMENT=FALSE"); message("******\n")
         } else  if (!IS.SECONDARY.ALIGNMENT){

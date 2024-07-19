@@ -212,7 +212,7 @@ Adjustable parameters:
 | VERBOSE | TRUE, FALSE  | TRUE | Allows disabling progress messages while running `PICBload`. |
 | IS.SECONDARY.ALIGNEMNT  | TRUE, FALSE, NA | NA  (all alignments) | Determines which alignment types (primary multimappers and secondary multimappers) will be loaded. |
 | STANDARD.CONTIGS.ONLY   | TRUE, FALSE  | TRUE        | Determines whether alignments from non-standard contigs are used. |
-| FILTER.BY.FLAG   | TRUE, FALSE | TRUE | Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG. Default values of SELECT.FLAG are 0,16, 272 and 256 (primary and secondary alignments on plus and minus strands). If FALSE, includes all flags. |
+| FILTER.BY.FLAG   | TRUE, FALSE | TRUE | Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG. Default values of SELECT.FLAG are 0, 16, 272 and 256 (primary and secondary alignments on plus and minus strands). If FALSE, includes all flags. |
 | USE.SIZE.FILTER   | TRUE, FALSE | TRUE | Allows filtering of alignments based on size. Default value is 18-50 nt. |
 | TAGS   | _vector_  | c("NH","NM")  | Indicates list of tags to be extracted from given bam file. The “NH” tag is required to deduce if the alignment is unique mapping or multimapping. The “NM” is required to identify mismatches if required in further analysis. |
 | GET.ORIGINAL.SEQUENCE | TRUE, FALSE  | FALSE  | Allows extraction of original read sequence from the bam file. |
@@ -237,6 +237,7 @@ The library size can be adjusted as shown in our [piCB demo](#lets-give-it-a-try
 |----------------|-----------------|---------------|-------------|
 | LIBRARY.SIZE | _integer_  |  number of unique mapping alignments + number of primary multimapping alignments  | number of reads in the library |
 | VERBOSITY | 0,1,2,3  |  2  | Allows choosing the quantity of progress messages while running `PICBbuild`. Depending on VERBOSITY's value, printed messages are missing (0), include current processing step (1), include additionally current processing sub-step (2) or include chosen parameters for `PICBbuild`)|
+| COMPUTE.1T.10A.BIASES | TRUE, FALSE  |  FALSE  | Adds fraction of 1T and 10A for each read type (unique, multi.primary, multi.secondary). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`.|
 
 <br>
 
@@ -298,7 +299,7 @@ In the next step **secondary alignments** are processed identically as primary m
 
 The output of `PICBbuild` includes **seeds**, **cores** and  **clusters**, each in *GenomicRanges* format. In [Running piCB](#running-piCB), we extracted directly the **clusters** using `$clusters`. Extracting the **seeds** and **cores** can be done similarly using `$seeds` and `$cores`. 
 
-The **clusters** follow *GRanges* convention including the genomic coordinates (seqnames, ranges, and strand) and metacolumns. There are in total 14 metacolumns:
+The **clusters** follow *GRanges* convention including the genomic coordinates (seqnames, ranges, and strand) and metacolumns. There are in total 9 metacolumns when running piCB with default parameters:
 
 <details close><summary title="Click to show/hide details">Click to show / hide: Output columns of PICB</summary><br/>
 
@@ -405,13 +406,13 @@ Parthena (Thenia) Konstantinidou, Ph.D." style="width:8%"/></a>
 <a href="https://github.com/LoubalovaZ"><img src="https://avatars.githubusercontent.com/u/120222151?v=4" alt="Zuzana Loubalova, Ph.D." style="width:8%"/></a>
 <a href="https://github.com/frahrend"><img src="https://avatars.githubusercontent.com/u/15805954?v=4" alt="Franziska Ahrend, M.Sc." style="width:8%"/></a>
 <a href="https://github.com/alexfriman"><img src="https://avatars.githubusercontent.com/u/20302553?v=4" alt="Aleksandr (Alex) Friman, M.Sc. M.Eng." style="width:8%"/></a>
-<a href="https://www.niddk.nih.gov/about-niddk/staff-directory/biography/haase-astrid"><img src="https://www.niddk.nih.gov/-/media/Images/About-NIDDK/Profile-Images/Profile-Images---Intramural/Haase-Astrid_square300.jpg" alt="Astrid D. Haase, M.D., Ph.D." style="width:8%"/></a><br>
+<a href="https://www.niddk.nih.gov/about-niddk/staff-directory/biography/haase-astrid"><img src="https://www.niddk.nih.gov/-/media/Images/About-NIDDK/Profile-Images/Profile-Images---Intramural/Haase-Astrid_300x300.jpg?h=300&iar=0&w=300&hash=EDEF30948C30B9F1E0922288AFCB4C9F" alt="Astrid D. Haase, M.D., Ph.D." style="width:8%"/></a><br>
 Visit the lab website of 
 <a href="https://www.niddk.nih.gov/about-niddk/staff-directory/biography/haase-astrid">Astrid D. Haase, M.D., Ph.D.</a>
 
 **Our Co-authors and support:**
 
-<a href="https://www.linkedin.com/in/miguel-vasconcelos-almeida-bb93b6140/?originalSubdomain=uk"><img src="https://media.licdn.com/dms/image/C4E03AQHJfbpdBxm_yA/profile-displayphoto-shrink_800_800/0/1633617003256?e=1717027200&v=beta&t=F-Do2TIQ-2GgWFgr5zAipxUXx4JfUAIQ4tMhX_TVdow" alt="Miguel Vasconcelos Almeida" style="width: 8%;"/></a>
+<a href="https://www.linkedin.com/in/miguel-vasconcelos-almeida-bb93b6140/?originalSubdomain=uk"><img src="https://media.licdn.com/dms/image/C4E03AQHJfbpdBxm_yA/profile-displayphoto-shrink_800_800/0/1633617003256?e=1726704000&v=beta&t=uqstN5cmkCxeiQ0KxzwNK1s3ndRFASwxMKyopAgGvVo" alt="Miguel Vasconcelos Almeida" style="width: 8%;"/></a>
 <a href="https://github.com/PouletAxel"><img src="https://avatars.githubusercontent.com/u/6670853?v=4" alt="Axel Poulet" style="width: 8%;"/></a>
 <a href="https://www.img.cas.cz/group/petr-svoboda/"><img src="https://bioinfo.medils.hr/images/5_Filip.png" alt="Filip Horvat" style="width: 8%;"/></a>
 <a href="https://github.com/yuejun-j-wang"><img src="https://avatars.githubusercontent.com/u/110154696?v=4" alt="Yuejun Wang" style="width: 8%;"/></a>
@@ -457,7 +458,7 @@ Do you like this project? Please join us or [give a ⭐](/stargazers). Let us ma
 
 ### Used by 
 
-List of paper that used or refer to PICB
+List of papers that used or refer to PICB
 
 <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
 
