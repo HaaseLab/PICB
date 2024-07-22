@@ -67,6 +67,7 @@ You will need to install and load the following required R packages:
 install.packages("data.table")
 install.packages("seqinr")
 install.packages("openxlsx")
+install.packages("dplyr")
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("IRanges")
