@@ -133,16 +133,22 @@ PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLI
   }
   #processing the input genomic intervals
   if (typeof(INPUT.GRANGES)=="list"){
-    for (t in c(uniqueonly, uniqueandprimary, allalignments)){
-      INPUT.GRANGES[[t]]<-PICBannotateGranges(INPUT.GRANGES[[t]], ALIGNMENTS,
+    for (t in intersect(c(uniqueonly, uniqueandprimary, allalignments),names(INPUT.GRANGES))){
+      if (length(INPUT.GRANGES[[t]])>0){
+        INPUT.GRANGES[[t]]<-PICBannotateGranges(INPUT.GRANGES[[t]], ALIGNMENTS,
                                               SI, LIBRARY.SIZE,
                                               PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE, COMPUTE.1T.10A.BIASES = COMPUTE.1T.10A.BIASES)
+      }
     }
-    INPUT.GRANGES[[allalignments]]<-PICBannotateTypesOfClusters(INPUT.GRANGES[[allalignments]], INPUT.GRANGES[[uniqueandprimary]], SI)
+    if (allalignments %in% names(INPUT.GRANGES) && length(INPUT.GRANGES[[allalignments]])>0){
+      INPUT.GRANGES[[allalignments]]<-PICBannotateTypesOfClusters(INPUT.GRANGES[[allalignments]], INPUT.GRANGES[[uniqueandprimary]], SI)
+    }
   }else{
-    INPUT.GRANGES<-PICBannotateGranges(INPUT.GRANGES, ALIGNMENTS,
+    if (length(INPUT.GRANGES)>0){
+      INPUT.GRANGES<-PICBannotateGranges(INPUT.GRANGES, ALIGNMENTS,
                         SI, LIBRARY.SIZE,
                         PROVIDE.NON.NORMALIZED, SEQ.LEVELS.STYLE, COMPUTE.1T.10A.BIASES = COMPUTE.1T.10A.BIASES)
+    }
   }
 
   return(INPUT.GRANGES)
