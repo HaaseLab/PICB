@@ -32,3 +32,10 @@ Indicate Granges dual stranded clusters and bi-directional clusters
 \examples{
 outputOfPICBbuild$clusters<-PICBstrandanalysis(outputOfPICBbuild$clusters)
 }
+\author{
+Aleksandr Friman
+
+Parthena Konstantinidou
+
+Zuzana Loubalova
+}

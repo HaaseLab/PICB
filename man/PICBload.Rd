@@ -64,3 +64,10 @@ Load piRNA library bam file
 \examples{
 PICBload(BAMFILE="~/example-piRNA-library.bam", REFERENCE.GENOME="BSgenome.Dmelanogaster.UCSC.dm6")
 }
+\author{
+Pavol Genzor
+
+Daniel Stoyko
+
+Aleksandr Friman
+}

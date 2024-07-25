@@ -18,3 +18,6 @@ Get SeqInfo object from a fasta file
 \examples{
 mySI<-PICBloadfasta("~/path/to/your.fasta")
 }
+\author{
+Aleksandr Friman
+}

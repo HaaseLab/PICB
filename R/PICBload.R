@@ -78,7 +78,7 @@ PICBload <- function(
       BAM.FILE.CHR<-GenomeInfoDb::seqnames(GenomeInfoDb::seqinfo(BAM.FILE.HEADER))
       REG.CHR<-REG.CHR[REG.CHR %in% BAM.FILE.CHR]
       WHICH = GenomicRanges::GRanges(seqnames=REG.CHR,
-                   ranges=IRanges::IRanges(start=rep(1, length(REG.CHR)), end=GenomeInfoDb::seqlengths(SI)),
+                   ranges=IRanges::IRanges(start=rep(1, length(REG.CHR)), end=GenomeInfoDb::seqlengths(SI[REG.CHR])),
                    strand=rep("*", length(REG.CHR)))
       PARAM = Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = FALSE,
                                                                     isSecondaryAlignment = IS.SECONDARY.ALIGNMENT),

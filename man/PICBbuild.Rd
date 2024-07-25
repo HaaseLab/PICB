@@ -32,6 +32,7 @@ PICBbuild(
   SEQ.LEVELS.STYLE = "UCSC",
   MIN.OVERLAP = 5,
   PROVIDE.NON.NORMALIZED = FALSE,
+  COMPUTE.1T.10A.BIASES = FALSE,
   VERBOSITY = 2
 )
 }
@@ -78,6 +79,8 @@ PICBbuild(
 
 \item{PROVIDE.NON.NORMALIZED}{include non-normalized to the library size statistics in the output annotations}
 
+\item{COMPUTE.1T.10A.BIASES}{for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1T and 10A containing reads overlapping the locus. Default FALSE.}
+
 \item{VERBOSITY}{verbosity level 0/1/2/3. 2 by default.}
 }
 \value{
@@ -90,4 +93,11 @@ Build piRNA seeds/cores/clusters from alignments
 }
 \examples{
 PICBbuild(IN.ALIGNMENTS = myAlignmentsFromPIBCload, REFERENCE.GENOME="BSgenome.Dmelanogaster.UCSC.dm6")
+}
+\author{
+Pavol Genzor
+
+Daniel Stoyko
+
+Aleksandr Friman
 }

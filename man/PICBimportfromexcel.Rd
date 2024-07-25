@@ -20,3 +20,6 @@ Import clustering object from an Excel file
 \examples{
 PICBimportfromexcel(="~/piRNAclustersFromUFOsamples.Area51.xlsx")
 }
+\author{
+Aleksandr Friman
+}

@@ -20,3 +20,6 @@ Get SeqInfo object from BSgenome name
 \examples{
 mySI<-PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
 }
+\author{
+Aleksandr Friman
+}

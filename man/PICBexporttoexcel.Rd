@@ -20,3 +20,6 @@ Export clustering object into an Excel file
 \examples{
 PICBexporttoexcel(myclusteringObject, "~/piRNAclustersFromUFOsamples.Area51.xlsx")
 }
+\author{
+Aleksandr Friman
+}

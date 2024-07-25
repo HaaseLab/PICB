@@ -11,7 +11,8 @@ PICBannotate(
   REPLICATE.NAME = NULL,
   LIBRARY.SIZE = length(ALIGNMENTS$unique) + length(ALIGNMENTS$multi.primary),
   PROVIDE.NON.NORMALIZED = FALSE,
-  SEQ.LEVELS.STYLE = "UCSC"
+  SEQ.LEVELS.STYLE = "UCSC",
+  COMPUTE.1T.10A.BIASES = FALSE
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ PICBannotate(
 \item{LIBRARY.SIZE}{number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.}
 
 \item{PROVIDE.NON.NORMALIZED}{provide annotations in non-normalized format. False by default.}
+
+\item{COMPUTE.1T.10A.BIASES}{for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1T and 10A containing reads overlapping the locus. Default FALSE.}
 }
 \value{
 Granges object with extra annotation columns
@@ -35,4 +38,7 @@ Annotate Granges according to a piRNA library
 }
 \examples{
 outputOfPICBbuild$seeds<-PICBannotate(outputOfPICBbuild$seeds, outputOfPICBload, REPLICATE.NAME="Replicate1")
+}
+\author{
+Aleksandr Friman
 }
