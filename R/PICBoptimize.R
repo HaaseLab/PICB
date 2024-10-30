@@ -14,17 +14,18 @@ PICBoptimize <- function(
     IN.ALIGNMENTS,
     REFERENCE.GENOME,
     VERBOSITY=2,
+    SEQ.LEVELS.STYLE="UCSC",
     ...
 ){
   numberOfallReadsExplained<-function(gr, alignments){
     foundnames<-c()
     if (typeof(alignments)=="list"){
       for (clmn in c("unique", "multi.primary", "multi.secondary")){
-        usedAlignments<-subsetByOverlaps(alignments[[clmn]], gr)
+        usedAlignments<-IRanges::subsetByOverlaps(alignments[[clmn]], gr)
         foundnames<-c(foundnames, names(usedAlignments))
       }
     }else{
-      usedAlignments<-subsetByOverlaps(alignments, gr)
+      usedAlignments<-IRanges::subsetByOverlaps(alignments, gr)
       foundnames<-c(foundnames, names(usedAlignments))
     }
     numbr=length(unique(foundnames))
@@ -134,7 +135,7 @@ PICBoptimize <- function(
     }
     for (locustype in c(uniqueonly,uniqueandprimary,allalignments )){
       outDF[[paste0("number.of.", locustype)]][i]= length(tmrLoci[[locustype]])
-      outDF[[paste0(locustype, ".total.width")]][i]= as.numeric(sum(width(tmrLoci[[locustype]])))
+      outDF[[paste0(locustype, ".total.width")]][i]= as.numeric(sum(GenomicRanges::width(tmrLoci[[locustype]])))
       outDF[[paste0("reads.explained.by.", locustype)]][i]= as.numeric(numberOfallReadsExplained(tmrLoci[[locustype]], IN.ALIGNMENTS.ALL))
       
     }
@@ -158,7 +159,7 @@ PICBoptimize <- function(
   }else{
     SI<-REFERENCE.GENOME
   }
-  GenomeSize=sum(seqlengths(SI))
+  GenomeSize=sum(GenomeInfoDb::seqlengths(SI))
   for (locustype in c(uniqueonly,uniqueandprimary,allalignments )){
     outDF[[paste0(locustype, ".fraction.of.genome.space")]]=outDF[[paste0(locustype, ".total.width")]]/(2*GenomeSize)
   }
