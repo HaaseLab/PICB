@@ -238,7 +238,7 @@ The library size can be adjusted as shown in our [piCB demo](#lets-give-it-a-try
 |----------------|-----------------|---------------|-------------|
 | LIBRARY.SIZE | _integer_  |  number of unique mapping alignments + number of primary multimapping alignments  | number of reads in the library |
 | VERBOSITY | 0,1,2,3  |  2  | Allows choosing the quantity of progress messages while running `PICBbuild`. Depending on VERBOSITY's value, printed messages are missing (0), include current processing step (1), include additionally current processing sub-step (2) or include chosen parameters for `PICBbuild`)|
-| COMPUTE.1T.10A.BIASES | TRUE, FALSE  |  FALSE  | Adds fraction of 1T and 10A for each read type (unique, multi.primary, multi.secondary). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`.|
+| COMPUTE.1U.10A.FRACTIONS | TRUE, FALSE  |  FALSE  | Adds fraction of 1U and 10A for each read type (unique, multi.primary, multi.secondary). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`.|
 
 <br>
 

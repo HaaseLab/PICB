@@ -12,7 +12,7 @@ PICBannotate(
   LIBRARY.SIZE = length(ALIGNMENTS$unique) + length(ALIGNMENTS$multi.primary),
   PROVIDE.NON.NORMALIZED = FALSE,
   SEQ.LEVELS.STYLE = "UCSC",
-  COMPUTE.1T.10A.BIASES = FALSE
+  COMPUTE.1U.10A.FRACTIONS = FALSE
 )
 }
 \arguments{
@@ -28,7 +28,7 @@ PICBannotate(
 
 \item{PROVIDE.NON.NORMALIZED}{provide annotations in non-normalized format. False by default.}
 
-\item{COMPUTE.1T.10A.BIASES}{for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1T and 10A containing reads overlapping the locus. Default FALSE.}
+\item{COMPUTE.1U.10A.FRACTIONS}{for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.}
 }
 \value{
 Granges object with extra annotation columns

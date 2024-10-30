@@ -96,7 +96,7 @@ PICBload <- function(
       message(paste0("\tTAGS:\t",paste(TAGS, collapse = ", ")))
       message(paste0("\tCIGAR:\t",ifelse(isTRUE(SIMPLE.CIGAR),"simple cigar","all cigar")))
       message(paste0("\tWHAT:\t",paste0(WHAT,collapse = ", ")))
-      message("loading .bam file into GAlignemnts")
+      message("loading .bam file into GAlignments")
 
         if(is.na(IS.SECONDARY.ALIGNMENT)){
           message("\n******"); message("SLOW - Loading all reads");
