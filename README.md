@@ -39,13 +39,13 @@ piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role i
 
 PiCB identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed through stepwise integration of unique and multimapping piRNAs. 
 
-<div align="center"><a href=""><img src="images/piCB_stepwiseIntegration.png" alt="Stepwise Integration for piCB" style="width:50%;height:50%"/></a></div>
+<div align="center"><a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288#sec2"><img src="images/piCB_stepwiseIntegration.jpeg" alt="Stepwise Integration for piCB" style="width:50%;height:50%"/></a></div>
 
-PiCB uses a stepwise integration of unique mapping piRNAs (map1), primary alignments of multimapping piRNAs (map>1), and all possible alignments to build seeds, cores, and clusters. Image and caption taken from [publication]().
+PiCB uses a stepwise integration of unique mapping piRNAs (map1), primary alignments of multimapping piRNAs (map>1), and all possible alignments to build seeds, cores, and clusters. Image and caption taken from <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank">our publication</a>.
 
 Only very limited programming knowledge is needed to run piCB. Check out our step-by-step instructions and demo. 
 
-Please visit our [publication]() for full context.
+Please visit our <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank">publication</a> for full context.
 
 <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
 
@@ -53,7 +53,7 @@ Please visit our [publication]() for full context.
 
 ## Getting started[![](images/double-helix-svgrepo-com.svg)](#getting-started)
 
-piCB runs in R versions <span>&#8805;</span> 4.2. 
+piCB runs in R versions <span>&#8805;</span> 4.2. to 4.4.
 
 <!--<p style="color: orange;"> R version?? </p>--> 
 
@@ -89,8 +89,8 @@ piCB is available to install from any of the following sources:
 | Where        | Source   | Command                                                                     |
 |-------------|----------|-----------------------------------------------------------------------------|
 | Web Browser | GitHub   | <a href="https://github.com/HaaseLab/PICB/archive/refs/heads/main.zip">Download GitHub repository here.</a> Now unzip the file and run `install.packages("Downloads/PICB-main", repos=NULL, type="source")` in R.                |
-| R | GitHub   | When GitHub repository is public: `remotes::install_github("HaaseLab/piCB")`                            |
-| Terminal | GitHub   | When GitHub repository is public: Clone Source Code: `git clone https://github.com/HaaseLab/PICB.git` <!--<br> In R: `install.packages()`--> |
+| R | GitHub   | From GitHub repository: `remotes::install_github("HaaseLab/piCB")`                            |
+| Terminal | GitHub   | From GitHub repository: Clone Source Code: `git clone https://github.com/HaaseLab/PICB.git` <!--<br> In R: `install.packages()`--> |
 <!--| R     | Bioconductor     | Soon: BiocManager::install("piCB") |
 | R | rOpenSci | Soon: `install.packages("piCB", repos = "https://ropensci.r-universe.dev")` |-->
 <!--<img src="images/GitHubDownload.png" alt="Stepwise Integration for piCB" style="width:30%;height:30%"/> |Follow steps on image (green button is on top of this page) <br> Or  -->
@@ -211,7 +211,7 @@ Adjustable parameters:
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
 | VERBOSE | TRUE, FALSE  | TRUE | Allows disabling progress messages while running `PICBload`. |
-| IS.SECONDARY.ALIGNEMNT  | TRUE, FALSE, NA | NA  (all alignments) | Determines which alignment types (primary multimappers and secondary multimappers) will be loaded. |
+| IS.SECONDARY.ALIGNMENT | TRUE, FALSE, NA | NA  (all alignments) | Determines which alignment types (primary multimappers and secondary multimappers) will be loaded. |
 | STANDARD.CONTIGS.ONLY   | TRUE, FALSE  | TRUE        | Determines whether alignments from non-standard contigs are used. |
 | FILTER.BY.FLAG   | TRUE, FALSE | TRUE | Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG. Default values of SELECT.FLAG are 0, 16, 272 and 256 (primary and secondary alignments on plus and minus strands). If FALSE, includes all flags. |
 | USE.SIZE.FILTER   | TRUE, FALSE | TRUE | Allows filtering of alignments based on size. Default value is 18-50 nt. |
@@ -279,7 +279,7 @@ These resulting windows are being reduced into **cores** and are further filtere
 
 **Seeds** and **primary multimapping windows** overlapping **seeds** merge into **cores**. Standalone **seeds** are also considered **cores**. **Cores** not overlapping with a **seed** are being filtered out as their transcription cannot be verified.
 
-In the next step **secondary alignments** are processed identically as primary multimapping alignments. This step is dependent on whether `PICBload` loaded the secondary alignments (parameter *IS.SECONDARY.ALIGNEMNT*).
+In the next step **secondary alignments** are processed identically as primary multimapping alignments. This step is dependent on whether `PICBload` loaded the secondary alignments (parameter *IS.SECONDARY.ALIGNMENT*).
 
 | Parameter Name | Possible Values | Default Value | Explanation |
 |----------------|-----------------|---------------|-------------|
@@ -395,7 +395,7 @@ Possibilities of verifying the resulting piRNA clusters are described in the [pa
 
 Special thanks to all contributors and supporters that starred this repository.
 
-**Our author**:
+**Our authors:**:
 
 <a href="https://github.com/alexfriman"><img src="https://avatars.githubusercontent.com/u/20302553?v=4" alt="Aleksandr (Alex) Friman, M.Sc. M.Eng." style="width:8%"/></a>
 <a href="https://github.com/frahrend"><img src="https://avatars.githubusercontent.com/u/15805954?v=4" alt="Franziska Ahrend, M.Sc." style="width:8%"/></a>
@@ -413,7 +413,7 @@ Visit the lab website of
 
 **Our Co-authors and support:**
 
-<a href="https://www.linkedin.com/in/miguel-vasconcelos-almeida-bb93b6140/?originalSubdomain=uk"><img src="https://media.licdn.com/dms/image/C4E03AQHJfbpdBxm_yA/profile-displayphoto-shrink_800_800/0/1633617003256?e=1726704000&v=beta&t=uqstN5cmkCxeiQ0KxzwNK1s3ndRFASwxMKyopAgGvVo" alt="Miguel Vasconcelos Almeida" style="width: 8%;"/></a>
+<a href="https://www.linkedin.com/in/miguel-vasconcelos-almeida-bb93b6140/?originalSubdomain=uk"><img src="https://scholar.googleusercontent.com/citations?view_op=view_photo&user=ON00Iz8AAAAJ&citpid=1" alt="Miguel Vasconcelos Almeida" style="width: 62px; height: 62px; object-fit: cover;"/></a>
 <a href="https://github.com/PouletAxel"><img src="https://avatars.githubusercontent.com/u/6670853?v=4" alt="Axel Poulet" style="width: 8%;"/></a>
 <a href="https://www.img.cas.cz/group/petr-svoboda/"><img src="https://bioinfo.medils.hr/images/5_Filip.png" alt="Filip Horvat" style="width: 8%;"/></a>
 <a href="https://github.com/yuejun-j-wang"><img src="https://avatars.githubusercontent.com/u/110154696?v=4" alt="Yuejun Wang" style="width: 8%;"/></a>
@@ -438,11 +438,6 @@ Do you like this project? Please join us or [give a ⭐](/stargazers). Let us ma
 <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
 
 ---
-
-<br><br>
-
-<br><br>
-<br><br>
 <!--
 
 
@@ -454,14 +449,19 @@ Do you like this project? Please join us or [give a ⭐](/stargazers). Let us ma
 <a href="https://t.me/share/url?text=Check%20out%20this%20new%20piRNA%20Cluster%20Builder%20-%20PICB&url=https%3A%2F%2Fgithub.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=Telegram&logo=Telegram&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk" alt="Share on Telegram"/></a>&nbsp;
 <a href="https://wa.me/?text=Check%20out%20this%20new%20piRNA%20Cluster%20Builder%20-%20PICB%5Cn%20https%3A%2F%2Fgithub.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=Whatsapp&logo=Whatsapp&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk" alt="Share on Whatsapp"/></a>&nbsp;
 <a href="mailto:?subject=piRNA%20Cluster%20Builder&body=Check%20out%20this%20new%20piRNA%20Cluster%20Builder%20-%20PICB%20%3A%0Ahttps%3A//github.com/HaaseLab/PICB%0A" target="_blank"><img src="https://img.shields.io/twitter/url?label=GMail&logo=GMail&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk"/></a>
+-->
 
+### List of papers utilizing PICB:
 
+- [A comparative roadmap of PIWI-interacting RNAs across seven species reveals insights into de novo piRNA-precursor formation in mammals](https://www.sciencedirect.com/science/article/pii/S2211124724011288) by Parthena Konstantinidou*, Zuzana Loubalova*, Franziska Ahrend*, Aleksandr Friman*, Miguel Vasconcelos Almeida, Axel Poulet, Filip Horvat, Yuejun Wang, Wolfgang Losert, Hernan Lorenzi, Petr Svoboda, Eric A. Miska, Josien C. van Wolfswinkel, Astrid D. Haase*.
+- [Dynamic co-evolution of transposable elements and the piRNA pathway in African cichlid fishes](https://www.biorxiv.org/content/10.1101/2024.04.01.587621v1) by Miguel Vasconcelos Almeida*, Moritz Blumer, Chengwei Ulrika Yuan, Pío Sierra, Jonathan L. Price, Fu Xiang Quah, Aleksandr Friman, Alexandra Dallaire, Grégoire Vernaz, Audrey L. K. Putman, Alan M. Smith, Domino A. Joyce, Falk Butter, Astrid D. Haase, Richard Durbin, M. Emília Santos, Eric A. Miska*.
 
-### Used by 
-
-List of papers that used or refer to PICB
+<b> 
 
 <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
 
-<br> -->
+<br> <br><br>
+
+<br><br>
+<br><br>
 <!-- markdownlint-enable -->
