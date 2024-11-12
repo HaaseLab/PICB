@@ -7,7 +7,9 @@
 PICBoptimize(
   IN.ALIGNMENTS,
   REFERENCE.GENOME,
+  LIBRARY.SIZE = length(IN.ALIGNMENTS$unique) + length(IN.ALIGNMENTS$multi.primary),
   VERBOSITY = 2,
+  PROVIDE.INFO.SEEDS.AND.CORES = FALSE,
   SEQ.LEVELS.STYLE = "UCSC",
   ...
 )
@@ -17,7 +19,13 @@ PICBoptimize(
 
 \item{REFERENCE.GENOME}{name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"}
 
+\item{LIBRARY.SIZE}{number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.}
+
 \item{VERBOSITY}{verbosity level 0/1/2/3. 2 by default.}
+
+\item{PROVIDE.INFO.SEEDS.AND.CORES}{FALSE by default.}
+
+\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
 
 \item{...}{rest of the parameters used by PICBbuild and provided as iteratable vectors}
 }
