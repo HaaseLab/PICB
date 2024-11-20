@@ -4,38 +4,21 @@
 \alias{PICBstrandanalysis}
 \title{Indicate Granges dual stranded clusters and bi-directional clusters}
 \usage{
-PICBstrandanalysis(
-  INPUT.GRANGES,
-  DUAL.STRAND.MIN.OVERLAP = 1,
-  PROD.FOLD = 3,
-  BIDECTIONAL.MAX.OVERLAP = 2000,
-  TSS.LEN = 1000
-)
+PICBstrandanalysis(IN.ALIGNMENTS, IN.RANGES, VERBOSE = TRUE)
 }
 \arguments{
-\item{INPUT.GRANGES}{Granges (seeds/cores/clusters) to annotate}
+\item{IN.ALIGNMENTS}{list of alignments from PICBload}
 
-\item{DUAL.STRAND.MIN.OVERLAP}{min overlap for dual stranded clusters}
+\item{IN.RANGES}{single GRanges object (seeds, cores or clusters from PICBbuild)}
 
-\item{PROD.FOLD}{max difference in productivity (all 1ry alignments FPKM) for dual-strand clusters}
-
-\item{BIDECTIONAL.MAX.OVERLAP}{max overlap for bi-directional clusters}
-
-\item{TSS.LEN}{length of promoter}
+\item{VERBOSE}{enables progress output. True by default.}
 }
 \value{
-Granges object with extra annotation columns
+Granges object with extra annotation column
 }
 \description{
 Indicate Granges dual stranded clusters and bi-directional clusters
 }
 \examples{
-outputOfPICBbuild$clusters<-PICBstrandanalysis(outputOfPICBbuild$clusters)
-}
-\author{
-Aleksandr Friman
-
-Parthena Konstantinidou
-
-Zuzana Loubalova
+outputOfPICBbuild$clusters<-PICBstrandanalysis(outputOfPICBload, outputOfPICBbuild$clusters)
 }

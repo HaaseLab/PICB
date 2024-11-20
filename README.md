@@ -28,6 +28,7 @@
     - [Running piCB](#running-piCB)
 - [Parameter adjustments](#parameter-adjustments)
 - [Output](#output)
+- [Other PICB functions](#other-picb-functions)
 - [Let's give it a try - An Example](#lets-give-it-a-try---an-example)
 - [Authors, Citation and Acknowledgments](#authors-citation-and-acknowledgments)
 
@@ -331,6 +332,7 @@ The **clusters** follow *GRanges* convention including the genomic coordinates (
 
 ---
 
+## Other PICB functions[![](images/double-helix-svgrepo-com.svg)](#other-picb-functions)
 
 
 ## Let's give it a try - An Example[![](images/double-helix-svgrepo-com.svg)](#lets-give-it-a-try---an-example)
