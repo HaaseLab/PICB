@@ -334,6 +334,35 @@ The **clusters** follow *GRanges* convention including the genomic coordinates (
 
 ## Other PICB functions[![](images/double-helix-svgrepo-com.svg)](#other-picb-functions)
 
+### Optimization of parameters
+
+You can use `PICBoptimize` to find the optimal parameters for `PICBbuild` for your dataset.
+This is especially useful if you are not sure about the quality of your data or your reference genome.
+The goal is to find a set of parameters that maximize the number of piRNAs accomodated in the clusters while minimizing genomic space occupied by the clusters. 
+
+Make sure to provide the values for the parameters as a vector. An example is shown below:
+
+```R
+parameterExploration <- PICBoptimize(IN.ALIGNMENTS = myAlignments, REFERENCE.GENOME=myGenome, MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5))
+```
+
+This function works on numerical parameters and returns a dataframe with any combination of your chosen parameters and their corresponding number of clusters, the total width of the clusters in nucleotides, the number of reads explained by the clusters, the mean RPKM of the clusters, the fraction of reads explained by the clusters and fraction of genomic space occupied by the clusters.
+
+Be aware that for most datasets, the default parameters will yield great results and you do not need to optimize parameters. 
+
+### Strand analysis
+
+Next to the standard analysis, `PICBstrandanalysis` allows strand-specific analysis of piRNA clusters. The function computes the sense/antisense ratio of piRNAs per cluster (non-collapsed) and adds this information to a new metadata column (`s_as_ratio`). 
+
+```R
+myClustersWithStrandAnalysis <- PICBstrandanalysis(IN.ALIGNMENTS = myAlignments, IN.RANGES = myClusters)
+```
+
+To visualize the sense/antisense ratio of the clusters, you can plot the sense/antisense ratio of the clusters in a violin plot. Higher numbers indicate a higher ratio of sense to antisense piRNAs, while values close to 1 indicate an equal ratio of sense and antisense piRNAs.
+
+
+--- 
+
 
 ## Let's give it a try - An Example[![](images/double-helix-svgrepo-com.svg)](#lets-give-it-a-try---an-example)
 

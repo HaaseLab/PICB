@@ -2,7 +2,7 @@
 % Please edit documentation in R/PICBstrandanalysis.R
 \name{PICBstrandanalysis}
 \alias{PICBstrandanalysis}
-\title{Indicate Granges dual stranded clusters and bi-directional clusters}
+\title{Add sense/antisense ratio of piRNAs per piRNAcluster}
 \usage{
 PICBstrandanalysis(IN.ALIGNMENTS, IN.RANGES, VERBOSE = TRUE)
 }
@@ -14,10 +14,10 @@ PICBstrandanalysis(IN.ALIGNMENTS, IN.RANGES, VERBOSE = TRUE)
 \item{VERBOSE}{enables progress output. True by default.}
 }
 \value{
-Granges object with extra annotation column
+Granges object with an additional annotation column
 }
 \description{
-Indicate Granges dual stranded clusters and bi-directional clusters
+Add sense/antisense ratio of piRNAs per piRNAcluster
 }
 \examples{
 outputOfPICBbuild$clusters<-PICBstrandanalysis(outputOfPICBload, outputOfPICBbuild$clusters)

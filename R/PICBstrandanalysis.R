@@ -17,23 +17,23 @@ PICBstrandanalysis<-function(IN.ALIGNMENTS,
     if(is.list(IN.RANGES)) stop("IN.RANGES must be a single GRanges object (seeds, cores or clusters)!")
 
 
-    if (VERBOSE==TRUE) message(paste("PICB v", packageVersion("PICB"),"Starting ... "))
+    if (VERBOSE==TRUE) message(paste("PICB v", packageVersion("PICB"),"Starting with strand analysis ... "))
 
-    if (VERBOSE==TRUE) message("Using unique alignments only")
+    if (VERBOSE==TRUE) message("\tUsing unique alignments only")
     # use unique alignments only
     IN.ALIGNMENTS <- IN.ALIGNMENTS$unique[IN.ALIGNMENTS$unique$NH == 1]
     # get strandedness
     IN.ALIGNMENTS.PLUS <- IN.ALIGNMENTS[GenomicRanges::strand(IN.ALIGNMENTS) == "+"]
     IN.ALIGNMENTS.MINUS <- IN.ALIGNMENTS[GenomicRanges::strand(IN.ALIGNMENTS) == "-"]
 
-    if (VERBOSE==TRUE) message("Finding overlaps of clusters with piRNAs from plus strand")
+    if (VERBOSE==TRUE) message("\tFinding overlaps of clusters with piRNAs from plus strand")
     DT_plus <- as.data.frame(GenomicRanges::findOverlaps(IN.RANGES, IN.ALIGNMENTS.PLUS, ignore.strand = TRUE))
     DT_plus.2 <- aggregate(subjectHits ~ queryHits, data = DT_plus, FUN = length)
     # Add numbers of plus-strand piRNAs to clusters
     IN.RANGES$plus_piRNAs <- 0
     IN.RANGES$plus_piRNAs[DT_plus.2$queryHits] <- DT_plus.2$subjectHits
 
-    if (VERBOSE==TRUE) message("Finding overlaps of clusters with piRNAs from minus strand")
+    if (VERBOSE==TRUE) message("\tFinding overlaps of clusters with piRNAs from minus strand")
     DT_minus <- as.data.frame(GenomicRanges::findOverlaps(IN.RANGES, IN.ALIGNMENTS.MINUS, ignore.strand = TRUE))
     DT_minus.2 <- aggregate(subjectHits ~ queryHits, data = DT_minus, FUN = length)
     
@@ -45,7 +45,7 @@ PICBstrandanalysis<-function(IN.ALIGNMENTS,
     IN.RANGES$plus_piRNAs <- IN.RANGES$plus_piRNAs + 1
     IN.RANGES$minus_piRNAs <- IN.RANGES$minus_piRNAs + 1
 
-    if (VERBOSE==TRUE) message("Adding ratio of sense/antisense piRNAs per cluster")
+    if (VERBOSE==TRUE) message("\tAdding ratio of sense/antisense piRNAs per cluster")
     IN.RANGES$s_as_ratio <- 1
     IN.RANGES[GenomicRanges::strand(IN.RANGES) == "+"]$s_as_ratio <- (IN.RANGES[GenomicRanges::strand(IN.RANGES) == "+"]$plus_piRNAs/IN.RANGES[GenomicRanges::strand(IN.RANGES) == "+"]$minus_piRNAs)
     IN.RANGES[GenomicRanges::strand(IN.RANGES) == "-"]$s_as_ratio <- (IN.RANGES[GenomicRanges::strand(IN.RANGES) == "-"]$minus_piRNAs/IN.RANGES[GenomicRanges::strand(IN.RANGES) == "-"]$plus_piRNAs)
