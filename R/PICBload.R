@@ -61,8 +61,10 @@ PICBload <- function(
   if(is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME")
   if(isTRUE(GET.ORIGINAL.SEQUENCE)){WHAT=c(WHAT,"seq")}
   ## for report
-
-  if (VERBOSE) message("Processing ...")
+  
+  ##
+  if (VERBOSE) message(paste("PICB v", packageVersion("PICB"),"Processing ... "))
+  ##
 
   justPrimaryOrSecondary<-function(IS.SECONDARY.ALIGNMENT){
     ## PARAMETERS FOR LOADING BAM FILE
@@ -136,7 +138,7 @@ PICBload <- function(
 
       ## ***
       REMAINDER = (length(GA)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2) )) }
+      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
 
 
 
@@ -147,7 +149,7 @@ PICBload <- function(
 
       ## ***
       REMAINDER = (length(GARP)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2) )) }
+      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
     else { GARP <- GA }
 
     if(isTRUE(PERFECT.MATCH.ONLY)){
@@ -156,7 +158,7 @@ PICBload <- function(
 
       ## ***
       REMAINDER = (length(GARP)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2) )) }
+      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
 
     if(isTRUE(GET.ORIGINAL.SEQUENCE)){
       if (VERBOSE) message("\nretrieving original read sequences")

@@ -60,6 +60,9 @@ PICBoptimize <- function(
       }
     }
   }
+  
+  if (VERBOSITY==TRUE) message(paste("PICB v", packageVersion("PICB"),"Starting ... "))
+  
   #checking the inputs
   if (VERBOSITY >0 ){
     message("Checking the inputs")
@@ -67,11 +70,12 @@ PICBoptimize <- function(
   if (is.null(ArgsToIterate)){
     stop("Provide arguments to iterave over. See example.")
   }
+  
   totalReads=LIBRARY.SIZE
   if (length(unique(c(names(IN.ALIGNMENTS$unique),
                       names(IN.ALIGNMENTS$multi.primary)))
   ) != totalReads){
-    warning("The total number of primary alignments is not equal to the total number of read names. This discrepancy may occur when using a subset of data, such as in the piCB demonstration, where you specified the LIBRARY.SIZE but the actual number of reads is reduced. For full piRNA datasets, this indicates a potential issue with read assignment and your numbers of explained reads may be wrong.")   
+    warning("The total number of primary alignments is not equal to the total number of read names. This discrepancy may occur when using a subset of data, such as in the PICB demonstration, where you specified the LIBRARY.SIZE but the actual number of reads is reduced. For full piRNA datasets, this indicates a potential issue with read assignment and your numbers of explained reads may be wrong.")   
   }
   #building the parameter combinations
   if (VERBOSITY >0 ){
