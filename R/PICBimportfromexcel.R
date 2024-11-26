@@ -8,9 +8,7 @@
 #' "cores" for cores,
 #' "clusters" for clusters
 #' @export
-#'
-#' @examples PICBimportfromexcel(="~/piRNAclustersFromUFOsamples.Area51.xlsx")
-PICBimportfromexcel <- function(EXCEL.FILE.NAME = NULL){
+PICBimportfromexcel <- function(EXCEL.FILE.NAME=NULL){
   availbsheets=openxlsx::getSheetNames(EXCEL.FILE.NAME)
   output=list()
   sheetsToCheck=intersect(availbsheets, c(uniqueonly, uniqueandprimary, allalignments))

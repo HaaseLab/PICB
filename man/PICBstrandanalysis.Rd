@@ -20,5 +20,21 @@ Granges object with an additional annotation column
 Add sense/antisense ratio of piRNAs per piRNAcluster
 }
 \examples{
-outputOfPICBbuild$clusters<-PICBstrandanalysis(outputOfPICBload, outputOfPICBbuild$clusters)
+library(BSgenome.Dmelanogaster.UCSC.dm6)
+myAlignmentsFromPICBload <- PICBload(
+  BAMFILE=system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"), 
+  REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6", 
+  VERBOSE=FALSE
+)
+
+outputOfPICBbuild <- PICBbuild(
+  IN.ALIGNMENTS = myAlignmentsFromPICBload,
+  REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6", 
+  VERBOSITY=0
+)
+
+outputOfPICBbuild$clusters<-PICBstrandanalysis(
+  IN.ALIGNMENTS = myAlignmentsFromPICBload, 
+  IN.RANGES = outputOfPICBbuild$clusters
+)
 }

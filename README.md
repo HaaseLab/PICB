@@ -12,7 +12,7 @@
   <br /><br /><strong>PICB - <u>pi</u>RNA <u>C</u>luster <u>B</u>uilder</strong>
 </h1>
 
-## Introduction[![](images/double-helix-svgrepo-com.svg)](#introduction)
+## Introduction[![](vignettes/double-helix-svgrepo-com.svg)](#introduction)
 
 **PICB** (*piRNA Cluster Builder*) is a flexible toolkit for assembling, prioritizing, and characterizing piRNA clusters. 
 
@@ -20,7 +20,7 @@
 
 ---
 
-## Table of contents[![](images/double-helix-svgrepo-com.svg)](#table-of-contents)
+## Table of contents[![](vignettes/double-helix-svgrepo-com.svg)](#table-of-contents)
 - [Motivation](#motivation)
 - [Getting started](#getting-started)
 - [How to run PICB](#how-to-run-PICB)
@@ -34,13 +34,13 @@
 
 ---
 
-## Motivation[![](images/double-helix-svgrepo-com.svg)](#motivation)
+## Motivation[![](vignettes/double-helix-svgrepo-com.svg)](#motivation)
 
 piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. PiRNAs originate from genomic regions which are called _piRNA clusters_.
 
 PiCB identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed through stepwise integration of unique and multimapping piRNAs. 
 
-<div align="center"><a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288#sec2"><img src="images/PICB_stepwiseIntegration.jpeg" alt="Stepwise Integration for PICB" style="width:50%;height:50%"/></a></div>
+<div align="center"><a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288#sec2"><img src="vignettes/PICB_stepwiseIntegration.jpeg" alt="Stepwise Integration for PICB" style="width:50%;height:50%"/></a></div>
 
 PiCB uses a stepwise integration of unique mapping piRNAs (map1), primary alignments of multimapping piRNAs (map>1), and all possible alignments to build seeds, cores, and clusters. Image and caption taken from <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank">our publication</a>.
 
@@ -52,7 +52,7 @@ Please visit our <a href="https://www.sciencedirect.com/science/article/pii/S221
 
 ---
 
-## Getting started[![](images/double-helix-svgrepo-com.svg)](#getting-started)
+## Getting started[![](vignettes/double-helix-svgrepo-com.svg)](#getting-started)
 
 PICB runs in R versions <span>&#8805;</span> 4.2. to 4.4.
 
@@ -93,9 +93,7 @@ PICB is available to install from any of the following sources:
 | Web Browser | GitHub   | <a href="https://github.com/HaaseLab/PICB/archive/refs/heads/main.zip">Download GitHub repository here.</a> Now unzip the file and run `install.packages("Downloads/PICB-main", repos=NULL, type="source")` in R.                |
 | R | GitHub   | From GitHub repository: `remotes::install_github("HaaseLab/PICB")`                            |
 | Terminal | GitHub   | From GitHub repository: Clone Source Code: `git clone https://github.com/HaaseLab/PICB.git` <!--<br> In R: `install.packages()`--> |
-<!--| R     | Bioconductor     | Soon: BiocManager::install("PICB") |
-| R | rOpenSci | Soon: `install.packages("PICB", repos = "https://ropensci.r-universe.dev")` |-->
-<!--<img src="images/GitHubDownload.png" alt="Stepwise Integration for PICB" style="width:30%;height:30%"/> |Follow steps on image (green button is on top of this page) <br> Or  -->
+<!--| R     | Bioconductor     | Soon: BiocManager::install("PICB") |-->
 
 <!-- Refer to: https://cran.r-project.org/web/packages/githubinstall/vignettes/githubinstall.html --> 
 
@@ -109,7 +107,7 @@ From now on it gets even easier.
 
 ---
 
-## How to run PICB[![](images/double-helix-svgrepo-com.svg)](#how-to-run-PICB)
+## How to run PICB[![](vignettes/double-helix-svgrepo-com.svg)](#how-to-run-PICB)
 
 There are just two required inputs: the **BAM File** and the **Reference Genome**.
 
@@ -193,7 +191,7 @@ myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME= myGenome)$clusters
 
 ---
 
-### Parameter adjustments[![](images/double-helix-svgrepo-com.svg)](#parameter-adjustments)
+### Parameter adjustments[![](vignettes/double-helix-svgrepo-com.svg)](#parameter-adjustments)
 
 
 PiCB allows wide-ranging parameter adjustments to adapt to e.g. sparse reference genomes and specific limitations of the data set. Tables of adjustments for both functions are shown below. 
@@ -296,7 +294,7 @@ In the next step **secondary alignments** are processed identically as primary m
 
 ---
 
-## Output[![](images/double-helix-svgrepo-com.svg)](#output)
+## Output[![](vignettes/double-helix-svgrepo-com.svg)](#output)
 
 The output of `PICBbuild` includes **seeds**, **cores** and  **clusters**, each in *GenomicRanges* format. In [Running PICB](#running-PICB), we extracted directly the **clusters** using `$clusters`. Extracting the **seeds** and **cores** can be done similarly using `$seeds` and `$cores`. 
 
@@ -331,7 +329,7 @@ The **clusters** follow *GRanges* convention including the genomic coordinates (
 
 ---
 
-## Other PICB functions[![](images/double-helix-svgrepo-com.svg)](#other-picb-functions)
+## Other PICB functions[![](vignettes/double-helix-svgrepo-com.svg)](#other-picb-functions)
 
 ### Optimization of parameters
 
@@ -363,7 +361,7 @@ To visualize the sense/antisense ratio of the clusters, you can plot the sense/a
 --- 
 
 
-## Let's give it a try - An Example[![](images/double-helix-svgrepo-com.svg)](#lets-give-it-a-try---an-example)
+## Let's give it a try - An Example[![](vignettes/double-helix-svgrepo-com.svg)](#lets-give-it-a-try---an-example)
 
 In the following, we would like to show you how easy it is to run PICB!
 
@@ -418,7 +416,7 @@ myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME = myGenome, LIBRARY.SIZE 
 
 
 
-## Authors, Citation and Acknowledgments[![](images/double-helix-svgrepo-com.svg)](#authors-citation-and-acknowledgments)
+## Authors, Citation and Acknowledgments[![](vignettes/double-helix-svgrepo-com.svg)](#authors-citation-and-acknowledgments)
 
 Special thanks to all contributors and supporters that starred this repository.
 

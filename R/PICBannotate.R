@@ -1,3 +1,4 @@
+utils::globalVariables(c("queryHits", "oneT", "tenA"))
 #' Annotate Granges according to a piRNA library
 #'
 #' @param INPUT.GRANGES Granges (seeds/cores/clusters) to annotate
@@ -6,13 +7,12 @@
 #' @param REPLICATE.NAME name of the replicate. NULL by default.
 #' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.
 #' @param PROVIDE.NON.NORMALIZED provide annotations in non-normalized format. False by default.
+#' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
 #' @param COMPUTE.1U.10A.FRACTIONS for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.
 #'
 #' @author Aleksandr Friman
 #' @return Granges object with extra annotation columns
 #' @export
-#'
-#' @examples outputOfPICBbuild$seeds<-PICBannotate(outputOfPICBbuild$seeds, outputOfPICBload, REPLICATE.NAME="Replicate1")
 PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLICATE.NAME = NULL,
                            LIBRARY.SIZE=length(ALIGNMENTS$unique)+length(ALIGNMENTS$multi.primary),
                            PROVIDE.NON.NORMALIZED = FALSE, SEQ.LEVELS.STYLE = "UCSC", COMPUTE.1U.10A.FRACTIONS = FALSE){

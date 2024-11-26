@@ -18,6 +18,7 @@ SeqInfo object with standard non-circular chromosome names
 Get SeqInfo object from BSgenome name
 }
 \examples{
+library(BSgenome.Dmelanogaster.UCSC.dm6)
 mySI<-PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
 }
 \author{

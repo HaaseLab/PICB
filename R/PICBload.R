@@ -24,7 +24,14 @@
 #' "multi.secondary" for secondary multimapping alignments
 #' @export
 #'
-#' @examples PICBload(BAMFILE="~/example-piRNA-library.bam", REFERENCE.GENOME="BSgenome.Dmelanogaster.UCSC.dm6")
+#' @examples 
+#' library(BSgenome.Dmelanogaster.UCSC.dm6)
+#' PICBload(
+#'   BAMFILE=system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"), 
+#'   REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6", 
+#'   VERBOSE=FALSE
+#' )
+#' 
 PICBload <- function(
   ## INPUTS
   BAMFILE=NULL,
@@ -51,10 +58,6 @@ PICBload <- function(
   ## Flag: 0 = forward unpaired unique alignment; 16 = reverse unpaired unique alignment
   ## Tags: NH:i:1 = unique alignment; NM = edit distance to the reference
 
-  ## libraries
-  #suppressPackageStartupMessages({library("Rsamtools");
-  #  library("GenomicAlignments");
-  #})
   outputAlignments<-list()
   ## check input
   if(is.null(BAMFILE)) stop("Please provide full path to a .bam file !!!")
@@ -63,7 +66,7 @@ PICBload <- function(
   ## for report
   
   ##
-  if (VERBOSE) message(paste("PICB v", packageVersion("PICB"),"Processing ... "))
+  if (VERBOSE) message("PICB v", utils::packageVersion("PICB")," Processing ... ")
   ##
 
   justPrimaryOrSecondary<-function(IS.SECONDARY.ALIGNMENT){
@@ -95,9 +98,9 @@ PICBload <- function(
 
     if (VERBOSE){
       message("\nprepared loading parameters")
-      message(paste0("\tTAGS:\t",paste(TAGS, collapse = ", ")))
-      message(paste0("\tCIGAR:\t",ifelse(isTRUE(SIMPLE.CIGAR),"simple cigar","all cigar")))
-      message(paste0("\tWHAT:\t",paste0(WHAT,collapse = ", ")))
+      message("\tTAGS:\t",paste(TAGS, collapse = ", "))
+      message("\tCIGAR:\t",ifelse(isTRUE(SIMPLE.CIGAR),"simple cigar","all cigar"))
+      message("\tWHAT:\t",paste0(WHAT,collapse = ", "))
       message("loading .bam file into GAlignments")
 
         if(is.na(IS.SECONDARY.ALIGNMENT)){
@@ -119,26 +122,26 @@ PICBload <- function(
     #checking the tags consistency
     for (tagcheck in TAGS){
       if (any(is.na(GenomicRanges::mcols(GA)[[tagcheck]]))){
-        stop(paste0("Tag ", tagcheck, " contains NA values. Check your bam file."))
+        stop("Tag ", tagcheck, " contains NA values. Check your bam file.")
       }
     }
     ## ***
     GA.IN <- length(GA)
-    if (VERBOSE) message(paste0("\tIMPORTED: ", GA.IN))
+    if (VERBOSE) message("\tIMPORTED: ", GA.IN)
 
     if(isTRUE(USE.SIZE.FILTER)){
       if (VERBOSE){
         message("\nfiltering by read size")
-        message(paste0("\tRANGE:\t",
+        message("\tRANGE:\t",
                                   paste(min(READ.SIZE.RANGE),
                                         max(READ.SIZE.RANGE),
-                                        sep = "-")))
+                                        sep = "-"))
       }
       GA <- GA[GenomicAlignments::width(GA) %in% seq(min(READ.SIZE.RANGE),max(READ.SIZE.RANGE),by = 1)]
 
       ## ***
       REMAINDER = (length(GA)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
+      if (VERBOSE) message("\tREMAINDER: ", round(REMAINDER, digits = 2), " %") }
 
 
 
@@ -149,7 +152,7 @@ PICBload <- function(
 
       ## ***
       REMAINDER = (length(GARP)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
+      if (VERBOSE) message("\tREMAINDER: ", round(REMAINDER, digits = 2), " %") }
     else { GARP <- GA }
 
     if(isTRUE(PERFECT.MATCH.ONLY)){
@@ -158,7 +161,7 @@ PICBload <- function(
 
       ## ***
       REMAINDER = (length(GARP)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
+      if (VERBOSE) message("\tREMAINDER: ", round(REMAINDER, digits = 2), " %") }
 
     if(isTRUE(GET.ORIGINAL.SEQUENCE)){
       if (VERBOSE) message("\nretrieving original read sequences")
@@ -171,7 +174,7 @@ PICBload <- function(
     GARP.GR <- GenomicRanges::granges(GARP, use.names = TRUE, use.mcols = TRUE)
 
     if(!SEQ.LEVELS.STYLE %in% "UCSC"){
-      if (VERBOSE) message(paste0("\nchanging seqlevels style to: ",SEQ.LEVELS.STYLE))
+      if (VERBOSE) message("\nchanging seqlevels style to: ",SEQ.LEVELS.STYLE)
       GenomeInfoDb::seqlevelsStyle(GARP.GR) <- SEQ.LEVELS.STYLE
     }
     return(GARP.GR)

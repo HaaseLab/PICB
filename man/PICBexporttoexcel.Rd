@@ -4,10 +4,10 @@
 \alias{PICBexporttoexcel}
 \title{Export clustering object into an Excel file}
 \usage{
-PICBexporttoexcel(RANGES = NULL, EXCEL.FILE.NAME = NULL)
+PICBexporttoexcel(IN.RANGES = NULL, EXCEL.FILE.NAME = NULL)
 }
 \arguments{
-\item{RANGES}{clustering object to export}
+\item{IN.RANGES}{clustering object to export}
 
 \item{EXCEL.FILE.NAME}{file name to save}
 }
@@ -18,7 +18,21 @@ no values returned
 Export clustering object into an Excel file
 }
 \examples{
-PICBexporttoexcel(myclusteringObject, "~/piRNAclustersFromUFOsamples.Area51.xlsx")
+library(BSgenome.Dmelanogaster.UCSC.dm6)
+myAlignmentsFromPICBload <- PICBload(
+  BAMFILE=system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"), 
+  REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6", 
+  VERBOSE=FALSE
+)
+
+outputOfPICBbuild <- PICBbuild(
+  IN.ALIGNMENTS = myAlignmentsFromPICBload,
+  REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6", 
+  VERBOSITY=0
+)
+PICBexporttoexcel(
+  IN.RANGES=outputOfPICBbuild, 
+  EXCEL.FILE.NAME = "inst/extdata/myClusters_demonstration.xlsx")
 }
 \author{
 Aleksandr Friman

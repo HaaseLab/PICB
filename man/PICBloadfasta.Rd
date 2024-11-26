@@ -15,9 +15,6 @@ SeqInfo object with all chromosome names and lengths from the fasta file
 \description{
 Get SeqInfo object from a fasta file
 }
-\examples{
-mySI<-PICBloadfasta("~/path/to/your.fasta")
-}
 \author{
 Aleksandr Friman
 }

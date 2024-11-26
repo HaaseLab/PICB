@@ -9,8 +9,6 @@
 #' @return Granges object annotated for every replicate.
 #' @export
 #' @author Aleksandr Friman
-#'
-#' @examples PICBcombine(list(OutputOfPICBbuildRepl1, OutputOfPICBbuildRepl2), list(Repl1=OutputOfPICBloadRepl1, Repl2=OutputOfPICBloadRepl2), TYPE.OF.REGION="regions")
 PICBcombine<-function(rangesList = NULL, alignmentsList = NULL,
                       REFERENCE.GENOME = NULL, TYPE.OF.REGION=allalignments, SEQ.LEVELS.STYLE="UCSC"){
   if(is.null(rangesList)) stop("Please provide rangesList !")

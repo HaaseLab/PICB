@@ -12,7 +12,19 @@
 #' @return Optimization values dataframe
 #' @export
 #'
-#' @examples PICBoptimize(IN.ALIGNMENTS = myAlignmentsFromPIBCload, REFERENCE.GENOME="BSgenome.Dmelanogaster.UCSC.dm6", MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5))
+#' @examples 
+#' library(BSgenome.Dmelanogaster.UCSC.dm6)
+#' myAlignmentsFromPICBload <- PICBload(
+#'   BAMFILE=system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"), 
+#'   REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6", 
+#'   VERBOSE=FALSE
+#' )
+#' 
+#' PICBoptimize(
+#'   IN.ALIGNMENTS = myAlignmentsFromPICBload, 
+#'   REFERENCE.GENOME="BSgenome.Dmelanogaster.UCSC.dm6", 
+#'   MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5)
+#' )
 PICBoptimize <- function(
     IN.ALIGNMENTS,
     REFERENCE.GENOME,
@@ -49,7 +61,7 @@ PICBoptimize <- function(
         #need to iterate
         if (length(inputArgs[[argName]]) > 1){
           if (VERBOSITY >0 ){
-            message(paste("Adding", argName, "to iteration targets"))
+            message("Adding", argName, "to iteration targets")
           }
           if (is.null(ArgsToIterate)){
             ArgsToIterate=argName
@@ -61,7 +73,7 @@ PICBoptimize <- function(
     }
   }
   
-  if (VERBOSITY==TRUE) message(paste("PICB v", packageVersion("PICB"),"Starting ... "))
+  if (VERBOSITY==TRUE) message("PICB v", utils::packageVersion("PICB")," Starting ... ")
   
   #checking the inputs
   if (VERBOSITY >0 ){
@@ -131,7 +143,7 @@ PICBoptimize <- function(
   i=1
   for (combList in listOfArgLists){
     if (VERBOSITY >0 ){
-      message(paste("Iteration", i, "out of", length(listOfArgLists)))
+      message("Iteration", i, "out of", length(listOfArgLists))
     }
     for (argName in names(combList)){
       #adding values we iterate over

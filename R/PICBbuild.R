@@ -32,7 +32,21 @@
 #' "clusters" for clusters
 #' @export
 #'
-#' @examples PICBbuild(IN.ALIGNMENTS = myAlignmentsFromPICBload, REFERENCE.GENOME="BSgenome.Dmelanogaster.UCSC.dm6")
+#' @examples 
+#' #'
+#' @examples 
+#' library(BSgenome.Dmelanogaster.UCSC.dm6)
+#' myAlignmentsFromPICBload <- PICBload(
+#'   BAMFILE=system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"), 
+#'   REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6", 
+#'   VERBOSE=FALSE
+#' )
+#' 
+#' outputOfPICBbuild <- PICBbuild(
+#'   IN.ALIGNMENTS = myAlignmentsFromPICBload,
+#'   REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6", 
+#'   VERBOSITY=0
+#' )
 PICBbuild <-
   function(
     ## MAIN
@@ -69,7 +83,7 @@ PICBbuild <-
     if (VERBOSITY>2) {
       tmpENV<-as.list(environment())
       tmpENV$IN.ALIGNMENTS<-NULL
-      print(tmpENV)
+      message(tmpENV)
     }
     ## Check input
 
@@ -86,7 +100,7 @@ PICBbuild <-
     }
 
     ##
-    if (VERBOSITY>0) message(paste("PICB v", packageVersion("PICB"),"Starting ... "))
+    if (VERBOSITY>0) message("PICB v", utils::packageVersion("PICB")," Starting ... ")
     ##
 
     ## KEEP STANDARD CHROMOSOMES
@@ -105,10 +119,10 @@ PICBbuild <-
       #for more info
       tryCatch( expr = {GenomeInfoDb::seqlevelsStyle(IN.ALIGNMENTS[[columnName]]) <- SEQ.LEVELS.STYLE},
                 error = function(e){
-                  print(e)
-                  print("Failed to change SEQ.LEVELS.STYLE")
-                  print("read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README")
-                  print("Continuing hoping for the best")
+                  message(e)
+                  message("Failed to change SEQ.LEVELS.STYLE")
+                  message("read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README")
+                  message("Continuing hoping for the best")
                   })
 
       KEEP.SEQLEVELS <- GenomeInfoDb::seqlevels(SI)
@@ -127,16 +141,16 @@ PICBbuild <-
     ## Make genome sliding window for unique mappers
 
     if (VERBOSITY>1) message("\tSliding window analysis")
-    if (VERBOSITY>1) message(paste0("\t\tUNIQUE MAPPERS\n\t\tWINDOW: ",UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH,"\n\t\tSTEP: ", UNIQUEMAPPERS.SLIDING.WINDOW.STEP))
+    if (VERBOSITY>1) message("\t\tUNIQUE MAPPERS\n\t\tWINDOW: ",UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH,"\n\t\tSTEP: ", UNIQUEMAPPERS.SLIDING.WINDOW.STEP)
     AG.gr <- GenomicRanges::GRanges(data.table::data.table("chr"=GenomicRanges::seqnames(SI),"start"=1,"end"=GenomeInfoDb::seqlengths(SI),"strand"="*"))
     AG.sw.uniq <- unlist(GenomicRanges::slidingWindows(x = AG.gr, width = UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH, step = UNIQUEMAPPERS.SLIDING.WINDOW.STEP))
 
     ## Make genome sliding window for multi mappers
 
-    if (VERBOSITY>1) message(paste0("\t\tPRIMARY MULTI MAPPERS\n\t\tWINDOW: ",PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH,"\n\t\tSTEP: ", PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP))
+    if (VERBOSITY>1) message("\t\tPRIMARY MULTI MAPPERS\n\t\tWINDOW: ",PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH,"\n\t\tSTEP: ", PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP)
     #AG.gr <- GRanges(data.table("chr"=seqnames(SI),"start"=1,"end"=seqlengths(SI),"strand"="*"))
     AG.sw.primary.mult <- unlist(GenomicRanges::slidingWindows(x = AG.gr, width = PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH, step = PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP))
-    if (VERBOSITY>1 && "multi.secondary" %in% typeAlignments) message(paste0("\t\tSECONDARY MULTI MAPPERS\n\t\tWINDOW: ",SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH,"\n\t\tSTEP: ", SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP))
+    if (VERBOSITY>1 && "multi.secondary" %in% typeAlignments) message("\t\tSECONDARY MULTI MAPPERS\n\t\tWINDOW: ",SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH,"\n\t\tSTEP: ", SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP)
 
     ##
     ## Counting piRNAs per window: Uniq and all multi
@@ -154,7 +168,7 @@ PICBbuild <-
 
     ##
     ## Filter by minimum reads per window and reduce to new range
-    if (VERBOSITY>1) message(paste0("\t\tMIN.UNIQUE.ALIGNMENTS.PER.WINDOW >= ",MIN.UNIQUE.ALIGNMENTS.PER.WINDOW))
+    if (VERBOSITY>1) message("\t\tMIN.UNIQUE.ALIGNMENTS.PER.WINDOW >= ",MIN.UNIQUE.ALIGNMENTS.PER.WINDOW)
     sw.UNIQ.PLUS <- AG.sw.uniq[(GenomicRanges::mcols(AG.sw.uniq)[["uniq_piRNA_plus"]] >= MIN.UNIQUE.ALIGNMENTS.PER.WINDOW) & (GenomicRanges::mcols(AG.sw.uniq)[["uniq_intervals_plus"]] >= MIN.UNIQUE.SEQUENCES.PER.WINDOW)]
     sw.UNIQ.MINUS <- AG.sw.uniq[(GenomicRanges::mcols(AG.sw.uniq)[["uniq_piRNA_minus"]] >= MIN.UNIQUE.ALIGNMENTS.PER.WINDOW) & (GenomicRanges::mcols(AG.sw.uniq)[["uniq_intervals_minus"]] >= MIN.UNIQUE.SEQUENCES.PER.WINDOW)]
     AG.sw.uniq<-NULL # clearing memory
@@ -173,12 +187,12 @@ PICBbuild <-
     if (VERBOSITY>1) message("Annotating seeds")
     BM.SEEDS<-PICBannotate(sw.UNIQ.RED,IN.ALIGNMENTS, REFERENCE.GENOME = REFERENCE.GENOME, LIBRARY.SIZE = LIBRARY.SIZE,
                            SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE)
-    if (VERBOSITY>1) message(paste("Removing seed with unique mapping coverage less than", MIN.COVERED.SEED.LENGTH, 'nt'))
+    if (VERBOSITY>1) message("Removing seed with unique mapping coverage less than", MIN.COVERED.SEED.LENGTH, "nt")
     BM.SEEDS<-BM.SEEDS[GenomicRanges::mcols(BM.SEEDS)[['width_covered_by_unique_alignments']]>=MIN.COVERED.SEED.LENGTH]
     outputList<-list()
     outputList[[uniqueonly]]<-BM.SEEDS
 
-    if (VERBOSITY>1) message(paste0("\t\tMIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW >= ",MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW))
+    if (VERBOSITY>1) message("\t\tMIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW >= ",MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW)
     sw.PRIMARY.MULT.PLUS <- AG.sw.primary.mult[GenomicRanges::mcols(AG.sw.primary.mult)[["primary_mult_piRNA_plus"]] >= MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
     sw.PRIMARY.MULT.MINUS <- AG.sw.primary.mult[GenomicRanges::mcols(AG.sw.primary.mult)[["primary_mult_piRNA_minus"]] >= MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
     GenomicRanges::strand(sw.PRIMARY.MULT.PLUS) <- "+"; GenomicRanges::strand(sw.PRIMARY.MULT.MINUS) <- "-"
@@ -205,7 +219,7 @@ PICBbuild <-
 
     ##Regions
     if ("multi.secondary" %in% typeAlignments){
-      if (VERBOSITY>1) message(paste0("\t\tMIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW >= ",MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW))
+      if (VERBOSITY>1) message("\t\tMIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW >= ",MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW)
 
       sw.SECONDARY.MULT.PLUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_plus"]] >= MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
       sw.SECONDARY.MULT.MINUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_minus"]] >= MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
@@ -254,8 +268,8 @@ PICBbuild <-
     used_mult <- sum(GenomicRanges::mcols(outputList[[allalignments]])[["multimapping_reads_primary_alignments"]])
     used_mult_primary_piRNA <- round(((used_mult/length(WGRMP))*100),3)
     if (VERBOSITY>1) {
-      message(paste0("\t\tAccomodated UNIQUE MAPPERS: ",used_uniq," (",used_uniq_piRNA," %)"))
-      message(paste0("\t\tAccomodated PRIMARY MULTI MAPPERS: ",used_mult," (",used_mult_primary_piRNA," %)"))
+      message("\t\tAccomodated UNIQUE MAPPERS: ",used_uniq," (",used_uniq_piRNA," %)")
+      message("\t\tAccomodated PRIMARY MULTI MAPPERS: ",used_mult," (",used_mult_primary_piRNA," %)")
     }
 
     if (! PROVIDE.NON.NORMALIZED){ #removing stats hard to understand

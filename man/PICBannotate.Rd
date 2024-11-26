@@ -28,6 +28,8 @@ PICBannotate(
 
 \item{PROVIDE.NON.NORMALIZED}{provide annotations in non-normalized format. False by default.}
 
+\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
+
 \item{COMPUTE.1U.10A.FRACTIONS}{for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.}
 }
 \value{
@@ -35,9 +37,6 @@ Granges object with extra annotation columns
 }
 \description{
 Annotate Granges according to a piRNA library
-}
-\examples{
-outputOfPICBbuild$seeds<-PICBannotate(outputOfPICBbuild$seeds, outputOfPICBload, REPLICATE.NAME="Replicate1")
 }
 \author{
 Aleksandr Friman

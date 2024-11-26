@@ -1,11 +1,11 @@
 Package: PICB
 Title: piRNA Cluster Builder
-Version: 0.0.1.0028
+Version: 0.97.01
 Authors@R: c(person("Pavol", "Genzor",  role = c("aut")),
     person("Aleksandr", "Friman", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
     person("Daniel", "Stoyko", role = c("aut")),
     person("Parthena", "Konstantinidou", email="haase-lab-bioinfo@nih.gov", role = c("aut")),
-    person("Franziska", "Ahrend", email="haase-lab-bioinfo@nih.gov",  role = c("aut", "cre")),
+    person("Franziska", "Ahrend", email="haase-lab-bioinfo@nih.gov",  role = c("aut", "cre"), comment=c(ORCID = "0009-0004-7464-3444")),
     person("Zuzana", "Loubalova", email="haase-lab-bioinfo@nih.gov",  role = c("aut")), 
     person("Astrid D", "Haase", email="haase-lab-bioinfo@nih.gov",  role = c("aut")))
 Description: piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and 
@@ -16,6 +16,7 @@ Description: piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play
 License: CC0
 Encoding: UTF-8
 Imports:
+    utils,
     GenomicRanges,
     GenomicAlignments,
     GenomeInfoDb,
@@ -23,14 +24,21 @@ Imports:
     Rsamtools,
     data.table,
     IRanges,
-    BSgenome,
     seqinr,
+    stats,
     openxlsx,
     dplyr
 Suggests: 
+    knitr,
     rtracklayer, 
+    BiocStyle,
+    prettydoc,
+    BSgenome,
+    BSgenome.Dmelanogaster.UCSC.dm6,
+    rmarkdown,
     ggplot2
 VignetteBuilder: knitr
 BugReports: https://github.com/HaaseLab/PICB/issues
 URL: https://github.com/HaaseLab/PICB
+biocViews: Genetics, GenomeAnnotation, Sequencing, FunctionalPrediction, Coverage, Transcriptomics
 RoxygenNote: 7.3.2

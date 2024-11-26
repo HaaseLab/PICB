@@ -17,9 +17,6 @@ list of annotated Granges objects named "seeds" for seeds,
 \description{
 Import clustering object from an Excel file
 }
-\examples{
-PICBimportfromexcel(="~/piRNAclustersFromUFOsamples.Area51.xlsx")
-}
 \author{
 Aleksandr Friman
 }
