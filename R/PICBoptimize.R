@@ -143,7 +143,7 @@ PICBoptimize <- function(
   i=1
   for (combList in listOfArgLists){
     if (VERBOSITY >0 ){
-      message("Iteration", i, "out of", length(listOfArgLists))
+      message("Iteration ", i, " out of ", length(listOfArgLists))
     }
     for (argName in names(combList)){
       #adding values we iterate over

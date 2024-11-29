@@ -187,7 +187,7 @@ PICBbuild <-
     if (VERBOSITY>1) message("Annotating seeds")
     BM.SEEDS<-PICBannotate(sw.UNIQ.RED,IN.ALIGNMENTS, REFERENCE.GENOME = REFERENCE.GENOME, LIBRARY.SIZE = LIBRARY.SIZE,
                            SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE)
-    if (VERBOSITY>1) message("Removing seed with unique mapping coverage less than", MIN.COVERED.SEED.LENGTH, "nt")
+    if (VERBOSITY>1) message("Removing seed with unique mapping coverage less than ", MIN.COVERED.SEED.LENGTH, " nt")
     BM.SEEDS<-BM.SEEDS[GenomicRanges::mcols(BM.SEEDS)[['width_covered_by_unique_alignments']]>=MIN.COVERED.SEED.LENGTH]
     outputList<-list()
     outputList[[uniqueonly]]<-BM.SEEDS
