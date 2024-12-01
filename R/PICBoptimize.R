@@ -61,7 +61,7 @@ PICBoptimize <- function(
         #need to iterate
         if (length(inputArgs[[argName]]) > 1){
           if (VERBOSITY >0 ){
-            message("Adding", argName, "to iteration targets")
+            message("Adding ", argName, " to iteration targets")
           }
           if (is.null(ArgsToIterate)){
             ArgsToIterate=argName
@@ -187,26 +187,18 @@ PICBoptimize <- function(
       outDF[[paste0(locustype,".mean.RPKM")]]= outDF[[paste0("reads.explained.by.", locustype)]]*1e9/(outDF[[paste0(locustype, ".total.width")]]*totalReads)
       outDF[[paste0(locustype,".mean.RPKM")]][ is.na(outDF[[paste0(locustype,".mean.RPKM")]])] = 0
     }
-    if (typeof(REFERENCE.GENOME)=="character"){
-      SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-    }else{
-      SI<-REFERENCE.GENOME
-    }
+    SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
     GenomeSize=sum(GenomeInfoDb::seqlengths(SI))
     for (locustype in c(uniqueonly,uniqueandprimary,allalignments )){
       outDF[[paste0(locustype, ".fraction.of.genome.space")]]=outDF[[paste0(locustype, ".total.width")]]/(2*GenomeSize)
     }
   } else {
-      outDF[["fraction.of.library.explained.by.clusters"]]= outDF[["reads.explained.by.clusters"]]/totalReads
-      outDF[["clusters.mean.RPKM"]]= outDF[["reads.explained.by.clusters"]]*1e9/(outDF[["clusters.total.width"]]*totalReads)
-      outDF[["clusters.mean.RPKM"]][ is.na(outDF[["clusters.mean.RPKM"]])] = 0
-      if (typeof(REFERENCE.GENOME)=="character"){
-        SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-      }else{
-        SI<-REFERENCE.GENOME
-      }
-      GenomeSize=sum(GenomeInfoDb::seqlengths(SI))
-      outDF[["clusters.fraction.of.genome.space"]]=outDF[["clusters.total.width"]]/(2*GenomeSize)
+    outDF[["fraction.of.library.explained.by.clusters"]]= outDF[["reads.explained.by.clusters"]]/totalReads
+    outDF[["clusters.mean.RPKM"]]= outDF[["reads.explained.by.clusters"]]*1e9/(outDF[["clusters.total.width"]]*totalReads)
+    outDF[["clusters.mean.RPKM"]][ is.na(outDF[["clusters.mean.RPKM"]])] = 0
+    SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+    GenomeSize=sum(GenomeInfoDb::seqlengths(SI))
+    outDF[["clusters.fraction.of.genome.space"]]=outDF[["clusters.total.width"]]/(2*GenomeSize)
   }
   return(outDF)
 }

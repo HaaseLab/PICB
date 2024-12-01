@@ -65,7 +65,7 @@ It is possible to run PICB in RStudio, in an R script on your local machine or w
 You will need to install and load the following required R packages:
 
 ```R
-install.packages(c("data.table", "seqinr", "openxlsx", "dplyr", "stats", "utils"))
+install.packages(c("data.table", "seqinr", "openxlsx", "dplyr"))
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install(c("IRanges", "GenomicRanges", "GenomicAlignments", "Rsamtools", "Biostrings", "GenomeInfoDb", "BSgenome", "rtracklayer"))
@@ -76,13 +76,12 @@ BiocManager::install(c("IRanges", "GenomicRanges", "GenomicAlignments", "Rsamtoo
 
 <b>2. Install PICB</b>
 
-PICB is available to install from any of the following sources:
+PICB is available to install from any of the following sources. If you choose to install from GitHub, make sure to have either devtools or remotes installed.
 
 | Where        | Source   | Command                                                                     |
 |-------------|----------|-----------------------------------------------------------------------------|
-| R | GitHub   | From GitHub repository: `devtools::install_github("HaaseLab/PICB")` |
+| R | GitHub   | From GitHub repository: `devtools::install_github("HaaseLab/PICB")` or `remotes::install_github("HaaseLab/PICB")` |
 | Web Browser | GitHub   | <a href="https://github.com/HaaseLab/PICB/archive/refs/heads/main.zip">Download GitHub repository here.</a> Now unzip the file and run `install.packages("Downloads/PICB-main", repos=NULL, type="source")` in R.  |
-| R | GitHub   | From GitHub repository: `remotes::install_github("HaaseLab/PICB")` |
 | Terminal | GitHub   | From GitHub repository: Clone Source Code: `git clone https://github.com/HaaseLab/PICB.git` <!--<br> In R: `install.packages()`--> |
 <!--| R     | Bioconductor     | Soon: BiocManager::install("PICB") |-->
 

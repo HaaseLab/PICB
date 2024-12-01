@@ -5,6 +5,9 @@
 #' @param VERBOSE enables progress output. True by default.
 #'
 #' @return Granges object with an additional annotation column
+#' @author Parthena Konstantinidou
+#' @author Zuzana Loubalova
+#' @author Franziska Ahrend
 #' @export
 #'
 #' @examples 
@@ -44,7 +47,12 @@ PICBstrandanalysis<-function(IN.ALIGNMENTS,
     IN.ALIGNMENTS.MINUS <- IN.ALIGNMENTS[GenomicRanges::strand(IN.ALIGNMENTS) == "-"]
     
     if (VERBOSE==TRUE) message("\tFinding overlaps of clusters with piRNAs from plus strand")
-    DT_plus <- as.data.frame(GenomicRanges::findOverlaps(IN.RANGES, IN.ALIGNMENTS.PLUS, ignore.strand = TRUE))
+    #DT_plus <- as.data.frame(GenomicRanges::findOverlaps(IN.RANGES, IN.ALIGNMENTS.PLUS, ignore.strand = TRUE))
+    overlaps_plus <- GenomicRanges::findOverlaps(IN.RANGES, IN.ALIGNMENTS.PLUS, ignore.strand = TRUE)
+    DT_plus <- data.frame(
+        queryHits = S4Vectors::queryHits(overlaps_plus),
+        subjectHits = S4Vectors::subjectHits(overlaps_plus)
+    )
     if (nrow(DT_plus) == 0) {
         warning("No overlaps detected between IN.ALIGNMENTS and clusters on the plus strand. Please verify that IN.ALIGNMENTS and IN.RANGES are valid and correctly correspond to each other. Continuing ...")
         DT_plus.2 <- data.frame(queryHits = integer(0), subjectHits = integer(0))
@@ -56,7 +64,12 @@ PICBstrandanalysis<-function(IN.ALIGNMENTS,
     IN.RANGES$plus_piRNAs[DT_plus.2$queryHits] <- DT_plus.2$subjectHits
 
     if (VERBOSE==TRUE) message("\tFinding overlaps of clusters with piRNAs from minus strand")
-    DT_minus <- as.data.frame(GenomicRanges::findOverlaps(IN.RANGES, IN.ALIGNMENTS.MINUS, ignore.strand = TRUE))
+    #DT_minus <- as.data.frame(GenomicRanges::findOverlaps(IN.RANGES, IN.ALIGNMENTS.MINUS, ignore.strand = TRUE))
+    overlaps_minus <- GenomicRanges::findOverlaps(IN.RANGES, IN.ALIGNMENTS.MINUS, ignore.strand = TRUE)
+    DT_minus <- data.frame(
+        queryHits = S4Vectors::queryHits(overlaps_minus),
+        subjectHits = S4Vectors::subjectHits(overlaps_minus)
+    )
     if (nrow(DT_minus) == 0) {
         warning("No overlaps detected between IN.ALIGNMENTS and clusters on the minus strand. Please verify that IN.ALIGNMENTS and IN.RANGES are valid and correctly correspond to each other. Continuing ...")
         DT_minus.2 <- data.frame(queryHits = integer(0), subjectHits = integer(0))

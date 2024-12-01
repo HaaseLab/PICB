@@ -38,6 +38,29 @@ Granges object with extra annotation columns
 \description{
 Annotate Granges according to a piRNA library
 }
+\examples{
+library(BSgenome.Dmelanogaster.UCSC.dm6)
+myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
+myAlignmentsFromPICBload <- PICBload(
+  BAMFILE=system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"), 
+  REFERENCE.GENOME = myGenome, 
+  VERBOSE=FALSE
+)
+myRangesFromPICBbuild <- PICBbuild(
+  IN.ALIGNMENTS = myAlignmentsFromPICBload,
+  REFERENCE.GENOME = myGenome, 
+  VERBOSITY=0
+)
+
+myClustersFromPICBbuildAnnotationsRemoved <- GenomicRanges::granges(myRangesFromPICBbuild$clusters)
+
+PICBannotate(
+ INPUT.GRANGES = myClustersFromPICBbuildAnnotationsRemoved, 
+ ALIGNMENTS = myAlignmentsFromPICBload,
+ REFERENCE.GENOME = myGenome, 
+ PROVIDE.NON.NORMALIZED = TRUE
+)
+}
 \author{
 Aleksandr Friman
 }

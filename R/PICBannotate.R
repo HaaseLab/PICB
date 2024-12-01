@@ -13,6 +13,29 @@ utils::globalVariables(c("queryHits", "oneT", "tenA"))
 #' @author Aleksandr Friman
 #' @return Granges object with extra annotation columns
 #' @export
+#' 
+#' @examples 
+#' library(BSgenome.Dmelanogaster.UCSC.dm6)
+#' myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
+#' myAlignmentsFromPICBload <- PICBload(
+#'   BAMFILE=system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"), 
+#'   REFERENCE.GENOME = myGenome, 
+#'   VERBOSE=FALSE
+#' )
+#' myRangesFromPICBbuild <- PICBbuild(
+#'   IN.ALIGNMENTS = myAlignmentsFromPICBload,
+#'   REFERENCE.GENOME = myGenome, 
+#'   VERBOSITY=0
+#' )
+#' 
+#' myClustersFromPICBbuildAnnotationsRemoved <- GenomicRanges::granges(myRangesFromPICBbuild$clusters)
+#' 
+#' PICBannotate(
+#'  INPUT.GRANGES = myClustersFromPICBbuildAnnotationsRemoved, 
+#'  ALIGNMENTS = myAlignmentsFromPICBload,
+#'  REFERENCE.GENOME = myGenome, 
+#'  PROVIDE.NON.NORMALIZED = TRUE
+#' )
 PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLICATE.NAME = NULL,
                            LIBRARY.SIZE=length(ALIGNMENTS$unique)+length(ALIGNMENTS$multi.primary),
                            PROVIDE.NON.NORMALIZED = FALSE, SEQ.LEVELS.STYLE = "UCSC", COMPUTE.1U.10A.FRACTIONS = FALSE){
@@ -24,11 +47,7 @@ PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLI
     SUFFIX = ""
   }
 
-  if (typeof(REFERENCE.GENOME)=="character"){
-    SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-  }else{
-    SI<-REFERENCE.GENOME
-  }
+  SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
 
   PICBfixCoverage<-function(inCov, SI){
     for (i in 1:length(SI)){
@@ -75,7 +94,10 @@ PICBannotate<-function(INPUT.GRANGES, ALIGNMENTS, REFERENCE.GENOME = NULL, REPLI
         if ("seq" %in% colnames(GenomicRanges::mcols(alignmentsAtWork))){
           GenomicRanges::mcols(alignmentsAtWork)[['seq']]= as.character(GenomicRanges::mcols(alignmentsAtWork)[['seq']])
           pairsAtWork = GenomicRanges::findOverlaps(INPUT.GRANGES, alignmentsAtWork)
-          pairsAtWork.DF = as.data.frame(pairsAtWork)
+          pairsAtWork.DF <- data.frame(
+            queryHits = S4Vectors::queryHits(pairsAtWork),
+            subjectHits = S4Vectors::subjectHits(pairsAtWork)
+          )
           pairsAtWork.DF$seq = GenomicRanges::mcols(alignmentsAtWork)[['seq']][pairsAtWork.DF$subjectHits]
           pairsAtWork.DF$oneT = (substring(pairsAtWork.DF$seq, 1, 1) == "T")
           pairsAtWork.DF$tenA = (substring(pairsAtWork.DF$seq, 10, 10) == "A")

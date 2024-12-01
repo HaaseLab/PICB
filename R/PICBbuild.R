@@ -27,13 +27,12 @@
 #' @author Pavol Genzor
 #' @author Daniel Stoyko
 #' @author Aleksandr Friman
+#' @author Franziska Ahrend
 #' @return list of annotated Granges objects named "seeds" for seeds,
 #' "cores" for cores,
 #' "clusters" for clusters
 #' @export
 #'
-#' @examples 
-#' #'
 #' @examples 
 #' library(BSgenome.Dmelanogaster.UCSC.dm6)
 #' myAlignmentsFromPICBload <- PICBload(
@@ -104,11 +103,8 @@ PICBbuild <-
     ##
 
     ## KEEP STANDARD CHROMOSOMES
-    if (typeof(REFERENCE.GENOME)=="character"){
-      SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-    }else{
-      SI<-REFERENCE.GENOME
-    }
+    SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+    
     ##
     ## Clean data
     if (VERBOSITY>1) message("\n\tKeeping standard linear chromosomes")

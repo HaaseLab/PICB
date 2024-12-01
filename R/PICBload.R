@@ -19,6 +19,7 @@
 #' @author Pavol Genzor
 #' @author Daniel Stoyko
 #' @author Aleksandr Friman
+#' @author Franziska Ahrend
 #' @return list of Granges objects named "unique" for unique mapping alignments,
 #' "multi.primary" for primary multimapping alignments,
 #' "multi.secondary" for secondary multimapping alignments
@@ -72,11 +73,7 @@ PICBload <- function(
   justPrimaryOrSecondary<-function(IS.SECONDARY.ALIGNMENT){
     ## PARAMETERS FOR LOADING BAM FILE
     if(isTRUE(STANDARD.CONTIGS.ONLY)){
-      if (typeof(REFERENCE.GENOME)=="character"){
-        SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-      }else{
-        SI<-REFERENCE.GENOME
-      }
+      SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
 
       REG.CHR <- GenomeInfoDb::seqnames(SI)
       BAM.FILE.HEADER<-Rsamtools::BamFile(BAMFILE)

@@ -1,18 +1,23 @@
-#' Get SeqInfo object from BSgenome name
+#' Get SeqInfo object from standard non-circular chromosome names from your genome
 #'
-#' @param BS.SPECIES name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"
+#' @param REFERENCE.GENOME name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6", or directly a SeqInfo object
 #' @param SEQ.LEVELS.STYLE naming of chromosomes style. "UCSC" by default
 #'
 #' @return SeqInfo object with standard non-circular chromosome names
 #' @export
 #'
 #' @author Aleksandr Friman
+#' @author Franziska Ahrend
 #' @examples 
 #' library(BSgenome.Dmelanogaster.UCSC.dm6)
 #' mySI<-PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
-PICBgetchromosomes<-function(BS.SPECIES, SEQ.LEVELS.STYLE = "UCSC"){
-  #library(BS.SPECIES, character.only = TRUE)
-  SI <- GenomeInfoDb::keepStandardChromosomes(GenomeInfoDb::seqinfo(x = eval(parse(text = BS.SPECIES))))
+PICBgetchromosomes<-function(REFERENCE.GENOME, SEQ.LEVELS.STYLE = "UCSC"){
+
+  if (typeof(REFERENCE.GENOME)=="character"){
+    SI <- GenomeInfoDb::keepStandardChromosomes(GenomeInfoDb::seqinfo(x = eval(parse(text = REFERENCE.GENOME))))
+  } else {
+    SI <- GenomeInfoDb::keepStandardChromosomes(REFERENCE.GENOME)
+  }
   GenomeInfoDb::seqlevelsStyle(SI) <- SEQ.LEVELS.STYLE
   SI <- GenomeInfoDb::dropSeqlevels(x = SI, value = names(which(GenomeInfoDb::isCircular(SI))))
   return(SI)

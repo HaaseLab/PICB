@@ -38,3 +38,10 @@ outputOfPICBbuild$clusters<-PICBstrandanalysis(
   IN.RANGES = outputOfPICBbuild$clusters
 )
 }
+\author{
+Parthena Konstantinidou
+
+Zuzana Loubalova
+
+Franziska Ahrend
+}

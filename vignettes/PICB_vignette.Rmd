@@ -36,17 +36,27 @@ Only very limited programming knowledge is needed to run PICB. Check out the fol
 
 It is possible to run PICB in RStudio, in an R script on your local machine or with HPCs (e.g., Biowulf) or in Jupyter Notebook (using R). Keep in mind that as for any handling of large-scale sequencing data you need to have sufficient memory on your device (or cluster) allocated. 
 
-`PICB` requires the CRAN packages `r CRANpkg("data.table")`, `r CRANpkg("seqinr")`, `r CRANpkg("openxlsx")`, `r CRANpkg("dplyr")`, `r CRANpkg("stats")`, `r CRANpkg("utils")`, 
+`PICB` requires the CRAN packages `r CRANpkg("data.table")`, `r CRANpkg("seqinr")`, `r CRANpkg("openxlsx")`, `r CRANpkg("dplyr")`, 
 and the Bioconductor packages `r Biocpkg("IRanges")`, `r Biocpkg("GenomicRanges")`, `r Biocpkg("GenomicAlignments")`, `r Biocpkg("Rsamtools")`, `r Biocpkg("Biostrings")`, `r Biocpkg("GenomeInfoDb")`, `r Biocpkg("BSgenome")` and `r Biocpkg("rtracklayer")` installed. 
 
 Load PICB in your R environment:
 
 
 ```{r install_dependencies, eval = FALSE}
-install.packages(c("data.table", "seqinr", "openxlsx", "dplyr", "stats", "utils"))
+install.packages(c("data.table", 
+                   "seqinr", 
+                   "openxlsx", 
+                   "dplyr"))
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install(c("IRanges", "GenomicRanges", "GenomicAlignments", "Rsamtools", "Biostrings", "GenomeInfoDb", "BSgenome", "rtracklayer"))
+BiocManager::install(c("IRanges", 
+                      "GenomicRanges", 
+                      "GenomicAlignments", 
+                      "Rsamtools", 
+                      "Biostrings", 
+                      "GenomeInfoDb", 
+                      "BSgenome", 
+                      "rtracklayer"))
 ```
 
 Next, install PICB from Bioconductor:
@@ -55,7 +65,7 @@ Next, install PICB from Bioconductor:
 BiocManager::install("PICB")
 ```
 
-Or install the latest development version from GitHub:
+Or install the latest development version from GitHub. Note that this version may be less stable than the Bioconductor release. Make sure to have `r CRANpkg("devtools")` installed.
 
 ```{r install_PICB_dev, eval = FALSE}
 devtools::install_github("HaaseLab/PICB")
@@ -142,7 +152,10 @@ The output is a list with three `GenomicRanges` objects:
 ## Build piRNA Clusters with `PICBbuild`
 
 ```{r build_clusters, eval = FALSE}
-myClusters <- PICBbuild(IN.ALIGNMENTS = myAlignments, REFERENCE.GENOME = myGenome)$clusters
+myClusters <- PICBbuild(
+  IN.ALIGNMENTS = myAlignments, 
+  REFERENCE.GENOME = myGenome
+)$clusters
 ```
 
 💡 Both `PICBload` and `PICBbuild` allow parameter adjustments. Refer to the next chapter ([Parameter Adjustments](#parameter-adjustments)) for customization options.
@@ -157,7 +170,11 @@ The goal is to find a set of parameters that maximize the number of piRNAs accom
 Make sure to provide the values for the parameters as a vector. An example is shown below:
 
 ```{r optimize_parameters, eval = FALSE}
-parameterExploration <- PICBoptimize(IN.ALIGNMENTS = myAlignments, REFERENCE.GENOME=myGenome, MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5))
+parameterExploration <- PICBoptimize(
+  IN.ALIGNMENTS = myAlignments, 
+  REFERENCE.GENOME=myGenome, 
+  MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5)
+)
 ```
 
 This function works on numerical parameters and returns a dataframe with any combination of your chosen parameters and their corresponding number of clusters, the total width of the clusters in nucleotides, the number of reads explained by the clusters, the mean RPKM of the clusters, the fraction of reads explained by the clusters and the fraction of genomic space occupied by the clusters.
@@ -172,7 +189,10 @@ In the [Example Workflow](#example-workflow) section, we will show an example on
 Next to the core-PICB analysis, `PICBstrandanalysis` allows for strand-specific analysis of piRNA clusters. This computes the sense/antisense ratio of piRNAs per cluster (non-collapsed)and adds this information as a new metadata column (`s_as_ratio`). 
 
 ```{r strand_specific_analysis, eval = FALSE}
-myClustersWithStrandAnalysis <- PICBstrandanalysis(IN.ALIGNMENTS = myAlignments, IN.RANGES = myClusters)
+myClustersWithStrandAnalysis <- PICBstrandanalysis(
+  IN.ALIGNMENTS = myAlignments, 
+  IN.RANGES = myClusters
+)
 ```
 
 To visualize the sense/antisense ratio of the clusters, you can plot the sense/antisense ratio of the clusters in a violin plot. Higher numbers indicate a higher ratio of sense to antisense piRNAs, while values close to 1 indicate an equal ratio of sense and antisense piRNAs.
@@ -309,7 +329,10 @@ Load the sample BAM file provided with the package or replace with your own BAM 
 ```{r example_load_alignments}  
 #demonstration bam_file is in "inst/extdata/Fly_Ov1_chr2L_20To21mb.bam"
 bam_file <- system.file("extdata","Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
-myAlignments <- PICBload(BAMFILE = bam_file, REFERENCE.GENOME = myGenome)
+myAlignments <- PICBload(
+  BAMFILE = bam_file, 
+  REFERENCE.GENOME = myGenome
+)
 ```
 
 
@@ -320,9 +343,9 @@ Next, we want to form the piRNA clusters using the `PICBbuild` function. Usually
 
 ```{r example_build_clusters}  
 myClusters <- PICBbuild(
-    IN.ALIGNMENTS = myAlignments,
-    REFERENCE.GENOME = myGenome,
-    LIBRARY.SIZE = 12799826
+  IN.ALIGNMENTS = myAlignments,
+  REFERENCE.GENOME = myGenome,
+  LIBRARY.SIZE = 12799826
 )$clusters
 ```
 
@@ -333,7 +356,13 @@ We note that ranking piRNA clusters is essential for proper interpretation. PICB
 We can use `PICBoptimize` to find the optimal parameters for `PICBbuild` for your dataset.
 
 ```{r example_optimize_parameters}
-parameterExploration <- PICBoptimize(IN.ALIGNMENTS = myAlignments, REFERENCE.GENOME=myGenome, MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5), LIBRARY.SIZE = 12799826, VERBOSITY = 1)
+parameterExploration <- PICBoptimize(
+  IN.ALIGNMENTS = myAlignments, 
+  REFERENCE.GENOME=myGenome, 
+  MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5), 
+  LIBRARY.SIZE = 12799826, 
+  VERBOSITY = 1
+)
 ```
 
 As an example, we can plot the results to find the optimal parameters for your dataset. First specify the parameter you want to optimize.
@@ -373,7 +402,10 @@ In most cases, the default parameters will yield great results (high piRNAs expl
 In case you are interested in learning more about your clusters, you can run `PICBstrandanalysis` to obtain the ratio of sense to antisense piRNAs. 
 
 ```{r strandanalysis}
-myClustersWithStrandAnalysis <- PICBstrandanalysis(IN.ALIGNMENTS=myAlignments, IN.RANGES=myClusters)
+myClustersWithStrandAnalysis <- PICBstrandanalysis(
+  IN.ALIGNMENTS=myAlignments, 
+  IN.RANGES=myClusters
+)
 ```
 
 In [Explore Results](#explore-results) you can see that the sense/antisense ratio is added as a new metadata column (`s_as_ratio`) and is quite low. 
@@ -394,7 +426,10 @@ You can further analyze and visualize the clusters as needed.
 You can export the results to an excel file using `PICBexporttoexcel`.
 
 ```{r export_results}
-PICBexporttoexcel(IN.RANGES=myClustersWithStrandAnalysis, EXCEL.FILE.NAME="myClusters_demonstration.xlsx")
+PICBexporttoexcel(
+  IN.RANGES=myClustersWithStrandAnalysis, 
+  EXCEL.FILE.NAME="myClusters_demonstration.xlsx"
+)
 ```
 
 When exporting clusters only (PICBbuildOutput$clusters), you receive an excel file with just one sheet containing the clusters. 

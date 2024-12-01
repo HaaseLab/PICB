@@ -2,12 +2,12 @@
 % Please edit documentation in R/PICBgetchromosomes.R
 \name{PICBgetchromosomes}
 \alias{PICBgetchromosomes}
-\title{Get SeqInfo object from BSgenome name}
+\title{Get SeqInfo object with standard non-circular chromosome names from your genome}
 \usage{
-PICBgetchromosomes(BS.SPECIES, SEQ.LEVELS.STYLE = "UCSC")
+PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE = "UCSC")
 }
 \arguments{
-\item{BS.SPECIES}{name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"}
+\item{REFERENCE.GENOME}{name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6", or directly a SeqInfo object}
 
 \item{SEQ.LEVELS.STYLE}{naming of chromosomes style. "UCSC" by default}
 }
@@ -15,7 +15,7 @@ PICBgetchromosomes(BS.SPECIES, SEQ.LEVELS.STYLE = "UCSC")
 SeqInfo object with standard non-circular chromosome names
 }
 \description{
-Get SeqInfo object from BSgenome name
+Get SeqInfo object with standard non-circular chromosome names from your genome
 }
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)
@@ -23,4 +23,6 @@ mySI<-PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
 }
 \author{
 Aleksandr Friman
+
+Franziska Ahrend
 }
