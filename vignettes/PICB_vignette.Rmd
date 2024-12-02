@@ -43,20 +43,25 @@ Load PICB in your R environment:
 
 
 ```{r install_dependencies, eval = FALSE}
-install.packages(c("data.table", 
-                   "seqinr", 
-                   "openxlsx", 
-                   "dplyr"))
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install(c("IRanges", 
-                      "GenomicRanges", 
-                      "GenomicAlignments", 
-                      "Rsamtools", 
-                      "Biostrings", 
-                      "GenomeInfoDb", 
-                      "BSgenome", 
-                      "rtracklayer"))
+install.packages(c(
+  "data.table",
+  "seqinr",
+  "openxlsx",
+  "dplyr"
+))
+if (!require("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+BiocManager::install(c(
+  "IRanges",
+  "GenomicRanges",
+  "GenomicAlignments",
+  "Rsamtools",
+  "Biostrings",
+  "GenomeInfoDb",
+  "BSgenome",
+  "rtracklayer"
+))
 ```
 
 Next, install PICB from Bioconductor:
@@ -97,7 +102,7 @@ If your genome is available in a BSgenome package, load it directly:
 ```{r load_BSgenome1, eval = FALSE}
 # Example for Drosophila melanogaster, replace with your own genome
 if (!requireNamespace("BSgenome.Dmelanogaster.UCSC.dm6", quietly = TRUE)) {
-    BiocManager::install("BSgenome.Dmelanogaster.UCSC.dm6")
+  BiocManager::install("BSgenome.Dmelanogaster.UCSC.dm6")
 }
 library(BSgenome.Dmelanogaster.UCSC.dm6)
 myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
@@ -108,8 +113,10 @@ b. **Using chromosome names and lengths**
 
 If you have the chromosome names and lengths, create a `Seqinfo` object:
 ```{r load_myGenome2, eval = FALSE}
-myGenome <- GenomeInfoDb::Seqinfo(seqnames = c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY"), 
-                                seqlengths = c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352))
+myGenome <- GenomeInfoDb::Seqinfo(
+  seqnames = c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY"),
+  seqlengths = c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352)
+)
 ```
 
 
@@ -153,7 +160,7 @@ The output is a list with three `GenomicRanges` objects:
 
 ```{r build_clusters, eval = FALSE}
 myClusters <- PICBbuild(
-  IN.ALIGNMENTS = myAlignments, 
+  IN.ALIGNMENTS = myAlignments,
   REFERENCE.GENOME = myGenome
 )$clusters
 ```
@@ -171,9 +178,9 @@ Make sure to provide the values for the parameters as a vector. An example is sh
 
 ```{r optimize_parameters, eval = FALSE}
 parameterExploration <- PICBoptimize(
-  IN.ALIGNMENTS = myAlignments, 
-  REFERENCE.GENOME=myGenome, 
-  MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5)
+  IN.ALIGNMENTS = myAlignments,
+  REFERENCE.GENOME = myGenome,
+  MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2, 3, 4, 5)
 )
 ```
 
@@ -190,7 +197,7 @@ Next to the core-PICB analysis, `PICBstrandanalysis` allows for strand-specific 
 
 ```{r strand_specific_analysis, eval = FALSE}
 myClustersWithStrandAnalysis <- PICBstrandanalysis(
-  IN.ALIGNMENTS = myAlignments, 
+  IN.ALIGNMENTS = myAlignments,
   IN.RANGES = myClusters
 )
 ```
@@ -327,10 +334,10 @@ Instead you can also use any of the other provided options to load the correspon
 Load the sample BAM file provided with the package or replace with your own BAM file path.
 
 ```{r example_load_alignments}  
-#demonstration bam_file is in "inst/extdata/Fly_Ov1_chr2L_20To21mb.bam"
-bam_file <- system.file("extdata","Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+# demonstration bam_file is in "inst/extdata/Fly_Ov1_chr2L_20To21mb.bam"
+bam_file <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
 myAlignments <- PICBload(
-  BAMFILE = bam_file, 
+  BAMFILE = bam_file,
   REFERENCE.GENOME = myGenome
 )
 ```
@@ -357,10 +364,10 @@ We can use `PICBoptimize` to find the optimal parameters for `PICBbuild` for you
 
 ```{r example_optimize_parameters}
 parameterExploration <- PICBoptimize(
-  IN.ALIGNMENTS = myAlignments, 
-  REFERENCE.GENOME=myGenome, 
-  MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5), 
-  LIBRARY.SIZE = 12799826, 
+  IN.ALIGNMENTS = myAlignments,
+  REFERENCE.GENOME = myGenome,
+  MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2, 3, 4, 5),
+  LIBRARY.SIZE = 12799826,
   VERBOSITY = 1
 )
 ```
@@ -368,27 +375,26 @@ parameterExploration <- PICBoptimize(
 As an example, we can plot the results to find the optimal parameters for your dataset. First specify the parameter you want to optimize.
 
 ```{r example_specify_parameter}
-x_column <- "MIN.UNIQUE.ALIGNMENTS.PER.WINDOW" #change parameter to optimize, if applicable
+x_column <- "MIN.UNIQUE.ALIGNMENTS.PER.WINDOW" # change parameter to optimize, if applicable
 ```
 
 Then plot the results.
 
 ```{r example_plot_optimize_parameters, message=FALSE}
 library(ggplot2)
-#Determine a scaling factor for the secondary axis
-scaling_factor<-max(parameterExploration$fraction.of.library.explained.by.clusters)/max(parameterExploration$clusters.fraction.of.genome.space)
-#plot graph
+# Determine a scaling factor for the secondary axis
+scaling_factor <- max(parameterExploration$fraction.of.library.explained.by.clusters) / max(parameterExploration$clusters.fraction.of.genome.space)
+# plot graph
 ggplot(parameterExploration, aes(x = .data[[x_column]])) +
-    geom_line(aes(y = fraction.of.library.explained.by.clusters*100, color = "piRNAs Explained"), linewidth = 1) +
-    geom_point(aes(y = fraction.of.library.explained.by.clusters*100, color = "piRNAs Explained"), size = 3) +
-    geom_line(aes(y = clusters.fraction.of.genome.space * scaling_factor*100, color = "Genome Space"), linewidth = 1) +
-    geom_point(aes(y = clusters.fraction.of.genome.space * scaling_factor*100, color = "Genome Space"), size = 3) +
-    scale_y_continuous(name = "piRNAs Explained by Clusters (%, piRNA sample)", sec.axis = sec_axis(~./scaling_factor, name = "Total piRNA cluster-length (Genome, %)")) +
-    scale_x_reverse(name = paste0("Parameter chosen: ", x_column), breaks = parameterExploration[[x_column]], labels = parameterExploration[[x_column]]) +
-    scale_color_manual(name = "Metrics", values = c("piRNAs Explained" = "#00a100", "Genome Space" = "black")) +
-    theme_classic() + 
-    theme(axis.title.y.left = element_text(color = "#00a100"), axis.title.y.right = element_text(color = "black"),legend.position = "top")
-
+  geom_line(aes(y = fraction.of.library.explained.by.clusters * 100, color = "piRNAs Explained"), linewidth = 1) +
+  geom_point(aes(y = fraction.of.library.explained.by.clusters * 100, color = "piRNAs Explained"), size = 3) +
+  geom_line(aes(y = clusters.fraction.of.genome.space * scaling_factor * 100, color = "Genome Space"), linewidth = 1) +
+  geom_point(aes(y = clusters.fraction.of.genome.space * scaling_factor * 100, color = "Genome Space"), size = 3) +
+  scale_y_continuous(name = "piRNAs Explained by Clusters (%, piRNA sample)", sec.axis = sec_axis(~ . / scaling_factor, name = "Total piRNA cluster-length (Genome, %)")) +
+  scale_x_reverse(name = paste0("Parameter chosen: ", x_column), breaks = parameterExploration[[x_column]], labels = parameterExploration[[x_column]]) +
+  scale_color_manual(name = "Metrics", values = c("piRNAs Explained" = "#00a100", "Genome Space" = "black")) +
+  theme_classic() +
+  theme(axis.title.y.left = element_text(color = "#00a100"), axis.title.y.right = element_text(color = "black"), legend.position = "top")
 ```
 
 As described in the beginning of this [Example Workflow](#example-workflow), we subsetted the dataset to only include reads from chromosome 2L for the sake of this demonstration. 
@@ -403,8 +409,8 @@ In case you are interested in learning more about your clusters, you can run `PI
 
 ```{r strandanalysis}
 myClustersWithStrandAnalysis <- PICBstrandanalysis(
-  IN.ALIGNMENTS=myAlignments, 
-  IN.RANGES=myClusters
+  IN.ALIGNMENTS = myAlignments,
+  IN.RANGES = myClusters
 )
 ```
 
@@ -427,8 +433,8 @@ You can export the results to an excel file using `PICBexporttoexcel`.
 
 ```{r export_results}
 PICBexporttoexcel(
-  IN.RANGES=myClustersWithStrandAnalysis, 
-  EXCEL.FILE.NAME="myClusters_demonstration.xlsx"
+  IN.RANGES = myClustersWithStrandAnalysis,
+  EXCEL.FILE.NAME = "myClusters_demonstration.xlsx"
 )
 ```
 

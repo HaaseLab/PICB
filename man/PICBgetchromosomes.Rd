@@ -2,7 +2,7 @@
 % Please edit documentation in R/PICBgetchromosomes.R
 \name{PICBgetchromosomes}
 \alias{PICBgetchromosomes}
-\title{Get SeqInfo object with standard non-circular chromosome names from your genome}
+\title{Get SeqInfo object from standard non-circular chromosome names from your genome}
 \usage{
 PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE = "UCSC")
 }
@@ -15,11 +15,11 @@ PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE = "UCSC")
 SeqInfo object with standard non-circular chromosome names
 }
 \description{
-Get SeqInfo object with standard non-circular chromosome names from your genome
+Get SeqInfo object from standard non-circular chromosome names from your genome
 }
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)
-mySI<-PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
+mySI <- PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
 }
 \author{
 Aleksandr Friman

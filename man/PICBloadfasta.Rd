@@ -18,7 +18,7 @@ Get SeqInfo object from a fasta file
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)
 
-#create temporary fasta file
+# create temporary fasta file
 chr2L_seq <- BSgenome.Dmelanogaster.UCSC.dm6[["chr2L"]]
 chr2L_seq_set <- DNAStringSet(chr2L_seq)
 names(chr2L_seq_set) <- "chr2L"

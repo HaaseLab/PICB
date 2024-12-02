@@ -1,12 +1,12 @@
 library("BSgenome.Dmelanogaster.UCSC.dm6")
 
 test_that("example data (bam and corresponding bai file) is present", {
-  expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")))
-  expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam.bai", package="PICB")))
+  expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")))
+  expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam.bai", package = "PICB")))
 })
 
 test_that("PICBload loads BAM file with default parameters correctly", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   result <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -30,18 +30,18 @@ test_that("PICBload loads BAM file with default parameters correctly", {
 })
 
 test_that("PICBload throws error when BAMFILE is NULL", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   expect_error(
     PICBload(
       BAMFILE = NULL,
       REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
     ),
     "Please provide full path to a .bam file !!!"
-)
+  )
 })
 
 test_that("PICBload throws error when REFERENCE.GENOME is NULL", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   expect_error(
     PICBload(
       BAMFILE = bam,
@@ -52,7 +52,7 @@ test_that("PICBload throws error when REFERENCE.GENOME is NULL", {
 })
 
 test_that("PICBload handles SIMPLE.CIGAR = FALSE correctly", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   result <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -71,7 +71,7 @@ test_that("PICBload handles SIMPLE.CIGAR = FALSE correctly", {
 })
 
 test_that("PICBload loads secondary alignments when IS.SECONDARY.ALIGNMENT = TRUE", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   result <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -88,7 +88,7 @@ test_that("PICBload loads secondary alignments when IS.SECONDARY.ALIGNMENT = TRU
 })
 
 test_that("PICBload loads primary alignments when IS.SECONDARY.ALIGNMENT = FALSE", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   result <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -107,19 +107,19 @@ test_that("PICBload loads primary alignments when IS.SECONDARY.ALIGNMENT = FALSE
 })
 
 test_that("PICBload loads BAM file with default parameters the same with using the same reference genome but different methods", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   library("BSgenome.Dmelanogaster.UCSC.dm6")
-  
+
   expectedResult <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
     VERBOSE = FALSE
   )
-  #Using chromosome names and lengths
+  # Using chromosome names and lengths
   seqnames <- c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY")
   seqlengths <- c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352)
   myGenome <- Seqinfo(seqnames = seqnames, seqlengths = seqlengths)
-  
+
   result <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = myGenome,
@@ -127,7 +127,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
   )
   expect_equal(result, expectedResult)
 
-  #Using genome name
+  # Using genome name
   myGenome <- GenomeInfoDb::Seqinfo(genome = "dm6")
   result <- PICBload(
     BAMFILE = bam,
@@ -136,7 +136,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
   )
   expect_equal(result, expectedResult)
 
-  #Using a FASTA file
+  # Using a FASTA file
   chr2L_seq <- BSgenome.Dmelanogaster.UCSC.dm6[["chr2L"]]
   chr2L_seq_set <- DNAStringSet(chr2L_seq)
   names(chr2L_seq_set) <- "chr2L"
@@ -153,8 +153,8 @@ test_that("PICBload loads BAM file with default parameters the same with using t
 })
 
 test_that("PICBload filters alignments based on custom READ.SIZE.RANGE", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
-  custom_size_range <- c(24, 27) #not recommended size range! Just here for testing
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
+  custom_size_range <- c(24, 27) # not recommended size range! Just here for testing
   result <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -177,7 +177,7 @@ test_that("PICBload filters alignments based on custom READ.SIZE.RANGE", {
 })
 
 test_that("PICBload retrieves original sequences when GET.ORIGINAL.SEQUENCE = TRUE", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   result <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -198,7 +198,7 @@ test_that("PICBload retrieves original sequences when GET.ORIGINAL.SEQUENCE = TR
 })
 
 test_that("PICBload changes seqlevels style when SEQ.LEVELS.STYLE is specified", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   custom_style <- "NCBI"
   result <- PICBload(
     BAMFILE = bam,
@@ -214,7 +214,7 @@ test_that("PICBload changes seqlevels style when SEQ.LEVELS.STYLE is specified",
 })
 
 test_that("PICBload works correctly with a combination of custom parameters", {
-  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package="PICB")
+  bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
   result <- PICBload(
     BAMFILE = bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",

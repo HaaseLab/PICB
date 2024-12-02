@@ -14,21 +14,22 @@ test_that("Example data (BAM and corresponding BAI file) is present", {
 test_that("PICBbuild throws error when IN.ALIGNMENTS is NULL", {
   expect_error(
     PICBbuild(
-    IN.ALIGNMENTS = NULL,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-    VERBOSITY = 0
-  ),
-  "Please provide IN.ALIGNMENTS !"
+      IN.ALIGNMENTS = NULL,
+      REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+      VERBOSITY = 0
+    ),
+    "Please provide IN.ALIGNMENTS !"
   )
 })
 
 test_that("PICBbuild throws error when REFERENCE.GENOME is NULL", {
   expect_error(
     PICBbuild(
-    IN.ALIGNMENTS = myAlignments,
-    REFERENCE.GENOME = NULL,
-    VERBOSITY = 0
-  ), "Please provide REFERENCE.GENOME !")
+      IN.ALIGNMENTS = myAlignments,
+      REFERENCE.GENOME = NULL,
+      VERBOSITY = 0
+    ), "Please provide REFERENCE.GENOME !"
+  )
 })
 
 
@@ -39,7 +40,8 @@ test_that("PICBbuild throws error when IN.ALIGNMENTS is missing 'unique' column"
     PICBbuild(
       IN.ALIGNMENTS = myAlignments_unique_missing,
       REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
-    ), regexp = "^IN.ALIGNMENTS must contain 'unique' column! "
+    ),
+    regexp = "^IN.ALIGNMENTS must contain 'unique' column! "
   )
 })
 
@@ -48,10 +50,12 @@ test_that("PICBbuild throws error when IN.ALIGNMENTS is missing 'multi.primary' 
   myAlignments_multi_primary_missing$multi.primary <- NULL
   expect_error(
     PICBbuild(
-    IN.ALIGNMENTS = myAlignments_multi_primary_missing,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-    VERBOSITY = 0
-  ), regexp = "^IN.ALIGNMENTS must contain 'multi.primary' column! ")
+      IN.ALIGNMENTS = myAlignments_multi_primary_missing,
+      REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+      VERBOSITY = 0
+    ),
+    regexp = "^IN.ALIGNMENTS must contain 'multi.primary' column! "
+  )
 })
 
 test_that("PICBbuild warns when IN.ALIGNMENTS is missing 'multi.secondary' column", {
@@ -62,7 +66,8 @@ test_that("PICBbuild warns when IN.ALIGNMENTS is missing 'multi.secondary' colum
       IN.ALIGNMENTS = myAlignments_multi_secondary_missing,
       REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
       VERBOSITY = 0
-  ), regexp = "^IN.ALIGNMENTS does not contain secondary multimappers"
+    ),
+    regexp = "^IN.ALIGNMENTS does not contain secondary multimappers"
   )
 })
 
@@ -75,12 +80,12 @@ test_that("PICBbuild builds piRNA seeds, cores, and clusters with default parame
   expect_type(result, "list")
   expect_named(result, c("seeds", "cores", "clusters"))
   expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
-  
+
   expect_equal(length(result$seeds), 45)
-  expect_equal(length(result$cores), 41) 
-  expect_equal(length(result$clusters), 30) 
+  expect_equal(length(result$cores), 41)
+  expect_equal(length(result$clusters), 30)
   # Check metadata columns
-  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM","multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
   expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
   expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
   expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
@@ -99,17 +104,16 @@ test_that("PICBbuild example subset builds piRNA seeds, cores, and clusters corr
   expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
 
   expect_equal(length(result$seeds), 25)
-  expect_equal(length(result$cores), 15) 
-  expect_equal(length(result$clusters), 4) 
+  expect_equal(length(result$cores), 15)
+  expect_equal(length(result$clusters), 4)
   # Check metadata columns
-  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM","multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
   expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
   expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
   expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
 })
 
 test_that("PICBbuild handles custom sliding window sizes correctly", {
-
   custom_uniq_window_width <- 500
   custom_uniq_window_step <- 50
   custom_primary_mult_window_width <- 400
@@ -131,16 +135,14 @@ test_that("PICBbuild handles custom sliding window sizes correctly", {
   expect_named(result, c("seeds", "cores", "clusters"))
   expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
 
-  expect_equal(length(result$seeds), 44) 
-  expect_equal(length(result$cores), 36) 
-  expect_equal(length(result$clusters), 29) 
+  expect_equal(length(result$seeds), 44)
+  expect_equal(length(result$cores), 36)
+  expect_equal(length(result$clusters), 29)
   # Check metadata columns
-  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM","multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
   expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
   expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
   expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
-
-
 })
 
 
@@ -163,15 +165,14 @@ test_that("PICBbuild filters based on custom thresholds correctly", {
   expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
 
 
-  expect_equal(length(result$seeds), 43) 
-  expect_equal(length(result$cores), 32) 
-  expect_equal(length(result$clusters), 22) 
-  #check metacolumns
-  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM","multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+  expect_equal(length(result$seeds), 43)
+  expect_equal(length(result$cores), 32)
+  expect_equal(length(result$clusters), 22)
+  # check metacolumns
+  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
   expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
   expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
   expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
-
 })
 
 
@@ -186,7 +187,7 @@ test_that("PICBbuild provides non-normalized statistics when PROVIDE.NON_NORMALI
   expect_named(result, c("seeds", "cores", "clusters"))
 
   # Check metadata columns
-  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM","multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
   addNonNormOutputCols <- c("uniq_reads", "multimapping_reads_primary_alignments", "all_reads_primary_alignments", "width_covered_by_unique_alignments", "uniq_sequences")
   expect_equal(length(setdiff(colnames(mcols(result$seeds)), c(expectedOutputCols, addNonNormOutputCols))), 0)
   expect_equal(length(setdiff(colnames(mcols(result$cores)), c(expectedOutputCols, addNonNormOutputCols))), 0)
@@ -194,17 +195,16 @@ test_that("PICBbuild provides non-normalized statistics when PROVIDE.NON_NORMALI
 })
 
 test_that("PICBbuild loads BAM file with default parameters the same with using the same reference genome but different methods", {
-  
   expectedResult <- PICBbuild(
     IN.ALIGNMENTS = myAlignments,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
     VERBOSITY = 0
   )
-  #Using chromosome names and lengths
+  # Using chromosome names and lengths
   seqnames <- c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY")
   seqlengths <- c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352)
   myGenome <- Seqinfo(seqnames = seqnames, seqlengths = seqlengths)
-  
+
   result <- PICBbuild(
     IN.ALIGNMENTS = myAlignments,
     REFERENCE.GENOME = myGenome,
@@ -212,7 +212,7 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
   )
   expect_equal(result, expectedResult)
 
-  #Using genome name
+  # Using genome name
   myGenome <- GenomeInfoDb::Seqinfo(genome = "dm6")
   result <- PICBbuild(
     IN.ALIGNMENTS = myAlignments,
@@ -221,7 +221,7 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
   )
   expect_equal(result, expectedResult)
 
-  #Using a FASTA file
+  # Using a FASTA file
   chr2L_seq <- BSgenome.Dmelanogaster.UCSC.dm6[["chr2L"]]
   chr2L_seq_set <- DNAStringSet(chr2L_seq)
   names(chr2L_seq_set) <- "chr2L"
@@ -233,7 +233,7 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
     REFERENCE.GENOME = myGenome,
     VERBOSITY = 0
   )
-  #seqinfo is expected to be different (all standard chromosomes in above examples vs just chr2L in subset genome)
+  # seqinfo is expected to be different (all standard chromosomes in above examples vs just chr2L in subset genome)
   seqInfoExp <- seqinfo(expectedResult$seeds)
   seqinfo(result$seeds) <- seqInfoExp
   seqinfo(result$cores) <- seqInfoExp
@@ -260,17 +260,18 @@ test_that("PICBbuild changes seqlevels style when SEQ.LEVELS.STYLE is specified"
   expect_equal(GenomeInfoDb::seqlevelsStyle(result$clusters)[1], custom_style)
 })
 
-test_that("PICBbuild computes 1U and 10A fractions when COMPUTE.1U.10A.FRACTIONS = TRUE", { 
-  #for error when column seq not provided in PICBload() output (myAlignments)
+test_that("PICBbuild computes 1U and 10A fractions when COMPUTE.1U.10A.FRACTIONS = TRUE", {
+  # for error when column seq not provided in PICBload() output (myAlignments)
   expect_error(
     PICBbuild(
       IN.ALIGNMENTS = myAlignments,
       REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
       COMPUTE.1U.10A.FRACTIONS = TRUE,
       VERBOSITY = 0
-    ), regexp = "^Alignments 'unique' does not contain sequence"
+    ),
+    regexp = "^Alignments 'unique' does not contain sequence"
   )
-  #proper calculations with column seq in myAlignments
+  # proper calculations with column seq in myAlignments
   ouputPICBloadWseq <- PICBload(
     BAMFILE = test_bam,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -287,9 +288,9 @@ test_that("PICBbuild computes 1U and 10A fractions when COMPUTE.1U.10A.FRACTIONS
 
   expect_type(result, "list")
   expect_named(result, c("seeds", "cores", "clusters"))
-  
+
   # Check that the fraction columns are present in metadata
-  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM","multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+  expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
   fraction1U10ACols <- c("oneU.frac.unique", "tenA.frac.unique", "oneU.frac.multi.primary", "tenA.frac.multi.primary", "oneU.frac.multi.secondary", "tenA.frac.multi.secondary")
   expect_equal(length(setdiff(colnames(mcols(result$seeds)), c(expectedOutputCols, fraction1U10ACols))), 0)
   expect_equal(length(setdiff(colnames(mcols(result$cores)), c(expectedOutputCols, fraction1U10ACols))), 0)

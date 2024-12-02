@@ -42,23 +42,23 @@ Annotate Granges according to a piRNA library
 library(BSgenome.Dmelanogaster.UCSC.dm6)
 myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 myAlignmentsFromPICBload <- PICBload(
-  BAMFILE=system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"), 
-  REFERENCE.GENOME = myGenome, 
-  VERBOSE=FALSE
+  BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
+  REFERENCE.GENOME = myGenome,
+  VERBOSE = FALSE
 )
 myRangesFromPICBbuild <- PICBbuild(
   IN.ALIGNMENTS = myAlignmentsFromPICBload,
-  REFERENCE.GENOME = myGenome, 
-  VERBOSITY=0
+  REFERENCE.GENOME = myGenome,
+  VERBOSITY = 0
 )
 
 myClustersFromPICBbuildAnnotationsRemoved <- GenomicRanges::granges(myRangesFromPICBbuild$clusters)
 
 PICBannotate(
- INPUT.GRANGES = myClustersFromPICBbuildAnnotationsRemoved, 
- ALIGNMENTS = myAlignmentsFromPICBload,
- REFERENCE.GENOME = myGenome, 
- PROVIDE.NON.NORMALIZED = TRUE
+  INPUT.GRANGES = myClustersFromPICBbuildAnnotationsRemoved,
+  ALIGNMENTS = myAlignmentsFromPICBload,
+  REFERENCE.GENOME = myGenome,
+  PROVIDE.NON.NORMALIZED = TRUE
 )
 }
 \author{
