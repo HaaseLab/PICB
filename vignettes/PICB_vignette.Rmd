@@ -305,7 +305,7 @@ In the following example, we demonstrate the basic workflow of PICB using a samp
 
 For the demo, we are using a subset of our mapped small RNAs from Drosophila ovaries (SRR7346241). In short, we trimmed the 3’ adaptor and filtered for reads ≥24 nucleotides. 
 Next, we removed abundant cellular RNAs (rRNAs, tRNAs, snRNAs, snoRNAs) by annotation. Finally, we mapped the processed reads to the Dm6 genome using STAR (PMID: 23104886) allowing up to one mismatch and 100 alignments per read. Using samtools (PMID: 19505943), 
-we extracted alignments from chr2L:20000000-21000000 (samtools view -b original.bam chr2L:20000000-21000000 > Fly_Ov1_chr2L_20To21mb.bam).
+we extracted alignments from chr2L:20000000-21000000 (samtools view -b original.bam chr2L:20000000-21000000 > Fly_Ov1_chr2L_20To21mb_filtered.bam).
 
 
 ```{r loadPICB}
@@ -334,8 +334,8 @@ Instead you can also use any of the other provided options to load the correspon
 Load the sample BAM file provided with the package or replace with your own BAM file path.
 
 ```{r example_load_alignments}  
-# demonstration bam_file is in "inst/extdata/Fly_Ov1_chr2L_20To21mb.bam"
-bam_file <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
+# demonstration bam_file is in "inst/extdata/Fly_Ov1_chr2L_20To21mb_filtered.bam"
+bam_file <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
 myAlignments <- PICBload(
     BAMFILE = bam_file,
     REFERENCE.GENOME = myGenome

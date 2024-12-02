@@ -1,4 +1,4 @@
-test_bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
+test_bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
 library("BSgenome.Dmelanogaster.UCSC.dm6")
 myAlignments <- PICBload(
     BAMFILE = test_bam,
@@ -7,8 +7,8 @@ myAlignments <- PICBload(
 )
 
 test_that("Example data (BAM and corresponding BAI file) is present", {
-    expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")), info = "BAM file does not exist in inst/extdata.")
-    expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam.bai", package = "PICB")), info = "BAI file does not exist in inst/extdata.")
+    expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")), info = "BAM file does not exist in inst/extdata.")
+    expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam.bai", package = "PICB")), info = "BAI file does not exist in inst/extdata.")
 })
 
 test_that("PICBbuild throws error when IN.ALIGNMENTS is NULL", {
@@ -81,9 +81,9 @@ test_that("PICBbuild builds piRNA seeds, cores, and clusters with default parame
     expect_named(result, c("seeds", "cores", "clusters"))
     expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
 
-    expect_equal(length(result$seeds), 45)
-    expect_equal(length(result$cores), 41)
-    expect_equal(length(result$clusters), 30)
+    expect_equal(length(result$seeds), 42)
+    expect_equal(length(result$cores), 38)
+    expect_equal(length(result$clusters), 27)
     # Check metadata columns
     expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
     expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
@@ -104,7 +104,7 @@ test_that("PICBbuild example subset builds piRNA seeds, cores, and clusters corr
     expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
 
     expect_equal(length(result$seeds), 25)
-    expect_equal(length(result$cores), 15)
+    expect_equal(length(result$cores), 18)
     expect_equal(length(result$clusters), 4)
     # Check metadata columns
     expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
@@ -135,9 +135,9 @@ test_that("PICBbuild handles custom sliding window sizes correctly", {
     expect_named(result, c("seeds", "cores", "clusters"))
     expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
 
-    expect_equal(length(result$seeds), 44)
+    expect_equal(length(result$seeds), 43)
     expect_equal(length(result$cores), 36)
-    expect_equal(length(result$clusters), 29)
+    expect_equal(length(result$clusters), 28)
     # Check metadata columns
     expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
     expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
@@ -165,9 +165,9 @@ test_that("PICBbuild filters based on custom thresholds correctly", {
     expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
 
 
-    expect_equal(length(result$seeds), 43)
-    expect_equal(length(result$cores), 32)
-    expect_equal(length(result$clusters), 22)
+    expect_equal(length(result$seeds), 41)
+    expect_equal(length(result$cores), 31)
+    expect_equal(length(result$clusters), 20)
     # check metacolumns
     expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
     expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)

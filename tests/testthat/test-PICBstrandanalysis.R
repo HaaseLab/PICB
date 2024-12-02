@@ -151,7 +151,7 @@ test_that("PICBstrandanalysis returns expected output when IN.ALIGNMENTS not cor
 # test with example data
 
 test_that("PICBload loads BAM file with default parameters correctly", {
-    bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB")
+    bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
     resultPICBload <- PICBload(
         BAMFILE = bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -171,6 +171,6 @@ test_that("PICBload loads BAM file with default parameters correctly", {
         length(PICBstrandanalysis(IN.ALIGNMENTS = resultPICBload, IN.RANGES = myClusters)$s_as_ratio), 4
     )
     expect_equal(
-        round(PICBstrandanalysis(IN.ALIGNMENTS = resultPICBload, IN.RANGES = myClusters)$s_as_ratio, digits = 3), round(c(3.9041074, 1.6623939, 0.2567568, 0.601542), digits = 3)
+        round(PICBstrandanalysis(IN.ALIGNMENTS = resultPICBload, IN.RANGES = myClusters)$s_as_ratio, digits = 3), round(c(3.91609, 1.68109, 0.25495, 0.59485), digits = 3)
     )
 })

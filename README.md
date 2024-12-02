@@ -398,7 +398,7 @@ Check for any warning of PICBload, PICBbuild. This code directly for clusters, i
 
 Load the alignments with `PICBload`.
 ```R
-myAlignments <- PICBload(system.file("extdata","Fly_Ov1_chr2L_20To21mb.bam", package="PICB"), REFERENCE.GENOME = myGenome)
+myAlignments <- PICBload(system.file("extdata","Fly_Ov1_chr2L_20To21mb_filtered.bam", package="PICB"), REFERENCE.GENOME = myGenome)
 ```
 Next, we want to form the piRNA clusters using the `PICBbuild` function. Usually you would not need to include the size of the library (`LIBRARY.SIZE`) since PICB calculates it automatically. However, just for this demo, please include this parameter to adjust to the subset we chose to create this demo. 
 

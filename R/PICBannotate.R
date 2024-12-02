@@ -18,7 +18,7 @@ utils::globalVariables(c("queryHits", "oneT", "tenA"))
 #' library(BSgenome.Dmelanogaster.UCSC.dm6)
 #' myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 #' myAlignmentsFromPICBload <- PICBload(
-#'     BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
+#'     BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB"),
 #'     REFERENCE.GENOME = myGenome,
 #'     VERBOSE = FALSE
 #' )
