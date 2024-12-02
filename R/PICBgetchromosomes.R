@@ -12,12 +12,12 @@
 #' library(BSgenome.Dmelanogaster.UCSC.dm6)
 #' mySI <- PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
 PICBgetchromosomes <- function(REFERENCE.GENOME, SEQ.LEVELS.STYLE = "UCSC") {
-  if (typeof(REFERENCE.GENOME) == "character") {
-    SI <- GenomeInfoDb::keepStandardChromosomes(GenomeInfoDb::seqinfo(x = eval(parse(text = REFERENCE.GENOME))))
-  } else {
-    SI <- GenomeInfoDb::keepStandardChromosomes(REFERENCE.GENOME)
-  }
-  GenomeInfoDb::seqlevelsStyle(SI) <- SEQ.LEVELS.STYLE
-  SI <- GenomeInfoDb::dropSeqlevels(x = SI, value = names(which(GenomeInfoDb::isCircular(SI))))
-  return(SI)
+    if (typeof(REFERENCE.GENOME) == "character") {
+        SI <- GenomeInfoDb::keepStandardChromosomes(GenomeInfoDb::seqinfo(x = eval(parse(text = REFERENCE.GENOME))))
+    } else {
+        SI <- GenomeInfoDb::keepStandardChromosomes(REFERENCE.GENOME)
+    }
+    GenomeInfoDb::seqlevelsStyle(SI) <- SEQ.LEVELS.STYLE
+    SI <- GenomeInfoDb::dropSeqlevels(x = SI, value = names(which(GenomeInfoDb::isCircular(SI))))
+    return(SI)
 }

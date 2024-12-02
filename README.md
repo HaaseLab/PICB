@@ -141,7 +141,7 @@ myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 
 ```R
 myGenome <- GenomeInfoDb::Seqinfo(seqnames = c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY"), 
-                                seqlengths = c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352))
+    seqlengths = c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352))
 ```
 
 3. **Using a Seqinfo object**

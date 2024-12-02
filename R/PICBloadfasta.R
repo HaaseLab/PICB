@@ -19,9 +19,9 @@
 #' myGenome <- PICBloadfasta(FASTA.NAME = temp_fasta)
 #' unlink(temp_fasta)
 PICBloadfasta <- function(FASTA.NAME = NULL) {
-  if (is.null(FASTA.NAME)) stop("Please provide FASTA.NAME !")
-  FAdata <- seqinr::read.fasta(FASTA.NAME)
-  FAnames <- names(FAdata)
-  FAlengths <- lengths(FAdata)
-  return(GenomeInfoDb::Seqinfo(seqnames = FAnames, seqlengths = FAlengths))
+    if (is.null(FASTA.NAME)) stop("Please provide FASTA.NAME !")
+    FAdata <- seqinr::read.fasta(FASTA.NAME)
+    FAnames <- names(FAdata)
+    FAlengths <- lengths(FAdata)
+    return(GenomeInfoDb::Seqinfo(seqnames = FAnames, seqlengths = FAlengths))
 }

@@ -15,15 +15,15 @@
 #' @examples
 #' library(BSgenome.Dmelanogaster.UCSC.dm6)
 #' myAlignmentsFromPICBload <- PICBload(
-#'   BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
-#'   REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-#'   VERBOSE = FALSE
+#'     BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
+#'     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+#'     VERBOSE = FALSE
 #' )
 #'
 #' PICBoptimize(
-#'   IN.ALIGNMENTS = myAlignmentsFromPICBload,
-#'   REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-#'   MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2, 3, 4, 5)
+#'     IN.ALIGNMENTS = myAlignmentsFromPICBload,
+#'     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+#'     MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2, 3, 4, 5)
 #' )
 PICBoptimize <- function(
     IN.ALIGNMENTS,
@@ -33,172 +33,173 @@ PICBoptimize <- function(
     PROVIDE.INFO.SEEDS.AND.CORES = FALSE,
     SEQ.LEVELS.STYLE = "UCSC",
     ...) {
-  numberOfallReadsExplained <- function(gr, alignments) {
-    foundnames <- c()
-    if (typeof(alignments) == "list") {
-      for (clmn in c("unique", "multi.primary", "multi.secondary")) {
-        usedAlignments <- IRanges::subsetByOverlaps(alignments[[clmn]], gr)
-        foundnames <- c(foundnames, names(usedAlignments))
-      }
-    } else {
-      usedAlignments <- IRanges::subsetByOverlaps(alignments, gr)
-      foundnames <- c(foundnames, names(usedAlignments))
-    }
-    numbr <- length(unique(foundnames))
-    return(numbr)
-  }
 
-  inputArgs <- as.list(match.call(expand.dots = TRUE))
-  PICBbuildArgs <- formals(PICBbuild)
-  ArgsToIterate <- NULL
-  for (argName in names(PICBbuildArgs)) {
-    # checking if the argument need to be iterated over
-    if (is.numeric(PICBbuildArgs[[argName]]) ||
-      (is.language(PICBbuildArgs[[argName]]) && PICBbuildArgs[[argName]] != "")) {
-      # iteration is possible
-      if (argName %in% names(inputArgs)) {
-        # need to iterate
-        if (length(inputArgs[[argName]]) > 1) {
-          if (VERBOSITY > 0) {
-            message("Adding ", argName, " to iteration targets")
-          }
-          if (is.null(ArgsToIterate)) {
-            ArgsToIterate <- argName
-          } else {
-            ArgsToIterate <- c(ArgsToIterate, argName)
-          }
+    numberOfallReadsExplained <- function(gr, alignments) {
+        foundnames <- c()
+        if (typeof(alignments) == "list") {
+            for (clmn in c("unique", "multi.primary", "multi.secondary")) {
+                usedAlignments <- IRanges::subsetByOverlaps(alignments[[clmn]], gr)
+                foundnames <- c(foundnames, names(usedAlignments))
+            }
+        } else {
+            usedAlignments <- IRanges::subsetByOverlaps(alignments, gr)
+            foundnames <- c(foundnames, names(usedAlignments))
         }
-      }
+        numbr <- length(unique(foundnames))
+        return(numbr)
     }
-  }
 
-  if (VERBOSITY == TRUE) message("PICB v", utils::packageVersion("PICB"), " Starting ... ")
-
-  # checking the inputs
-  if (VERBOSITY > 0) {
-    message("Checking the inputs")
-  }
-  if (is.null(ArgsToIterate)) {
-    stop("Provide arguments to iterave over. See example.")
-  }
-
-  totalReads <- LIBRARY.SIZE
-  if (length(unique(c(
-    names(IN.ALIGNMENTS$unique),
-    names(IN.ALIGNMENTS$multi.primary)
-  ))) != totalReads) {
-    warning("The total number of primary alignments is not equal to the total number of read names. This discrepancy may occur when using a subset of data, such as in the PICB demonstration, where you specified the LIBRARY.SIZE but the actual number of reads is reduced. For full piRNA datasets, this indicates a potential issue with read assignment and your numbers of explained reads may be wrong.")
-  }
-  # building the parameter combinations
-  if (VERBOSITY > 0) {
-    message("Building the parameter combinations")
-  }
-  listOfArgLists <- list()
-  for (argName in ArgsToIterate) {
-    firstArg <- length(listOfArgLists) == 0
-    argVals <- eval(inputArgs[[argName]])
-    if (firstArg) { # first arg
-      for (curVal in argVals) {
-        tmpList <- list()
-        tmpList[[argName]] <- curVal
-        listOfArgLists[[length(listOfArgLists) + 1]] <- tmpList
-      }
-    } else {
-      # add the argName to each combination
-      newlistOfArgLists <- list()
-      for (combList in listOfArgLists) {
-        for (curVal in argVals) {
-          combList[[argName]] <- curVal
-          newlistOfArgLists[[length(newlistOfArgLists) + 1]] <- combList
+    inputArgs <- as.list(match.call(expand.dots = TRUE))
+    PICBbuildArgs <- formals(PICBbuild)
+    ArgsToIterate <- NULL
+    for (argName in names(PICBbuildArgs)) {
+        # checking if the argument need to be iterated over
+        if (is.numeric(PICBbuildArgs[[argName]]) ||
+            (is.language(PICBbuildArgs[[argName]]) && PICBbuildArgs[[argName]] != "")) {
+            # iteration is possible
+            if (argName %in% names(inputArgs)) {
+                # need to iterate
+                if (length(inputArgs[[argName]]) > 1) {
+                    if (VERBOSITY > 0) {
+                        message("Adding ", argName, " to iteration targets")
+                    }
+                    if (is.null(ArgsToIterate)) {
+                        ArgsToIterate <- argName
+                    } else {
+                        ArgsToIterate <- c(ArgsToIterate, argName)
+                    }
+                }
+            }
         }
-      }
-      listOfArgLists <- newlistOfArgLists
     }
-  }
-  IN.ALIGNMENTS.ALL <- c(
-    IN.ALIGNMENTS$unique, IN.ALIGNMENTS$multi.primary,
-    IN.ALIGNMENTS$multi.secondary
-  )
-  # preparing output dataframe
-  outDF <- data.frame(combinationNumber = seq_along(listOfArgLists))
-  for (argName in names(listOfArgLists[[1]])) {
-    # adding columns we iterate over
-    outDF[[argName]] <- NA
-  }
-  if (PROVIDE.INFO.SEEDS.AND.CORES) {
-    for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-      outDF[[paste0("number.of.", locustype)]] <- NA
-    }
-    for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-      outDF[[paste0(locustype, ".total.width")]] <- NA
-    }
-    for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-      outDF[[paste0("reads.explained.by.", locustype)]] <- NA
-    }
-  } else {
-    outDF[[paste0("number.of.clusters")]] <- NA
-    outDF[[paste0("clusters.total.width")]] <- NA
-    outDF[[paste0("reads.explained.by.clusters")]] <- NA
-  }
-  # running PICBbuild for every possible combation
-  i <- 1
-  for (combList in listOfArgLists) {
+
+    if (VERBOSITY == TRUE) message("PICB v", utils::packageVersion("PICB"), " Starting ... ")
+
+    # checking the inputs
     if (VERBOSITY > 0) {
-      message("Iteration ", i, " out of ", length(listOfArgLists))
+        message("Checking the inputs")
     }
-    for (argName in names(combList)) {
-      # adding values we iterate over
-      outDF[[argName]][i] <- combList[[argName]]
+    if (is.null(ArgsToIterate)) {
+        stop("Provide arguments to iterave over. See example.")
     }
-    listToRun <- combList
-    listToRun[["IN.ALIGNMENTS"]] <- IN.ALIGNMENTS
-    listToRun[["REFERENCE.GENOME"]] <- REFERENCE.GENOME
-    listToRun[["VERBOSITY"]] <- VERBOSITY
-    if (VERBOSITY > 1) {
-      message("Running PICBbuild")
+
+    totalReads <- LIBRARY.SIZE
+    if (length(unique(c(
+        names(IN.ALIGNMENTS$unique),
+        names(IN.ALIGNMENTS$multi.primary)
+    ))) != totalReads) {
+        warning("The total number of primary alignments is not equal to the total number of read names. This discrepancy may occur when using a subset of data, such as in the PICB demonstration, where you specified the LIBRARY.SIZE but the actual number of reads is reduced. For full piRNA datasets, this indicates a potential issue with read assignment and your numbers of explained reads may be wrong.")
     }
-    tmrLoci <- do.call(what = PICBbuild, args = listToRun)
-    if (VERBOSITY > 1) {
-      message("PICBbuild done")
+    # building the parameter combinations
+    if (VERBOSITY > 0) {
+        message("Building the parameter combinations")
+    }
+    listOfArgLists <- list()
+    for (argName in ArgsToIterate) {
+        firstArg <- length(listOfArgLists) == 0
+        argVals <- eval(inputArgs[[argName]])
+        if (firstArg) { # first arg
+            for (curVal in argVals) {
+                tmpList <- list()
+                tmpList[[argName]] <- curVal
+                listOfArgLists[[length(listOfArgLists) + 1]] <- tmpList
+            }
+        } else {
+            # add the argName to each combination
+            newlistOfArgLists <- list()
+            for (combList in listOfArgLists) {
+                for (curVal in argVals) {
+                    combList[[argName]] <- curVal
+                    newlistOfArgLists[[length(newlistOfArgLists) + 1]] <- combList
+                }
+            }
+            listOfArgLists <- newlistOfArgLists
+        }
+    }
+    IN.ALIGNMENTS.ALL <- c(
+        IN.ALIGNMENTS$unique, IN.ALIGNMENTS$multi.primary,
+        IN.ALIGNMENTS$multi.secondary
+    )
+    # preparing output dataframe
+    outDF <- data.frame(combinationNumber = seq_along(listOfArgLists))
+    for (argName in names(listOfArgLists[[1]])) {
+        # adding columns we iterate over
+        outDF[[argName]] <- NA
     }
     if (PROVIDE.INFO.SEEDS.AND.CORES) {
-      for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-        outDF[[paste0("number.of.", locustype)]][i] <- length(tmrLoci[[locustype]])
-        outDF[[paste0(locustype, ".total.width")]][i] <- as.numeric(sum(GenomicRanges::width(tmrLoci[[locustype]])))
-        outDF[[paste0("reads.explained.by.", locustype)]][i] <- as.numeric(numberOfallReadsExplained(tmrLoci[[locustype]], IN.ALIGNMENTS.ALL))
-      }
+        for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
+            outDF[[paste0("number.of.", locustype)]] <- NA
+        }
+        for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
+            outDF[[paste0(locustype, ".total.width")]] <- NA
+        }
+        for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
+            outDF[[paste0("reads.explained.by.", locustype)]] <- NA
+        }
     } else {
-      outDF[["number.of.clusters"]][i] <- length(tmrLoci[[allalignments]])
-      outDF[["clusters.total.width"]][i] <- as.numeric(sum(GenomicRanges::width(tmrLoci[[allalignments]])))
-      outDF[["reads.explained.by.clusters"]][i] <- as.numeric(numberOfallReadsExplained(tmrLoci[[allalignments]], IN.ALIGNMENTS.ALL))
+        outDF[[paste0("number.of.clusters")]] <- NA
+        outDF[[paste0("clusters.total.width")]] <- NA
+        outDF[[paste0("reads.explained.by.clusters")]] <- NA
     }
-    i <- i + 1
-  }
-  outDF$combinationNumber <- NULL
-  # adding normaized values
-  if (VERBOSITY > 0) {
-    message("Values normalization")
-  }
-  if (PROVIDE.INFO.SEEDS.AND.CORES) {
-    for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-      outDF[[paste0("fraction.of.library.explained.by.", locustype)]] <- outDF[[paste0("reads.explained.by.", locustype)]] / totalReads
+    # running PICBbuild for every possible combation
+    i <- 1
+    for (combList in listOfArgLists) {
+        if (VERBOSITY > 0) {
+            message("Iteration ", i, " out of ", length(listOfArgLists))
+        }
+        for (argName in names(combList)) {
+            # adding values we iterate over
+            outDF[[argName]][i] <- combList[[argName]]
+        }
+        listToRun <- combList
+        listToRun[["IN.ALIGNMENTS"]] <- IN.ALIGNMENTS
+        listToRun[["REFERENCE.GENOME"]] <- REFERENCE.GENOME
+        listToRun[["VERBOSITY"]] <- VERBOSITY
+        if (VERBOSITY > 1) {
+            message("Running PICBbuild")
+        }
+        tmrLoci <- do.call(what = PICBbuild, args = listToRun)
+        if (VERBOSITY > 1) {
+            message("PICBbuild done")
+        }
+        if (PROVIDE.INFO.SEEDS.AND.CORES) {
+        for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
+            outDF[[paste0("number.of.", locustype)]][i] <- length(tmrLoci[[locustype]])
+            outDF[[paste0(locustype, ".total.width")]][i] <- as.numeric(sum(GenomicRanges::width(tmrLoci[[locustype]])))
+            outDF[[paste0("reads.explained.by.", locustype)]][i] <- as.numeric(numberOfallReadsExplained(tmrLoci[[locustype]], IN.ALIGNMENTS.ALL))
+        }
+        } else {
+            outDF[["number.of.clusters"]][i] <- length(tmrLoci[[allalignments]])
+            outDF[["clusters.total.width"]][i] <- as.numeric(sum(GenomicRanges::width(tmrLoci[[allalignments]])))
+            outDF[["reads.explained.by.clusters"]][i] <- as.numeric(numberOfallReadsExplained(tmrLoci[[allalignments]], IN.ALIGNMENTS.ALL))
+        }
+        i <- i + 1
     }
-    for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-      outDF[[paste0(locustype, ".mean.RPKM")]] <- outDF[[paste0("reads.explained.by.", locustype)]] * 1e9 / (outDF[[paste0(locustype, ".total.width")]] * totalReads)
-      outDF[[paste0(locustype, ".mean.RPKM")]][is.na(outDF[[paste0(locustype, ".mean.RPKM")]])] <- 0
+    outDF$combinationNumber <- NULL
+    # adding normaized values
+    if (VERBOSITY > 0) {
+        message("Values normalization")
     }
-    SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-    GenomeSize <- sum(GenomeInfoDb::seqlengths(SI))
-    for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-      outDF[[paste0(locustype, ".fraction.of.genome.space")]] <- outDF[[paste0(locustype, ".total.width")]] / (2 * GenomeSize)
+    if (PROVIDE.INFO.SEEDS.AND.CORES) {
+        for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
+            outDF[[paste0("fraction.of.library.explained.by.", locustype)]] <- outDF[[paste0("reads.explained.by.", locustype)]] / totalReads
+        }
+        for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
+            outDF[[paste0(locustype, ".mean.RPKM")]] <- outDF[[paste0("reads.explained.by.", locustype)]] * 1e9 / (outDF[[paste0(locustype, ".total.width")]] * totalReads)
+            outDF[[paste0(locustype, ".mean.RPKM")]][is.na(outDF[[paste0(locustype, ".mean.RPKM")]])] <- 0
+        }
+        SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+        GenomeSize <- sum(GenomeInfoDb::seqlengths(SI))
+        for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
+        outDF[[paste0(locustype, ".fraction.of.genome.space")]] <- outDF[[paste0(locustype, ".total.width")]] / (2 * GenomeSize)
+        }
+    } else {
+        outDF[["fraction.of.library.explained.by.clusters"]] <- outDF[["reads.explained.by.clusters"]] / totalReads
+        outDF[["clusters.mean.RPKM"]] <- outDF[["reads.explained.by.clusters"]] * 1e9 / (outDF[["clusters.total.width"]] * totalReads)
+        outDF[["clusters.mean.RPKM"]][is.na(outDF[["clusters.mean.RPKM"]])] <- 0
+        SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+        GenomeSize <- sum(GenomeInfoDb::seqlengths(SI))
+        outDF[["clusters.fraction.of.genome.space"]] <- outDF[["clusters.total.width"]] / (2 * GenomeSize)
     }
-  } else {
-    outDF[["fraction.of.library.explained.by.clusters"]] <- outDF[["reads.explained.by.clusters"]] / totalReads
-    outDF[["clusters.mean.RPKM"]] <- outDF[["reads.explained.by.clusters"]] * 1e9 / (outDF[["clusters.total.width"]] * totalReads)
-    outDF[["clusters.mean.RPKM"]][is.na(outDF[["clusters.mean.RPKM"]])] <- 0
-    SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-    GenomeSize <- sum(GenomeInfoDb::seqlengths(SI))
-    outDF[["clusters.fraction.of.genome.space"]] <- outDF[["clusters.total.width"]] / (2 * GenomeSize)
-  }
-  return(outDF)
+    return(outDF)
 }

@@ -20,19 +20,19 @@ Export clustering object into an Excel file
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)
 myAlignmentsFromPICBload <- PICBload(
-  BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
-  REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-  VERBOSE = FALSE
+    BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    VERBOSE = FALSE
 )
 
 outputOfPICBbuild <- PICBbuild(
-  IN.ALIGNMENTS = myAlignmentsFromPICBload,
-  REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-  VERBOSITY = 0
+    IN.ALIGNMENTS = myAlignmentsFromPICBload,
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    VERBOSITY = 0
 )
 PICBexporttoexcel(
-  IN.RANGES = outputOfPICBbuild,
-  EXCEL.FILE.NAME = "inst/extdata/myClusters_demonstration.xlsx"
+    IN.RANGES = outputOfPICBbuild,
+    EXCEL.FILE.NAME = "inst/extdata/myClusters_demonstration.xlsx"
 )
 }
 \author{

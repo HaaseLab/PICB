@@ -36,51 +36,50 @@
 #' @examples
 #' library(BSgenome.Dmelanogaster.UCSC.dm6)
 #' myAlignmentsFromPICBload <- PICBload(
-#'   BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
-#'   REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-#'   VERBOSE = FALSE
+#'     BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
+#'     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+#'     VERBOSE = FALSE
 #' )
 #'
 #' outputOfPICBbuild <- PICBbuild(
-#'   IN.ALIGNMENTS = myAlignmentsFromPICBload,
-#'   REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-#'   VERBOSITY = 0
+#'     IN.ALIGNMENTS = myAlignmentsFromPICBload,
+#'     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+#'     VERBOSITY = 0
 #' )
-PICBbuild <-
-  function(
-      ## MAIN
-      IN.ALIGNMENTS,
-      REFERENCE.GENOME,
-      ## OPTIONS
-      UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH = 350,
-      UNIQUEMAPPERS.SLIDING.WINDOW.STEP = round(UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH / 10, 0),
-      PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = 350,
-      PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = round(PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH / 10, 0),
-      SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = 1000,
-      SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = round(SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH / 10, 0),
-      LIBRARY.SIZE = length(IN.ALIGNMENTS$unique) + length(IN.ALIGNMENTS$multi.primary),
-      MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = 2 * (UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH / 1e3) * (LIBRARY.SIZE / 1e6),
-      MIN.UNIQUE.SEQUENCES.PER.WINDOW = min(MIN.UNIQUE.ALIGNMENTS.PER.WINDOW, round(UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH / 50, 0)),
-      MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW = 4 * (PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH / 1e3) * (LIBRARY.SIZE / 1e6),
-      MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW = 0.2 * (SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH / 1e3) * (LIBRARY.SIZE / 1e6),
-      MIN.SEED.LENGTH = 2 * UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH + 100,
-      MIN.COVERED.SEED.LENGTH = 0,
-      ## CLUSTER FILTERS
-      THRESHOLD.SEEDS.GAP = 0, THRESHOLD.CORES.GAP = 0, THRESHOLD.CLUSTERS.GAP = 0,
-      ## EXTRA OPTIONS
-      SEQ.LEVELS.STYLE = "UCSC",
-      MIN.OVERLAP = 5,
-      PROVIDE.NON.NORMALIZED = FALSE,
-      COMPUTE.1U.10A.FRACTIONS = FALSE,
-      VERBOSITY = 2) {
+PICBbuild <- function(
+        ## MAIN
+        IN.ALIGNMENTS,
+        REFERENCE.GENOME,
+        ## OPTIONS
+        UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH = 350,
+        UNIQUEMAPPERS.SLIDING.WINDOW.STEP = round(UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH / 10, 0),
+        PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = 350,
+        PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = round(PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH / 10, 0),
+        SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = 1000,
+        SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = round(SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH / 10, 0),
+        LIBRARY.SIZE = length(IN.ALIGNMENTS$unique) + length(IN.ALIGNMENTS$multi.primary),
+        MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = 2 * (UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH / 1e3) * (LIBRARY.SIZE / 1e6),
+        MIN.UNIQUE.SEQUENCES.PER.WINDOW = min(MIN.UNIQUE.ALIGNMENTS.PER.WINDOW, round(UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH / 50, 0)),
+        MIN.PRIMARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW = 4 * (PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH / 1e3) * (LIBRARY.SIZE / 1e6),
+        MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW = 0.2 * (SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH / 1e3) * (LIBRARY.SIZE / 1e6),
+        MIN.SEED.LENGTH = 2 * UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH + 100,
+        MIN.COVERED.SEED.LENGTH = 0,
+        ## CLUSTER FILTERS
+        THRESHOLD.SEEDS.GAP = 0, THRESHOLD.CORES.GAP = 0, THRESHOLD.CLUSTERS.GAP = 0,
+        ## EXTRA OPTIONS
+        SEQ.LEVELS.STYLE = "UCSC",
+        MIN.OVERLAP = 5,
+        PROVIDE.NON.NORMALIZED = FALSE,
+        COMPUTE.1U.10A.FRACTIONS = FALSE,
+        VERBOSITY = 2) {
     ## Authors: Pavol Genzor, Alex Friman, Daniel Stoyko
     ## Usage: Build piRNA clusters using piRNA sequencing data
 
     ## OUTPUT FOR DEBUGGING PURPOSES
     if (VERBOSITY > 2) {
-      tmpENV <- as.list(environment())
-      tmpENV$IN.ALIGNMENTS <- NULL
-      message(tmpENV)
+        tmpENV <- as.list(environment())
+        tmpENV$IN.ALIGNMENTS <- NULL
+        message(tmpENV)
     }
     ## Check input
 
@@ -93,7 +92,7 @@ PICBbuild <-
     if (!"multi.secondary" %in% typeAlignments) warning("IN.ALIGNMENTS does not contain secondary multimappers (column 'multi.secondary')! We recommend including secondary multimappers; please set IS.SECONDARY.ALIGNMENT = NA (default) in PICBload. \n\tContinuing without secondary multimappers...\n")
 
     for (columnName in typeAlignments) {
-      if (!"NH" %in% colnames(GenomicRanges::mcols(IN.ALIGNMENTS[[columnName]]))) stop("The IN.ALIGNMENTS must contain NH information !")
+        if (!"NH" %in% colnames(GenomicRanges::mcols(IN.ALIGNMENTS[[columnName]]))) stop("The IN.ALIGNMENTS must contain NH information !")
     }
 
     ##
@@ -108,24 +107,24 @@ PICBbuild <-
     if (VERBOSITY > 1) message("\n\tKeeping standard linear chromosomes")
 
     for (columnName in typeAlignments) {
-      # trying to change the seqlevels style.
-      # read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README
-      # for more info
-      tryCatch(
-        expr = {
-          GenomeInfoDb::seqlevelsStyle(IN.ALIGNMENTS[[columnName]]) <- SEQ.LEVELS.STYLE
-        },
-        error = function(e) {
-          message(e)
-          message("Failed to change SEQ.LEVELS.STYLE")
-          message("read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README")
-          message("Continuing hoping for the best")
-        }
-      )
+        # trying to change the seqlevels style.
+        # read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README
+        # for more info
+        tryCatch(
+            expr = {
+            GenomeInfoDb::seqlevelsStyle(IN.ALIGNMENTS[[columnName]]) <- SEQ.LEVELS.STYLE
+            },
+            error = function(e) {
+                message(e)
+                message("Failed to change SEQ.LEVELS.STYLE")
+                message("read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README")
+                message("Continuing hoping for the best")
+            }
+        )
 
-      KEEP.SEQLEVELS <- GenomeInfoDb::seqlevels(SI)
-      KEEP.SEQLEVELS <- KEEP.SEQLEVELS[KEEP.SEQLEVELS %in% GenomeInfoDb::seqlevels(IN.ALIGNMENTS[[columnName]])]
-      IN.ALIGNMENTS[[columnName]] <- GenomeInfoDb::keepSeqlevels(x = IN.ALIGNMENTS[[columnName]], value = KEEP.SEQLEVELS, pruning.mode = "coarse")
+        KEEP.SEQLEVELS <- GenomeInfoDb::seqlevels(SI)
+        KEEP.SEQLEVELS <- KEEP.SEQLEVELS[KEEP.SEQLEVELS %in% GenomeInfoDb::seqlevels(IN.ALIGNMENTS[[columnName]])]
+        IN.ALIGNMENTS[[columnName]] <- GenomeInfoDb::keepSeqlevels(x = IN.ALIGNMENTS[[columnName]], value = KEEP.SEQLEVELS, pruning.mode = "coarse")
     }
 
     WGRU <- IN.ALIGNMENTS$unique
@@ -159,9 +158,9 @@ PICBbuild <-
     GenomicRanges::mcols(AG.sw.primary.mult)[["primary_mult_piRNA_plus"]] <- GenomicRanges::countOverlaps(query = AG.sw.primary.mult, subject = WGRMP[GenomicRanges::strand(WGRMP) == "+"])
     GenomicRanges::mcols(AG.sw.primary.mult)[["primary_mult_piRNA_minus"]] <- GenomicRanges::countOverlaps(query = AG.sw.primary.mult, subject = WGRMP[GenomicRanges::strand(WGRMP) == "-"])
     if ("multi.secondary" %in% typeAlignments) {
-      AG.sw.secondary.mult <- unlist(GenomicRanges::slidingWindows(x = AG.gr, width = SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH, step = SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP))
-      GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_plus"]] <- GenomicRanges::countOverlaps(query = AG.sw.secondary.mult, subject = IN.ALIGNMENTS$multi.secondary[GenomicRanges::strand(IN.ALIGNMENTS$multi.secondary) == "+"])
-      GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_minus"]] <- GenomicRanges::countOverlaps(query = AG.sw.secondary.mult, subject = IN.ALIGNMENTS$multi.secondary[GenomicRanges::strand(IN.ALIGNMENTS$multi.secondary) == "-"])
+        AG.sw.secondary.mult <- unlist(GenomicRanges::slidingWindows(x = AG.gr, width = SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH, step = SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP))
+        GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_plus"]] <- GenomicRanges::countOverlaps(query = AG.sw.secondary.mult, subject = IN.ALIGNMENTS$multi.secondary[GenomicRanges::strand(IN.ALIGNMENTS$multi.secondary) == "+"])
+        GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_minus"]] <- GenomicRanges::countOverlaps(query = AG.sw.secondary.mult, subject = IN.ALIGNMENTS$multi.secondary[GenomicRanges::strand(IN.ALIGNMENTS$multi.secondary) == "-"])
     }
 
     ##
@@ -176,17 +175,17 @@ PICBbuild <-
     sw.UNIQ.PLUS <- NULL # clearing memory
     ## Removing gaps between SEEDS
     if (THRESHOLD.SEEDS.GAP > 0) {
-      GR.GAPS <- GenomicRanges::gaps(sw.UNIQ.RED)
-      GR.GAPS <- GenomicRanges::sort.GenomicRanges(GR.GAPS)
-      GR.GAPS.WIDER.THAN.MIN <- GR.GAPS[GenomicRanges::width(GR.GAPS) >= THRESHOLD.SEEDS.GAP]
-      sw.UNIQ.RED <- GenomicRanges::gaps(GR.GAPS.WIDER.THAN.MIN) # gaps of gaps
-      sw.UNIQ.RED <- GenomicRanges::sort.GenomicRanges(sw.UNIQ.RED)
+        GR.GAPS <- GenomicRanges::gaps(sw.UNIQ.RED)
+        GR.GAPS <- GenomicRanges::sort.GenomicRanges(GR.GAPS)
+        GR.GAPS.WIDER.THAN.MIN <- GR.GAPS[GenomicRanges::width(GR.GAPS) >= THRESHOLD.SEEDS.GAP]
+        sw.UNIQ.RED <- GenomicRanges::gaps(GR.GAPS.WIDER.THAN.MIN) # gaps of gaps
+        sw.UNIQ.RED <- GenomicRanges::sort.GenomicRanges(sw.UNIQ.RED)
     }
     sw.UNIQ.RED <- GenomicRanges::reduce(sw.UNIQ.RED[GenomicRanges::width(sw.UNIQ.RED) >= MIN.SEED.LENGTH])
     if (VERBOSITY > 1) message("Annotating seeds")
     BM.SEEDS <- PICBannotate(sw.UNIQ.RED, IN.ALIGNMENTS,
-      REFERENCE.GENOME = REFERENCE.GENOME, LIBRARY.SIZE = LIBRARY.SIZE,
-      SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE
+        REFERENCE.GENOME = REFERENCE.GENOME, LIBRARY.SIZE = LIBRARY.SIZE,
+        SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE
     )
     if (VERBOSITY > 1) message("Removing seed with unique mapping coverage less than ", MIN.COVERED.SEED.LENGTH, " nt")
     BM.SEEDS <- BM.SEEDS[GenomicRanges::mcols(BM.SEEDS)[["width_covered_by_unique_alignments"]] >= MIN.COVERED.SEED.LENGTH]
@@ -212,42 +211,42 @@ PICBbuild <-
     ##
     ## Removing gaps between cores
     if (THRESHOLD.CORES.GAP > 0) {
-      GR.GAPS <- GenomicRanges::gaps(BM.CORES)
-      GR.GAPS <- GenomicRanges::sort.GenomicRanges(GR.GAPS)
-      GR.GAPS.WIDER.THAN.MIN <- GR.GAPS[GenomicRanges::width(GR.GAPS) >= THRESHOLD.CORES.GAP]
-      BM.CORES <- GenomicRanges::gaps(GR.GAPS.WIDER.THAN.MIN) # gaps of gaps
-      BM.CORES <- GenomicRanges::sort.GenomicRanges(BM.CORES)
+        GR.GAPS <- GenomicRanges::gaps(BM.CORES)
+        GR.GAPS <- GenomicRanges::sort.GenomicRanges(GR.GAPS)
+        GR.GAPS.WIDER.THAN.MIN <- GR.GAPS[GenomicRanges::width(GR.GAPS) >= THRESHOLD.CORES.GAP]
+        BM.CORES <- GenomicRanges::gaps(GR.GAPS.WIDER.THAN.MIN) # gaps of gaps
+        BM.CORES <- GenomicRanges::sort.GenomicRanges(BM.CORES)
     }
 
     ## Regions
     if ("multi.secondary" %in% typeAlignments) {
-      if (VERBOSITY > 1) message("\t\tMIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW >= ", MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW)
+        if (VERBOSITY > 1) message("\t\tMIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW >= ", MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW)
 
-      sw.SECONDARY.MULT.PLUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_plus"]] >= MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
-      sw.SECONDARY.MULT.MINUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_minus"]] >= MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
-      GenomicRanges::strand(sw.SECONDARY.MULT.PLUS) <- "+"
-      GenomicRanges::strand(sw.SECONDARY.MULT.MINUS) <- "-"
-      sw.SECONDARY.MULT.PLUS.RED <- GenomicRanges::reduce(sw.SECONDARY.MULT.PLUS)
-      sw.SECONDARY.MULT.MINUS.RED <- GenomicRanges::reduce(sw.SECONDARY.MULT.MINUS)
-      sw.SECONDARY.MULT.PLUS.ANCHORED <- IRanges::subsetByOverlaps(x = sw.SECONDARY.MULT.PLUS.RED, ranges = BM.CORES, minoverlap = MIN.OVERLAP)
-      sw.SECONDARY.MULT.MINUS.ANCHORED <- IRanges::subsetByOverlaps(x = sw.SECONDARY.MULT.MINUS.RED, ranges = BM.CORES, minoverlap = MIN.OVERLAP)
+        sw.SECONDARY.MULT.PLUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_plus"]] >= MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
+        sw.SECONDARY.MULT.MINUS <- AG.sw.secondary.mult[GenomicRanges::mcols(AG.sw.secondary.mult)[["secondary_mult_piRNA_minus"]] >= MIN.SECONDARY.MULTIMAPPING.ALIGNMENTS.PER.WINDOW]
+        GenomicRanges::strand(sw.SECONDARY.MULT.PLUS) <- "+"
+        GenomicRanges::strand(sw.SECONDARY.MULT.MINUS) <- "-"
+        sw.SECONDARY.MULT.PLUS.RED <- GenomicRanges::reduce(sw.SECONDARY.MULT.PLUS)
+        sw.SECONDARY.MULT.MINUS.RED <- GenomicRanges::reduce(sw.SECONDARY.MULT.MINUS)
+        sw.SECONDARY.MULT.PLUS.ANCHORED <- IRanges::subsetByOverlaps(x = sw.SECONDARY.MULT.PLUS.RED, ranges = BM.CORES, minoverlap = MIN.OVERLAP)
+        sw.SECONDARY.MULT.MINUS.ANCHORED <- IRanges::subsetByOverlaps(x = sw.SECONDARY.MULT.MINUS.RED, ranges = BM.CORES, minoverlap = MIN.OVERLAP)
 
-      sw.SECONDARY.MULT.RED.ANCHORED <- GenomicRanges::sort.GenomicRanges(GenomicRanges::reduce(c(sw.SECONDARY.MULT.PLUS.ANCHORED, sw.SECONDARY.MULT.MINUS.ANCHORED)))
-      sw.SECONDARY.MULT.RED.ANCHORED <- GenomicRanges::sort.GenomicRanges(GenomicRanges::reduce(c(sw.SECONDARY.MULT.RED.ANCHORED, BM.CORES)))
+        sw.SECONDARY.MULT.RED.ANCHORED <- GenomicRanges::sort.GenomicRanges(GenomicRanges::reduce(c(sw.SECONDARY.MULT.PLUS.ANCHORED, sw.SECONDARY.MULT.MINUS.ANCHORED)))
+        sw.SECONDARY.MULT.RED.ANCHORED <- GenomicRanges::sort.GenomicRanges(GenomicRanges::reduce(c(sw.SECONDARY.MULT.RED.ANCHORED, BM.CORES)))
 
-      CLUSTERS.GR <- c(BM.CORES, sw.SECONDARY.MULT.RED.ANCHORED)
+        CLUSTERS.GR <- c(BM.CORES, sw.SECONDARY.MULT.RED.ANCHORED)
     } else {
-      CLUSTERS.GR <- BM.CORES
+        CLUSTERS.GR <- BM.CORES
     }
 
     CLUSTERS <- GenomicRanges::reduce(CLUSTERS.GR)
     ## Removing gaps between CLUSTERS
     if (THRESHOLD.CLUSTERS.GAP > 0) {
-      GR.GAPS <- GenomicRanges::gaps(CLUSTERS)
-      GR.GAPS <- GenomicRanges::sort.GenomicRanges(GR.GAPS)
-      GR.GAPS.WIDER.THAN.MIN <- GR.GAPS[GenomicRanges::width(GR.GAPS) >= THRESHOLD.CLUSTERS.GAP]
-      CLUSTERS <- GenomicRanges::gaps(GR.GAPS.WIDER.THAN.MIN) # gaps of gaps
-      CLUSTERS <- GenomicRanges::sort.GenomicRanges(CLUSTERS)
+        GR.GAPS <- GenomicRanges::gaps(CLUSTERS)
+        GR.GAPS <- GenomicRanges::sort.GenomicRanges(GR.GAPS)
+        GR.GAPS.WIDER.THAN.MIN <- GR.GAPS[GenomicRanges::width(GR.GAPS) >= THRESHOLD.CLUSTERS.GAP]
+        CLUSTERS <- GenomicRanges::gaps(GR.GAPS.WIDER.THAN.MIN) # gaps of gaps
+        CLUSTERS <- GenomicRanges::sort.GenomicRanges(CLUSTERS)
     }
     ##
     if (VERBOSITY > 0) message("\nBuilding ... STEP 2 ... Annotating & filtering\n")
@@ -260,8 +259,8 @@ PICBbuild <-
     outputList[[uniqueandprimary]] <- BM.CORES
     outputList[[allalignments]] <- CLUSTERS
     outputList <- PICBannotate(outputList, IN.ALIGNMENTS, ,
-      REFERENCE.GENOME = REFERENCE.GENOME,
-      SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE, COMPUTE.1U.10A.FRACTIONS = COMPUTE.1U.10A.FRACTIONS, LIBRARY.SIZE = LIBRARY.SIZE
+        REFERENCE.GENOME = REFERENCE.GENOME,
+        SEQ.LEVELS.STYLE = SEQ.LEVELS.STYLE, PROVIDE.NON.NORMALIZED = TRUE, COMPUTE.1U.10A.FRACTIONS = COMPUTE.1U.10A.FRACTIONS, LIBRARY.SIZE = LIBRARY.SIZE
     )
 
     ##
@@ -273,19 +272,19 @@ PICBbuild <-
     used_mult <- sum(GenomicRanges::mcols(outputList[[allalignments]])[["multimapping_reads_primary_alignments"]])
     used_mult_primary_piRNA <- round(((used_mult / length(WGRMP)) * 100), 3)
     if (VERBOSITY > 1) {
-      message("\t\tAccomodated UNIQUE MAPPERS: ", used_uniq, " (", used_uniq_piRNA, " %)")
-      message("\t\tAccomodated PRIMARY MULTI MAPPERS: ", used_mult, " (", used_mult_primary_piRNA, " %)")
+        message("\t\tAccomodated UNIQUE MAPPERS: ", used_uniq, " (", used_uniq_piRNA, " %)")
+        message("\t\tAccomodated PRIMARY MULTI MAPPERS: ", used_mult, " (", used_mult_primary_piRNA, " %)")
     }
 
     if (!PROVIDE.NON.NORMALIZED) { # removing stats hard to understand
-      for (t in c(uniqueonly, uniqueandprimary, allalignments)) {
-        GenomicRanges::mcols(outputList[[t]])[["uniq_reads"]] <- NULL
-        GenomicRanges::mcols(outputList[[t]])[["uniq_sequences"]] <- NULL
-        GenomicRanges::mcols(outputList[[t]])[["multimapping_reads_primary_alignments"]] <- NULL
-        GenomicRanges::mcols(outputList[[t]])[["all_reads_primary_alignments"]] <- NULL
-        GenomicRanges::mcols(outputList[[t]])[["width_covered_by_unique_alignments"]] <- NULL
-      }
+        for (t in c(uniqueonly, uniqueandprimary, allalignments)) {
+            GenomicRanges::mcols(outputList[[t]])[["uniq_reads"]] <- NULL
+            GenomicRanges::mcols(outputList[[t]])[["uniq_sequences"]] <- NULL
+            GenomicRanges::mcols(outputList[[t]])[["multimapping_reads_primary_alignments"]] <- NULL
+            GenomicRanges::mcols(outputList[[t]])[["all_reads_primary_alignments"]] <- NULL
+            GenomicRanges::mcols(outputList[[t]])[["width_covered_by_unique_alignments"]] <- NULL
+        }
     }
     if (VERBOSITY > 0) message("\nDone!")
     return(outputList)
-  }
+}

@@ -38,15 +38,15 @@ Runs PICBbuild multiple times with provided parameters and returns optimization 
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)
 myAlignmentsFromPICBload <- PICBload(
-  BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
-  REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-  VERBOSE = FALSE
+    BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb.bam", package = "PICB"),
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    VERBOSE = FALSE
 )
 
 PICBoptimize(
-  IN.ALIGNMENTS = myAlignmentsFromPICBload,
-  REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-  MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2, 3, 4, 5)
+    IN.ALIGNMENTS = myAlignmentsFromPICBload,
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2, 3, 4, 5)
 )
 }
 \author{
