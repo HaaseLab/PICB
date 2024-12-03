@@ -4,16 +4,18 @@ shorttitle: "The piRNA Cluster Builder (PICB)"
 author: "Haase Lab"
 package: PICB
 output: 
-  BiocStyle::html_document
+    BiocStyle::html_document:
+        toc_float: true
 abstract: >
-  piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and 
-  maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. 
-  PiRNAs originate from genomic regions which are called piRNA clusters. The piRNA Cluster Builder (PICB) 
-  identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed through stepwise integration of unique and multimapping piRNAs.
+    piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and 
+    maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. 
+    PiRNAs originate from genomic regions which are called piRNA clusters. The piRNA Cluster Builder (PICB) 
+    identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed 
+    through stepwise integration of unique and multimapping piRNAs. 
 vignette: >
-  %\VignetteIndexEntry{Introduction to the piRNA Cluster Builder (PICB)}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{Introduction to the piRNA Cluster Builder (PICB)}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
 ---
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -87,13 +89,13 @@ PICB requires only two main inputs: a **BAM file** containing the piRNA alignmen
 
 ### BAM File Requirements
 
-- **piRNA dataset**: Verify your system! PiRNAs (short for PIWI-interacting RNAs) are defined by their association with PIWI proteins. Verify the **expression of PIWI proteins** before looking for piRNAs. If possible, work with **‘bona-fide’ piRNAs** that are prepared from purified PIWI-piRNA complexes (PMID: 16751776). Unrelated RNA fragments can be easily mistaken for ‘piRNAs’ in small RNA sequencing data. 
+- **piRNA dataset**: Verify your system! PiRNAs (short for PIWI-interacting RNAs) are defined by their association with PIWI proteins. Verify the **expression of PIWI proteins** before looking for piRNAs. If possible, work with **‘bona-fide’ piRNAs** that are prepared from purified PIWI-piRNA complexes [Girard et al., 2006](https://doi.org/10.1038/nature04917). Unrelated RNA fragments can be easily mistaken for ‘piRNAs’ in small RNA sequencing data. 
 - **NH and NM tags**: The BAM file must include these tags. 
 - **Coordinate-sorted and indexed**: Ensure your BAM file is sorted and has an accompanying `.bai` index file.
 
 ### Reference Genome
 
-You can provide the reference genome to PICB in one of four ways:
+You can provide the reference genome to PICB in one of four ways. Make sure to use the same reference genome version as used for mapping.
 
 a. **Using a BSgenome package**
 
@@ -142,6 +144,8 @@ PICB involves two main functions:
 
 1. `PICBload`: Loads the piRNA alignments from the BAM file.
 2. `PICBbuild`: Builds the piRNA clusters from the loaded alignments.
+
+Next to these two main functions, PICB also includes a function to optimize parameters for `PICBbuild` (`PICBoptimize`) and a function to perform strand-specific analysis (`PICBstrandanalysis`).
 
 ## Load Alignments with `PICBload`
 
@@ -193,7 +197,7 @@ In the [Example Workflow](#example-workflow) section, we will show an example on
 
 ## Strand-specific analysis with `PICBstrandanalysis`
 
-Next to the core-PICB analysis, `PICBstrandanalysis` allows for strand-specific analysis of piRNA clusters. This computes the sense/antisense ratio of piRNAs per cluster (non-collapsed)and adds this information as a new metadata column (`s_as_ratio`). 
+Next to the core-PICB analysis, `PICBstrandanalysis` allows for strand-specific analysis of piRNA clusters. This computes the sense/antisense ratio of piRNAs per cluster (non-collapsed) and adds this information as a new metadata column (`s_as_ratio`). 
 
 ```{r strand_specific_analysis, eval = FALSE}
 myClustersWithStrandAnalysis <- PICBstrandanalysis(
@@ -217,6 +221,7 @@ Required parameters:
 - **REFERENCE.GENOME** 
 
 Optional parameters:
+
 - **VERBOSE** default TRUE • Allows disabling progress messages while running `PICBload`.
 - **IS.SECONDARY.ALIGNMENT** default NA (all alignments) • Determines which alignment types (primary multimappers and secondary multimappers) will be loaded.
 - **STANDARD.CONTIGS.ONLY** default TRUE • Determines whether alignments from non-standard contigs are used.
@@ -303,10 +308,18 @@ The piRNA **clusters** follow *GRanges* convention including the genomic coordin
 
 In the following example, we demonstrate the basic workflow of PICB using a sample dataset.
 
-For the demo, we are using a subset of our mapped small RNAs from Drosophila ovaries (SRR7346241). In short, we trimmed the 3’ adaptor and filtered for reads ≥24 nucleotides. 
-Next, we removed abundant cellular RNAs (rRNAs, tRNAs, snRNAs, snoRNAs) by annotation. Finally, we mapped the processed reads to the Dm6 genome using STAR (PMID: 23104886) allowing up to one mismatch and 100 alignments per read. Using samtools (PMID: 19505943), 
-we extracted alignments from chr2L:20000000-21000000 (samtools view -b original.bam chr2L:20000000-21000000 > Fly_Ov1_chr2L_20To21mb_filtered.bam).
+For the demo, we are using a subset of our mapped small RNAs from Drosophila ovaries [SRR7346241](https://www.ncbi.nlm.nih.gov/sra/?term=SRR7346241). In short, we trimmed the 3’ adaptor and filtered for reads ≥24 nucleotides. 
+Next, we removed abundant cellular RNAs (rRNAs, tRNAs, snRNAs, snoRNAs) by annotation. Finally, we mapped the processed reads to the Dm6 genome using STAR [Dobin et al., 2013](https://doi.org/10.1093/bioinformatics/bts635) allowing up to one mismatch and 100 alignments per read. 
+Using samtools [Li et al., 2009](https://doi.org/10.1093/bioinformatics/btp352), we extracted alignments from chr2L:20000000-21000000. 
+To further reduce the file size, we retained only the essential tags for PICB (NH, NM) in the BAM file, replaced the sequence quality field (QUAL) with a placeholder * and downsampled the file to retain 22% of the reads. 
+Lastly, we applied a high level of compression to further reduce its size and indexed the compressed and sorted BAM file. More information on the processing steps can be found in the inst/script folder.
 
+
+The purpose of this entire reduction process was to significantly minimize the file size, making it manageable for storage. 
+It is important to note that this downsampling, combined with the prior restriction to a smaller genomic region (chr2L:20000000-21000000), 
+has drastically reduced the coverage and scope of the data, rendering it no longer representative of a biologically relevant sample.
+
+## Load PICB
 
 ```{r loadPICB}
 library(PICB)
@@ -317,16 +330,16 @@ library(PICB)
 
 We showed different ways on how to load your genome. In the following the variant with using the `r Biocpkg("BSgenome")` package. You will need to install your specific genome first. In our demo it is the <i>Drosophila melanogaster</i> genome. 
 
-```{r example_install_genome, results="hide", message=FALSE}
+```{r example_load_genome, results="hide", message=FALSE}
 library("BSgenome.Dmelanogaster.UCSC.dm6")
 ```
 
 Now, let's store the genome into the variable `myGenome`.
-```{r example_load_genome}
+```{r example_store_genome}
 myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 ```
 
-Instead you can also use any of the other provided options to load the corresponding reference genome.
+Instead you can also use any of the other provided options to load the corresponding reference genome. We demonstrated the other options in the [Reference Genome](#reference-genome) section.
 
 
 ## Load Alignments
@@ -334,7 +347,7 @@ Instead you can also use any of the other provided options to load the correspon
 Load the sample BAM file provided with the package or replace with your own BAM file path.
 
 ```{r example_load_alignments}  
-# demonstration bam_file is in "inst/extdata/Fly_Ov1_chr2L_20To21mb_filtered.bam"
+# demonstration bam_file is in the "inst/extdata/" folder of the PICB package
 bam_file <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
 myAlignments <- PICBload(
     BAMFILE = bam_file,
@@ -343,10 +356,9 @@ myAlignments <- PICBload(
 ```
 
 
-
 ## Build Clusters
 
-Next, we want to form the piRNA clusters using the `PICBbuild` function. Usually you would not need to include the size of the library (`LIBRARY.SIZE`) since PICB calculates it automatically. However, just for this demo, please include this parameter to adjust to the subset we chose to create this demo. 
+Next, we want to construct the piRNA clusters using the `PICBbuild` function. Usually you would not need to include the size of the library (`LIBRARY.SIZE`) since PICB calculates it automatically. However, just for this demo, please include this parameter to adjust to the subset we chose to create this demo. 
 
 ```{r example_build_clusters}  
 myClusters <- PICBbuild(
@@ -356,7 +368,7 @@ myClusters <- PICBbuild(
 )$clusters
 ```
 
-We note that ranking piRNA clusters is essential for proper interpretation. PICB provides various output columns as options to rank the clusters.
+We note that ranking piRNA clusters is essential for proper interpretation. PICB provides various [output columns](#output) as options to rank the clusters.
 
 ## Optimize Parameters
 
@@ -397,7 +409,7 @@ ggplot(parameterExploration, aes(x = .data[[x_column]])) +
     theme(axis.title.y.left = element_text(color = "#00a100"), axis.title.y.right = element_text(color = "black"), legend.position = "top")
 ```
 
-As described in the beginning of this [Example Workflow](#example-workflow), we subsetted the dataset to only include reads from chromosome 2L for the sake of this demonstration. 
+As described in the beginning of this [Example Workflow](#example-workflow), we subsetted the dataset to only include reads from chromosome 2L and further downsampled the file to retain 22% of the reads for the sake of this demonstration. 
 This is why the reads explained by clusters and the genome space occupied by the clusters is so low, as you can see in the plot. The plot can aid you in finding the optimal parameters for your dataset. 
 However, for this demonstration no optimization is needed or meaningful. 
 Refer to the [paper](https://www.sciencedirect.com/science/article/pii/S2211124724011288) for more information on how to interpret the results. 
@@ -415,7 +427,7 @@ myClustersWithStrandAnalysis <- PICBstrandanalysis(
 ```
 
 In [Explore Results](#explore-results) you can see that the sense/antisense ratio is added as a new metadata column (`s_as_ratio`) and is quite low. 
-This indicates that the demonstration example is dealing with dual-stranded piRNA clusters. 
+This indicates that the demonstration example is dealing with dual-stranded piRNA clusters.
 
 ## Explore Results
 

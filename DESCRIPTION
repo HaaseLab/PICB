@@ -1,12 +1,14 @@
 Package: PICB
 Title: piRNA Cluster Builder
-Version: 0.97.07
+Version: 0.97.08
 Authors@R: c(person("Pavol", "Genzor",  role = c("aut")),
     person("Aleksandr", "Friman", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
     person("Daniel", "Stoyko", role = c("aut")),
     person("Parthena", "Konstantinidou", email="haase-lab-bioinfo@nih.gov", role = c("aut")),
     person("Franziska", "Ahrend", email="haase-lab-bioinfo@nih.gov",  role = c("aut", "cre"), comment=c(ORCID = "0009-0004-7464-3444")),
     person("Zuzana", "Loubalova", email="haase-lab-bioinfo@nih.gov",  role = c("aut")), 
+    person("Yuejun", "Wang", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
+    person("Hernan", "Lorenzi", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
     person("Astrid D", "Haase", email="haase-lab-bioinfo@nih.gov",  role = c("aut")))
 Description: piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and 
     maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. 
