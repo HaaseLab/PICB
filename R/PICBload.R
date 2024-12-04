@@ -19,191 +19,210 @@
 #' @author Pavol Genzor
 #' @author Daniel Stoyko
 #' @author Aleksandr Friman
+#' @author Franziska Ahrend
 #' @return list of Granges objects named "unique" for unique mapping alignments,
 #' "multi.primary" for primary multimapping alignments,
 #' "multi.secondary" for secondary multimapping alignments
 #' @export
 #'
-#' @examples PICBload(BAMFILE="~/example-piRNA-library.bam", REFERENCE.GENOME="BSgenome.Dmelanogaster.UCSC.dm6")
+#' @examples
+#' library(BSgenome.Dmelanogaster.UCSC.dm6)
+#' PICBload(
+#'     BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB"),
+#'     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+#'     VERBOSE = FALSE
+#' )
+#'
 PICBload <- function(
-  ## INPUTS
-  BAMFILE=NULL,
-  REFERENCE.GENOME=NULL,
-  ## OPTIONS
-  SIMPLE.CIGAR=TRUE,
-  IS.SECONDARY.ALIGNMENT=NA,
-  STANDARD.CONTIGS.ONLY=TRUE,
-  PERFECT.MATCH.ONLY=FALSE,
-  FILTER.BY.FLAG=TRUE,
-  SELECT.FLAG=c(0,16, 272, 256),
-  USE.SIZE.FILTER=TRUE,
-  READ.SIZE.RANGE=c(18,50),
-  TAGS=c("NH","NM"),
-  WHAT=c("flag"),
-  ## EXTRA OPTIONS
-  SEQ.LEVELS.STYLE="UCSC",
-  GET.ORIGINAL.SEQUENCE=FALSE,
-  VERBOSE=TRUE){
-
-
+    ## INPUTS
+    BAMFILE = NULL,
+    REFERENCE.GENOME = NULL,
+    ## OPTIONS
+    SIMPLE.CIGAR = TRUE,
+    IS.SECONDARY.ALIGNMENT = NA,
+    STANDARD.CONTIGS.ONLY = TRUE,
+    PERFECT.MATCH.ONLY = FALSE,
+    FILTER.BY.FLAG = TRUE,
+    SELECT.FLAG = c(0, 16, 272, 256),
+    USE.SIZE.FILTER = TRUE,
+    READ.SIZE.RANGE = c(18, 50),
+    TAGS = c("NH", "NM"),
+    WHAT = c("flag"),
+    ## EXTRA OPTIONS
+    SEQ.LEVELS.STYLE = "UCSC",
+    GET.ORIGINAL.SEQUENCE = FALSE,
+    VERBOSE = TRUE) {
   ## NOTE ON BAM INFO
   ## Flag: 256 = not primary alignment; 272 = reverse strand not primary alignment;
   ## Flag: 0 = forward unpaired unique alignment; 16 = reverse unpaired unique alignment
   ## Tags: NH:i:1 = unique alignment; NM = edit distance to the reference
 
-  ## libraries
-  #suppressPackageStartupMessages({library("Rsamtools");
-  #  library("GenomicAlignments");
-  #})
-  outputAlignments<-list()
-  ## check input
-  if(is.null(BAMFILE)) stop("Please provide full path to a .bam file !!!")
-  if(is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME")
-  if(isTRUE(GET.ORIGINAL.SEQUENCE)){WHAT=c(WHAT,"seq")}
-  ## for report
-  
-  ##
-  if (VERBOSE) message(paste("PICB v", packageVersion("PICB"),"Processing ... "))
-  ##
-
-  justPrimaryOrSecondary<-function(IS.SECONDARY.ALIGNMENT){
-    ## PARAMETERS FOR LOADING BAM FILE
-    if(isTRUE(STANDARD.CONTIGS.ONLY)){
-      if (typeof(REFERENCE.GENOME)=="character"){
-        SI<-PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-      }else{
-        SI<-REFERENCE.GENOME
-      }
-
-      REG.CHR <- GenomeInfoDb::seqnames(SI)
-      BAM.FILE.HEADER<-Rsamtools::BamFile(BAMFILE)
-      BAM.FILE.CHR<-GenomeInfoDb::seqnames(GenomeInfoDb::seqinfo(BAM.FILE.HEADER))
-      REG.CHR<-REG.CHR[REG.CHR %in% BAM.FILE.CHR]
-      WHICH = GenomicRanges::GRanges(seqnames=REG.CHR,
-                   ranges=IRanges::IRanges(start=rep(1, length(REG.CHR)), end=GenomeInfoDb::seqlengths(SI[REG.CHR])),
-                   strand=rep("*", length(REG.CHR)))
-      PARAM = Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = FALSE,
-                                                                    isSecondaryAlignment = IS.SECONDARY.ALIGNMENT),
-                                      tag = TAGS, simpleCigar = SIMPLE.CIGAR, what = WHAT, which =  WHICH)
-
-    }else{
-      PARAM = Rsamtools::ScanBamParam(flag = Rsamtools::scanBamFlag(isUnmappedQuery = FALSE,
-                                                                    isSecondaryAlignment = IS.SECONDARY.ALIGNMENT),
-                                      tag = TAGS, simpleCigar = SIMPLE.CIGAR, what = WHAT)
+    outputAlignments <- list()
+    ## check input
+    if (is.null(BAMFILE)) stop("Please provide full path to a .bam file!")
+    if (is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME")
+    if (isTRUE(GET.ORIGINAL.SEQUENCE)) {
+        WHAT <- c(WHAT, "seq")
     }
+    ## for report
 
+    ##
+    if (VERBOSE) message("PICB v", utils::packageVersion("PICB"), " Processing ... ")
+    ##
 
-    if (VERBOSE){
-      message("\nprepared loading parameters")
-      message(paste0("\tTAGS:\t",paste(TAGS, collapse = ", ")))
-      message(paste0("\tCIGAR:\t",ifelse(isTRUE(SIMPLE.CIGAR),"simple cigar","all cigar")))
-      message(paste0("\tWHAT:\t",paste0(WHAT,collapse = ", ")))
-      message("loading .bam file into GAlignments")
+    justPrimaryOrSecondary <- function(IS.SECONDARY.ALIGNMENT) {
+        ## PARAMETERS FOR LOADING BAM FILE
+        if (isTRUE(STANDARD.CONTIGS.ONLY)) {
+            SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
 
-        if(is.na(IS.SECONDARY.ALIGNMENT)){
-          message("\n******"); message("SLOW - Loading all reads");
-          message(" => to load unique and primary alignments set")
-          message(" => IS.SECONDARY.ALIGNMENT=FALSE"); message("******\n")
-        } else  if (!IS.SECONDARY.ALIGNMENT){
-          message("\n******"); message("Loading unique and primary alignments !!!")
-          message("******\n")
-        } else  if (IS.SECONDARY.ALIGNMENT){
-          message("\n******"); message("Loading secondary alignments only !!!")
-          message("******\n")
+            REG.CHR <- GenomeInfoDb::seqnames(SI)
+            BAM.FILE.HEADER <- Rsamtools::BamFile(BAMFILE)
+            BAM.FILE.CHR <- GenomeInfoDb::seqnames(GenomeInfoDb::seqinfo(BAM.FILE.HEADER))
+            REG.CHR <- REG.CHR[REG.CHR %in% BAM.FILE.CHR]
+            WHICH <- GenomicRanges::GRanges(
+                seqnames = REG.CHR,
+                ranges = IRanges::IRanges(start = rep(1, length(REG.CHR)), end = GenomeInfoDb::seqlengths(SI[REG.CHR])),
+                strand = rep("*", length(REG.CHR))
+            )
+            PARAM <- Rsamtools::ScanBamParam(
+                flag = Rsamtools::scanBamFlag(
+                    isUnmappedQuery = FALSE,
+                    isSecondaryAlignment = IS.SECONDARY.ALIGNMENT
+                ),
+                tag = TAGS, simpleCigar = SIMPLE.CIGAR, what = WHAT, which = WHICH
+            )
+        } else {
+            PARAM <- Rsamtools::ScanBamParam(
+                flag = Rsamtools::scanBamFlag(
+                    isUnmappedQuery = FALSE,
+                    isSecondaryAlignment = IS.SECONDARY.ALIGNMENT
+                ),
+                tag = TAGS, simpleCigar = SIMPLE.CIGAR, what = WHAT
+            )
         }
+
+
+        if (VERBOSE) {
+            message("\nprepared loading parameters")
+            message("\tTAGS:\t", toString(TAGS))
+            message("\tCIGAR:\t", ifelse(isTRUE(SIMPLE.CIGAR), "simple cigar", "all cigar"))
+            message("\tWHAT:\t", toString(WHAT))
+            message("loading .bam file into GAlignments")
+
+            if (is.na(IS.SECONDARY.ALIGNMENT)) {
+                message("\n******")
+                message("SLOW - Loading all reads")
+                message(" => to load unique and primary alignments set")
+                message(" => IS.SECONDARY.ALIGNMENT=FALSE")
+                message("******\n")
+            } else if (!IS.SECONDARY.ALIGNMENT) {
+                message("\n******")
+                message("Loading unique and primary alignments !!!")
+                message("******\n")
+            } else if (IS.SECONDARY.ALIGNMENT) {
+                message("\n******")
+                message("Loading secondary alignments only !!!")
+                message("******\n")
+            }
+        }
+
+        GA <- GenomicAlignments::readGAlignments(
+            file = BAMFILE,
+            use.names = TRUE,
+            param = PARAM
+        )
+        # checking the tags consistency
+        for (tagcheck in TAGS) {
+            if (any(is.na(GenomicRanges::mcols(GA)[[tagcheck]]))) {
+                stop("Tag ", tagcheck, " contains NA values. Check your bam file.")
+            }
+        }
+        ## ***
+        GA.IN <- length(GA)
+        if (VERBOSE) message("\tIMPORTED: ", GA.IN)
+
+        if (isTRUE(USE.SIZE.FILTER)) {
+            if (VERBOSE) {
+                message("\nfiltering by read size")
+                message(
+                "\tRANGE:\t",
+                min(READ.SIZE.RANGE), "-", max(READ.SIZE.RANGE)
+                )
+            }
+            GA <- GA[GenomicAlignments::width(GA) %in% seq(min(READ.SIZE.RANGE), max(READ.SIZE.RANGE), by = 1)]
+
+            ## ***
+            REMAINDER <- (length(GA) / GA.IN) * 100
+            if (VERBOSE) message("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")
+        }
+
+
+
+        if (isTRUE(FILTER.BY.FLAG)) {
+            if (VERBOSE) message("\nfiltering based on flags")
+            GARP <- GA[GenomicRanges::mcols(GA)[["flag"]] %in% SELECT.FLAG]
+            # mcols(GARP)[["flag"]] <- NULL
+
+            ## ***
+            REMAINDER <- (length(GARP) / GA.IN) * 100
+            if (VERBOSE) message("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")
+        } else {
+            GARP <- GA
+        }
+
+        if (isTRUE(PERFECT.MATCH.ONLY)) {
+            if (VERBOSE) message("\nremoving reads with mismatches")
+            GARP <- GARP[GenomicRanges::mcols(GARP)[["NM"]] %in% c(0)]
+
+            ## ***
+            REMAINDER <- (length(GARP) / GA.IN) * 100
+            if (VERBOSE) message("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")
+        }
+
+        if (isTRUE(GET.ORIGINAL.SEQUENCE)) {
+            if (VERBOSE) message("\nretrieving original read sequences")
+            BAMSEQ <- GenomicRanges::mcols(GARP)[["seq"]]
+            ISONMINUS <- as.logical(GenomicAlignments::strand(GARP) == "-")
+            BAMSEQ[ISONMINUS] <- Biostrings::reverseComplement(BAMSEQ[ISONMINUS])
+            GenomicRanges::mcols(GARP)[["seq"]] <- BAMSEQ
+        }
+
+        if (VERBOSE) message("\nconverting to GRanges")
+        GARP.GR <- GenomicRanges::granges(GARP, use.names = TRUE, use.mcols = TRUE)
+
+        if (!SEQ.LEVELS.STYLE %in% "UCSC") {
+        if (VERBOSE) message("\nchanging seqlevels style to: ", SEQ.LEVELS.STYLE)
+        GenomeInfoDb::seqlevelsStyle(GARP.GR) <- SEQ.LEVELS.STYLE
+        }
+        return(GARP.GR)
+    }
+    if (VERBOSE) {
+        message("\nSorting into uniquemappers vs multimappers and primary vs secondary alignments")
     }
 
-    GA <- GenomicAlignments::readGAlignments(file = BAMFILE,
-                                             use.names = TRUE,
-                                             param = PARAM)
-    #checking the tags consistency
-    for (tagcheck in TAGS){
-      if (any(is.na(GenomicRanges::mcols(GA)[[tagcheck]]))){
-        stop(paste0("Tag ", tagcheck, " contains NA values. Check your bam file."))
-      }
+    if (is.na(IS.SECONDARY.ALIGNMENT)) { # justPrimaryOrSecondary
+        if (VERBOSE) message("Loading primary only")
+        PrimaryAlignments <- justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT = FALSE)
+        outputAlignments[["unique"]] <- PrimaryAlignments[GenomicRanges::mcols(PrimaryAlignments)[["NH"]] == 1]
+        outputAlignments[["multi.primary"]] <- PrimaryAlignments[(GenomicRanges::mcols(PrimaryAlignments)[["NH"]] > 1)]
+        if (VERBOSE) message("Loading secondary only")
+        outputAlignments[["multi.secondary"]] <- justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT = TRUE)
+    } else if (IS.SECONDARY.ALIGNMENT) {
+        outputAlignments[["unique"]] <- NULL
+        outputAlignments[["multi.primary"]] <- NULL
+        if (VERBOSE) message("Loading secondary only")
+        outputAlignments[["multi.secondary"]] <- justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT = TRUE)
+    } else if (!IS.SECONDARY.ALIGNMENT) {
+        if (VERBOSE) message("Loading primary only")
+        PrimaryAlignments <- justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT = FALSE)
+        outputAlignments[["unique"]] <- PrimaryAlignments[GenomicRanges::mcols(PrimaryAlignments)[["NH"]] == 1]
+        outputAlignments[["multi.primary"]] <- PrimaryAlignments[(GenomicRanges::mcols(PrimaryAlignments)[["NH"]] > 1)]
+        outputAlignments[["multi.secondary"]] <- NULL
     }
-    ## ***
-    GA.IN <- length(GA)
-    if (VERBOSE) message(paste0("\tIMPORTED: ", GA.IN))
-
-    if(isTRUE(USE.SIZE.FILTER)){
-      if (VERBOSE){
-        message("\nfiltering by read size")
-        message(paste0("\tRANGE:\t",
-                                  paste(min(READ.SIZE.RANGE),
-                                        max(READ.SIZE.RANGE),
-                                        sep = "-")))
-      }
-      GA <- GA[GenomicAlignments::width(GA) %in% seq(min(READ.SIZE.RANGE),max(READ.SIZE.RANGE),by = 1)]
-
-      ## ***
-      REMAINDER = (length(GA)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
-
-
-
-    if(isTRUE(FILTER.BY.FLAG)){
-      if (VERBOSE) message("\nfiltering based on flags")
-      GARP <- GA[GenomicRanges::mcols(GA)[["flag"]] %in% SELECT.FLAG]
-      #mcols(GARP)[["flag"]] <- NULL
-
-      ## ***
-      REMAINDER = (length(GARP)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
-    else { GARP <- GA }
-
-    if(isTRUE(PERFECT.MATCH.ONLY)){
-      if (VERBOSE)  message("\nremoving reads with mismatches")
-      GARP <- GARP[GenomicRanges::mcols(GARP)[["NM"]] %in% c(0)]
-
-      ## ***
-      REMAINDER = (length(GARP)/GA.IN)*100
-      if (VERBOSE) message(paste0("\tREMAINDER: ", round(REMAINDER, digits = 2), " %")) }
-
-    if(isTRUE(GET.ORIGINAL.SEQUENCE)){
-      if (VERBOSE) message("\nretrieving original read sequences")
-      BAMSEQ <- GenomicRanges::mcols(GARP)[["seq"]]
-      ISONMINUS <- as.logical(GenomicAlignments::strand(GARP) == "-")
-      BAMSEQ[ISONMINUS] <- Biostrings::reverseComplement(BAMSEQ[ISONMINUS])
-      GenomicRanges::mcols(GARP)[["seq"]] <- BAMSEQ }
-
-    if (VERBOSE) message("\nconverting to GRanges")
-    GARP.GR <- GenomicRanges::granges(GARP, use.names = TRUE, use.mcols = TRUE)
-
-    if(!SEQ.LEVELS.STYLE %in% "UCSC"){
-      if (VERBOSE) message(paste0("\nchanging seqlevels style to: ",SEQ.LEVELS.STYLE))
-      GenomeInfoDb::seqlevelsStyle(GARP.GR) <- SEQ.LEVELS.STYLE
+    ## RETURN
+    if (VERBOSE) {
+        message("\nDone!")
+        message("")
     }
-    return(GARP.GR)
-  }
-    if (VERBOSE){
-    message("\nSorting into uniquemappers vs multimappers and primary vs secondary alignments")
-  }
-
-  if (is.na(IS.SECONDARY.ALIGNMENT)){#justPrimaryOrSecondary
-    if (VERBOSE) message("Loading primary only")
-    PrimaryAlignments<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT=FALSE)
-    outputAlignments[['unique']]<-PrimaryAlignments[GenomicRanges::mcols(PrimaryAlignments)[['NH']]==1]
-    outputAlignments[['multi.primary']]<-PrimaryAlignments[(GenomicRanges::mcols(PrimaryAlignments)[['NH']]>1)]
-    if (VERBOSE) message("Loading secondary only")
-    outputAlignments[['multi.secondary']]<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT=TRUE)
-  }else if(IS.SECONDARY.ALIGNMENT){
-    outputAlignments[['unique']]<-NULL
-    outputAlignments[['multi.primary']]<-NULL
-    if (VERBOSE) message("Loading secondary only")
-    outputAlignments[['multi.secondary']]<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT=TRUE)
-  }else if(!IS.SECONDARY.ALIGNMENT){
-    if (VERBOSE) message("Loading primary only")
-    PrimaryAlignments<-justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT=FALSE)
-    outputAlignments[['unique']]<-PrimaryAlignments[GenomicRanges::mcols(PrimaryAlignments)[['NH']]==1]
-    outputAlignments[['multi.primary']]<-PrimaryAlignments[(GenomicRanges::mcols(PrimaryAlignments)[['NH']]>1)]
-    outputAlignments[['multi.secondary']]<-NULL
-  }
-  ## RETURN
-  if (VERBOSE){
-    message("\nDone!")
-    message("")
-  }
-  return(outputAlignments)
+    return(outputAlignments)
 }
-

@@ -13,7 +13,7 @@ PICBcombine(
 )
 }
 \arguments{
-\item{rangesList}{list of few PICBbuild outputs}
+\item{rangesList}{list of few PICBbuild outputs (with seeds, cores and clusters)}
 
 \item{alignmentsList}{named list of PICBload outputs. Names correspond to replicate names.}
 
@@ -28,9 +28,6 @@ Granges object annotated for every replicate.
 }
 \description{
 Combine Granges from few replicate into a set of repeatable intervals
-}
-\examples{
-PICBcombine(list(OutputOfPICBbuildRepl1, OutputOfPICBbuildRepl2), list(Repl1=OutputOfPICBloadRepl1, Repl2=OutputOfPICBloadRepl2), TYPE.OF.REGION="regions")
 }
 \author{
 Aleksandr Friman

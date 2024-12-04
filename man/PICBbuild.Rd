@@ -92,7 +92,18 @@ list of annotated Granges objects named "seeds" for seeds,
 Build piRNA seeds/cores/clusters from alignments
 }
 \examples{
-PICBbuild(IN.ALIGNMENTS = myAlignmentsFromPICBload, REFERENCE.GENOME="BSgenome.Dmelanogaster.UCSC.dm6")
+library(BSgenome.Dmelanogaster.UCSC.dm6)
+myAlignmentsFromPICBload <- PICBload(
+    BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB"),
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    VERBOSE = FALSE
+)
+
+outputOfPICBbuild <- PICBbuild(
+    IN.ALIGNMENTS = myAlignmentsFromPICBload,
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    VERBOSITY = 0
+)
 }
 \author{
 Pavol Genzor
@@ -100,4 +111,6 @@ Pavol Genzor
 Daniel Stoyko
 
 Aleksandr Friman
+
+Franziska Ahrend
 }

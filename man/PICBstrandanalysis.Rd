@@ -2,7 +2,7 @@
 % Please edit documentation in R/PICBstrandanalysis.R
 \name{PICBstrandanalysis}
 \alias{PICBstrandanalysis}
-\title{Add sense/antisense ratio of piRNAs per piRNAcluster}
+\title{Add sense/antisense ratio of unique piRNAs per piRNAcluster}
 \usage{
 PICBstrandanalysis(IN.ALIGNMENTS, IN.RANGES, VERBOSE = TRUE)
 }
@@ -17,8 +17,31 @@ PICBstrandanalysis(IN.ALIGNMENTS, IN.RANGES, VERBOSE = TRUE)
 Granges object with an additional annotation column
 }
 \description{
-Add sense/antisense ratio of piRNAs per piRNAcluster
+Add sense/antisense ratio of unique piRNAs per piRNAcluster
 }
 \examples{
-outputOfPICBbuild$clusters<-PICBstrandanalysis(outputOfPICBload, outputOfPICBbuild$clusters)
+library(BSgenome.Dmelanogaster.UCSC.dm6)
+myAlignmentsFromPICBload <- PICBload(
+    BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB"),
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    VERBOSE = FALSE
+)
+
+outputOfPICBbuild <- PICBbuild(
+    IN.ALIGNMENTS = myAlignmentsFromPICBload,
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    VERBOSITY = 0
+)
+
+outputOfPICBbuild$clusters <- PICBstrandanalysis(
+    IN.ALIGNMENTS = myAlignmentsFromPICBload,
+    IN.RANGES = outputOfPICBbuild$clusters
+)
+}
+\author{
+Parthena Konstantinidou
+
+Zuzana Loubalova
+
+Franziska Ahrend
 }

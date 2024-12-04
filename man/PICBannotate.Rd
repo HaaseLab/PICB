@@ -28,6 +28,8 @@ PICBannotate(
 
 \item{PROVIDE.NON.NORMALIZED}{provide annotations in non-normalized format. False by default.}
 
+\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
+
 \item{COMPUTE.1U.10A.FRACTIONS}{for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.}
 }
 \value{
@@ -37,7 +39,27 @@ Granges object with extra annotation columns
 Annotate Granges according to a piRNA library
 }
 \examples{
-outputOfPICBbuild$seeds<-PICBannotate(outputOfPICBbuild$seeds, outputOfPICBload, REPLICATE.NAME="Replicate1")
+library(BSgenome.Dmelanogaster.UCSC.dm6)
+myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
+myAlignmentsFromPICBload <- PICBload(
+    BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB"),
+    REFERENCE.GENOME = myGenome,
+    VERBOSE = FALSE
+)
+myRangesFromPICBbuild <- PICBbuild(
+    IN.ALIGNMENTS = myAlignmentsFromPICBload,
+    REFERENCE.GENOME = myGenome,
+    VERBOSITY = 0
+)
+
+myClustersFromPICBbuildAnnotationsRemoved <- GenomicRanges::granges(myRangesFromPICBbuild$clusters)
+
+PICBannotate(
+    INPUT.GRANGES = myClustersFromPICBbuildAnnotationsRemoved,
+    ALIGNMENTS = myAlignmentsFromPICBload,
+    REFERENCE.GENOME = myGenome,
+    PROVIDE.NON.NORMALIZED = TRUE
+)
 }
 \author{
 Aleksandr Friman

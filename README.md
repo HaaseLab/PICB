@@ -12,7 +12,7 @@
   <br /><br /><strong>PICB - <u>pi</u>RNA <u>C</u>luster <u>B</u>uilder</strong>
 </h1>
 
-## Introduction[![](images/double-helix-svgrepo-com.svg)](#introduction)
+## Introduction[![](vignettes/double-helix-svgrepo-com.svg)](#introduction)
 
 **PICB** (*piRNA Cluster Builder*) is a flexible toolkit for assembling, prioritizing, and characterizing piRNA clusters. 
 
@@ -20,7 +20,7 @@
 
 ---
 
-## Table of contents[![](images/double-helix-svgrepo-com.svg)](#table-of-contents)
+## Table of contents[![](vignettes/double-helix-svgrepo-com.svg)](#table-of-contents)
 - [Motivation](#motivation)
 - [Getting started](#getting-started)
 - [How to run PICB](#how-to-run-PICB)
@@ -34,17 +34,17 @@
 
 ---
 
-## Motivation[![](images/double-helix-svgrepo-com.svg)](#motivation)
+## Motivation[![](vignettes/double-helix-svgrepo-com.svg)](#motivation)
 
-piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. PiRNAs originate from genomic regions which are called _piRNA clusters_.
+piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. piRNAs originate from genomic regions which are called _piRNA clusters_.
 
-PiCB identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed through stepwise integration of unique and multimapping piRNAs. 
+PICB identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed through stepwise integration of unique and multimapping piRNAs. 
 
-<div align="center"><a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288#sec2"><img src="images/PICB_stepwiseIntegration.jpeg" alt="Stepwise Integration for PICB" style="width:50%;height:50%"/></a></div>
+<div align="center"><a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288#sec2"><img src="vignettes/PICB_stepwiseIntegration.jpeg" alt="Stepwise Integration for PICB" style="width:50%;height:50%"/></a></div>
 
-PiCB uses a stepwise integration of unique mapping piRNAs (map1), primary alignments of multimapping piRNAs (map>1), and all possible alignments to build seeds, cores, and clusters. Image and caption taken from <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank">our publication</a>.
+Figure 1: PICB considers unique mapping piRNAs (NH=1), primary alignments of multimapping piRNAs (NH>1), and all possible alignments stepwise to build seeds, cores, and clusters. Find additional information in our <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank"> recent publication</a>.
 
-Only very limited programming knowledge is needed to run PICB. Check out our step-by-step instructions and demo. 
+Only very limited programming knowledge is needed to run PICB. Check out our step-by-step instructions and our [demonstration](#lets-give-it-a-try---an-example) below. 
 
 Please visit our <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank">publication</a> for full context.
 
@@ -52,33 +52,23 @@ Please visit our <a href="https://www.sciencedirect.com/science/article/pii/S221
 
 ---
 
-## Getting started[![](images/double-helix-svgrepo-com.svg)](#getting-started)
+## Getting started[![](vignettes/double-helix-svgrepo-com.svg)](#getting-started)
 
 PICB runs in R versions <span>&#8805;</span> 4.2. to 4.4.
 
 <!--<p style="color: orange;"> R version?? </p>--> 
 
-It is possible to run PICB in RStudio, in an R script on your local machine or with HPCs (e.g., Biowulf) or in Jupyter Notebook (using R). Keep in mind that as for any handling of large-scale sequencing data you need to have sufficient memory on your device (or cluster) allocated. 
+It is possible to run PICB in RStudio, in an R script on your local machine or with High Performance Computing (HPC) resources or in Jupyter Notebook (using R). Keep in mind that as for any handling of large-scale sequencing data you need to have sufficient memory on your device (or cluster) allocated. 
 
 <b>1. Load dependencies in R environment</b>
 
 You will need to install and load the following required R packages:
 
 ```R
-install.packages("data.table")
-install.packages("seqinr")
-install.packages("openxlsx")
-install.packages("dplyr")
+install.packages(c("data.table", "seqinr", "openxlsx", "dplyr"))
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("IRanges")
-BiocManager::install("GenomicRanges")
-BiocManager::install("GenomicAlignments")
-BiocManager::install("Rsamtools")
-BiocManager::install("Biostrings")
-BiocManager::install("GenomeInfoDb")
-BiocManager::install("BSgenome")
-BiocManager::install("rtracklayer")
+BiocManager::install(c("IRanges", "GenomicRanges", "GenomicAlignments", "Rsamtools", "Biostrings", "GenomeInfoDb", "BSgenome", "rtracklayer"))
 ```
 > 💡 In case you have not worked with GRanges yet, we recommend reading the following <a href=https://bioconductor.org/packages/release/bioc/vignettes/GenomicRanges/inst/doc/GenomicRangesIntroduction.html target="_blank">GRanges Introduction</a>.
 
@@ -86,16 +76,14 @@ BiocManager::install("rtracklayer")
 
 <b>2. Install PICB</b>
 
-PICB is available to install from any of the following sources:
+PICB is available to install from any of the following sources. If you choose to install from GitHub, make sure to have either devtools or remotes installed.
 
 | Where        | Source   | Command                                                                     |
 |-------------|----------|-----------------------------------------------------------------------------|
-| Web Browser | GitHub   | <a href="https://github.com/HaaseLab/PICB/archive/refs/heads/main.zip">Download GitHub repository here.</a> Now unzip the file and run `install.packages("Downloads/PICB-main", repos=NULL, type="source")` in R.                |
-| R | GitHub   | From GitHub repository: `remotes::install_github("HaaseLab/PICB")`                            |
+| R | GitHub   | From GitHub repository: `devtools::install_github("HaaseLab/PICB")` or `remotes::install_github("HaaseLab/PICB")` |
+| Web Browser | GitHub   | <a href="https://github.com/HaaseLab/PICB/archive/refs/heads/main.zip">Download GitHub repository here.</a> Now unzip the file and run `install.packages("Downloads/PICB-main", repos=NULL, type="source")` in R.  |
 | Terminal | GitHub   | From GitHub repository: Clone Source Code: `git clone https://github.com/HaaseLab/PICB.git` <!--<br> In R: `install.packages()`--> |
-<!--| R     | Bioconductor     | Soon: BiocManager::install("PICB") |
-| R | rOpenSci | Soon: `install.packages("PICB", repos = "https://ropensci.r-universe.dev")` |-->
-<!--<img src="images/GitHubDownload.png" alt="Stepwise Integration for PICB" style="width:30%;height:30%"/> |Follow steps on image (green button is on top of this page) <br> Or  -->
+<!--| R     | Bioconductor     | Soon: BiocManager::install("PICB") |-->
 
 <!-- Refer to: https://cran.r-project.org/web/packages/githubinstall/vignettes/githubinstall.html --> 
 
@@ -109,7 +97,7 @@ From now on it gets even easier.
 
 ---
 
-## How to run PICB[![](images/double-helix-svgrepo-com.svg)](#how-to-run-PICB)
+## How to run PICB[![](vignettes/double-helix-svgrepo-com.svg)](#how-to-run-PICB)
 
 There are just two required inputs: the **BAM File** and the **Reference Genome**.
 
@@ -137,13 +125,14 @@ If the BAM file is coordinate-sorted, the output should be '_SO:coordinate_'. If
 
 </details>
 
-**Three options for providing the _Reference Genome_**
+**Four options for providing the _Reference Genome_**
 
 
 1. Your genome is part of the <a href= https://kasperdanielhansen.github.io/genbioconductor/html/BSgenome.html target="_blank" rel="noopener noreferrer">BSgenome</a> package
   
 ```R
-#example (replace with your genome), previous installation of BSgenome required
+# Example for Drosophila melanogaster, replace with your own genome - previous installation of BSgenome required
+library(BSgenome.Dmelanogaster.UCSC.dm6)
 myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 ```
 
@@ -152,10 +141,19 @@ myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 
 ```R
 myGenome <- GenomeInfoDb::Seqinfo(seqnames = c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY"), 
-                                seqlengths = c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352))
+    seqlengths = c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352))
 ```
 
-3. _Fasta_ with the assembled genome sequence.
+3. **Using a Seqinfo object**
+
+Or use an existing `Seqinfo` object:
+
+```{r load_myGenome3, eval = FALSE}
+myGenome <- GenomeInfoDb::Seqinfo(genome = "dm6")
+```
+
+
+4. _Fasta_ with the assembled genome sequence.
 ```R
 myGenome <- PICBloadfasta(FASTA.NAME="/path/to/your/genome.fa")
 ```
@@ -193,10 +191,10 @@ myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME= myGenome)$clusters
 
 ---
 
-### Parameter adjustments[![](images/double-helix-svgrepo-com.svg)](#parameter-adjustments)
+### Parameter adjustments[![](vignettes/double-helix-svgrepo-com.svg)](#parameter-adjustments)
 
 
-PiCB allows wide-ranging parameter adjustments to adapt to e.g. sparse reference genomes and specific limitations of the data set. Tables of adjustments for both functions are shown below. 
+PICB allows wide-ranging parameter adjustments to adapt to e.g. sparse reference genomes and specific limitations of the data set. Tables of adjustments for both functions are shown below. 
 
 <details close><summary title="Click to show/hide details">Click to show / hide: Parameters for <code>PICBload</code></summary><br/>
 
@@ -240,7 +238,7 @@ The library size can be adjusted as shown in our [PICB demo](#lets-give-it-a-try
 | LIBRARY.SIZE | _numeric_  |  number of unique mapping alignments + number of primary multimapping alignments  | number of reads in the library |
 | VERBOSITY | 0,1,2,3  |  2  | Allows choosing the quantity of progress messages while running `PICBbuild`. Depending on VERBOSITY's value, printed messages are missing (0), include current processing step (1), include additionally current processing sub-step (2) or include chosen parameters for `PICBbuild`)|
 | PROVIDE.NON.NORMALIZED | TRUE, FALSE  |  FALSE  | Includes non-normalized statistics in the output annotations|
-| COMPUTE.1U.10A.FRACTIONS | TRUE, FALSE  |  FALSE  | Adds fraction of 1U and 10A for each read type (unique, multi.primary, multi.secondary). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`|
+| COMPUTE.1U.10A.FRACTIONS | TRUE, FALSE  |  FALSE  | Calculates the fractions of piRNAs with a 1U (Uridine at the 5' most piRNA position) and a 10A (adenine at position 10). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`|
 
 <br>
 
@@ -296,7 +294,7 @@ In the next step **secondary alignments** are processed identically as primary m
 
 ---
 
-## Output[![](images/double-helix-svgrepo-com.svg)](#output)
+## Output[![](vignettes/double-helix-svgrepo-com.svg)](#output)
 
 The output of `PICBbuild` includes **seeds**, **cores** and  **clusters**, each in *GenomicRanges* format. In [Running PICB](#running-PICB), we extracted directly the **clusters** using `$clusters`. Extracting the **seeds** and **cores** can be done similarly using `$seeds` and `$cores`. 
 
@@ -331,7 +329,7 @@ The **clusters** follow *GRanges* convention including the genomic coordinates (
 
 ---
 
-## Other PICB functions[![](images/double-helix-svgrepo-com.svg)](#other-picb-functions)
+## Other PICB functions[![](vignettes/double-helix-svgrepo-com.svg)](#other-picb-functions)
 
 ### Optimization of parameters
 
@@ -363,7 +361,7 @@ To visualize the sense/antisense ratio of the clusters, you can plot the sense/a
 --- 
 
 
-## Let's give it a try - An Example[![](images/double-helix-svgrepo-com.svg)](#lets-give-it-a-try---an-example)
+## Let's give it a try - An Example[![](vignettes/double-helix-svgrepo-com.svg)](#lets-give-it-a-try---an-example)
 
 In the following, we would like to show you how easy it is to run PICB!
 
@@ -373,20 +371,15 @@ In the following, we would like to show you how easy it is to run PICB!
 <b>Step 1: Getting started with PICB </b>
 * PICB-Tutorial 1/3: Installation of PICB 
 
-Follow the steps in [Getting started](#getting-started) to install PICB. If you want to test PICB with our sample dataset, make sure to use option 3 or 4 to install PICB or to download the mapped reads in the demo folder separately. Do not forget to load PICB with `library(PICB)`.
+Follow the steps in [Getting started](#getting-started) to install PICB. Do not forget to load PICB with `library(PICB)`.
 
 <b>Step 2: Data preparation </b>
 * PICB-Tutorial 2/3: Preparation of input
-<!-- 
-Download of example bam file to test run PICB. If you feel extra brave today, feel free to direcly use your own bam file. Skip to section * of this video. Terminal check if NH and NM tag is present if coord. sorted. If you know for sure then no need to check, proceed to next video. *Reference Genome: BSGenome, Load fasta, Coordinates
--->
 
 We showed different ways on how to load your genome. In the following the variant with using the  <a href= https://kasperdanielhansen.github.io/genbioconductor/html/BSgenome.html target="_blank" rel="noopener noreferrer">BSgenome</a> package. You will need to install your specific genome first. In our demo it is the <i>Drosophila melanogaster</i> genome. 
 
 ```R
 library("BSgenome.Dmelanogaster.UCSC.dm6")
-installed.genomes(splitNameParts=FALSE)
-#if you see your genome (here: BSgenome.Dmelanogaster.UCSC.dm6) listed, you are all set
 ```
 Now, let's store the genome into the variable `myGenome`.
 
@@ -402,7 +395,7 @@ Check for any warning of PICBload, PICBbuild. This code directly for clusters, i
 
 Load the alignments with `PICBload`.
 ```R
-myAlignments <- PICBload("Downloads/PICB-main/demo/Fly_Ov1_chr2L_20To21mb.bam", REFERENCE.GENOME = myGenome)
+myAlignments <- PICBload(system.file("extdata","Fly_Ov1_chr2L_20To21mb_filtered.bam", package="PICB"), REFERENCE.GENOME = myGenome)
 ```
 Next, we want to form the piRNA clusters using the `PICBbuild` function. Usually you would not need to include the size of the library (`LIBRARY.SIZE`) since PICB calculates it automatically. However, just for this demo, please include this parameter to adjust to the subset we chose to create this demo. 
 
@@ -418,7 +411,7 @@ myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME = myGenome, LIBRARY.SIZE 
 
 
 
-## Authors, Citation and Acknowledgments[![](images/double-helix-svgrepo-com.svg)](#authors-citation-and-acknowledgments)
+## Authors, Citation and Acknowledgments[![](vignettes/double-helix-svgrepo-com.svg)](#authors-citation-and-acknowledgments)
 
 Special thanks to all contributors and supporters that starred this repository.
 

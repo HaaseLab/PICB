@@ -1,3 +1,3 @@
-uniqueonly="seeds"
-uniqueandprimary="cores"
-allalignments="clusters"
+uniqueonly <- "seeds"
+uniqueandprimary <- "cores"
+allalignments <- "clusters"
