@@ -59,7 +59,7 @@ PICBload <- function(
 
     outputAlignments <- list()
     ## check input
-    if (is.null(BAMFILE)) stop("Please provide full path to a .bam file !!!")
+    if (is.null(BAMFILE)) stop("Please provide full path to a .bam file!")
     if (is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME")
     if (isTRUE(GET.ORIGINAL.SEQUENCE)) {
         WHAT <- c(WHAT, "seq")

@@ -88,7 +88,7 @@ PICBbuild <- function(
     # check if IN.ALIGNMENTS contains columns "unique" and "multi.primary"
     typeAlignments <- names(IN.ALIGNMENTS)
     if (!"unique" %in% typeAlignments) stop("IN.ALIGNMENTS must contain 'unique' column! Use PICBload() with IS.SECONDARY.ALIGNMENT = NA (default) to load piRNAs. \n")
-    if (!"multi.primary" %in% typeAlignments) stop("IN.ALIGNMENTS must contain 'multi.primary' column! Use PICBload() with IS.SECONDARY.ALIGNMENT = NA (default) to load piRNAs. \n")
+    if (!"multi.primary" %in% typeAlignments) stop("IN.ALIGNMENTS must contain 'multi.primary' column! Use PICBload() with IS.SECONDARY.ALIGNMENT = NA (default) to load piRNAs. We recommend including both primary and secondary multimappers; however, you could extract results using only unique alignments by utilizing the 'core' component from the output of PICBbuild.\n")
     if (!"multi.secondary" %in% typeAlignments) warning("IN.ALIGNMENTS does not contain secondary multimappers (column 'multi.secondary')! We recommend including secondary multimappers; please set IS.SECONDARY.ALIGNMENT = NA (default) in PICBload. \n\tContinuing without secondary multimappers...\n")
 
     for (columnName in typeAlignments) {

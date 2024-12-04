@@ -7,11 +7,15 @@ output:
     BiocStyle::html_document:
         toc_float: true
 abstract: >
-    piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and 
-    maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. 
-    PiRNAs originate from genomic regions which are called piRNA clusters. The piRNA Cluster Builder (PICB) 
-    identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed 
-    through stepwise integration of unique and multimapping piRNAs. 
+    piRNAs (short for PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility 
+    and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. 
+    piRNAs originate from genomic regions known as piRNA clusters. The piRNA Cluster Builder (PICB) is 
+    a versatile toolkit designed to identify genomic regions with a high density of piRNAs. It constructs 
+    piRNA clusters through a stepwise integration of unique and multimapping piRNAs and offers wide-ranging 
+    parameter settings, supported by an optimization function that allows users to test different parameter 
+    combinations to tailor the analysis to their specific piRNA system. The output includes extensive metadata 
+    columns, enabling researchers to rank clusters and extract cluster characteristics. 
+    
 vignette: >
     %\VignetteIndexEntry{Introduction to the piRNA Cluster Builder (PICB)}
     %\VignetteEngine{knitr::rmarkdown}
@@ -24,19 +28,19 @@ knitr::opts_chunk$set(
 )
 ```
 # Introduction
-PICB is a flexible toolkit for assembling, prioritizing, and characterizing piRNA clusters. PiRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. PiRNAs originate from genomic regions called _piRNA clusters_. 
+PICB is a flexible toolkit for assembling, prioritizing, and characterizing piRNA clusters. piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. piRNAs originate from genomic regions called _piRNA clusters_. 
 
 PICB identifies genomic regions with a high density of piRNAs through stepwise integration of unique and multimapping piRNAs. 
 
 ![](PICB_stepwiseIntegration.jpeg)
 
-Figure 1: PICB uses a stepwise integration of unique mapping piRNAs (map1), primary alignments of multimapping piRNAs (map>1), and all possible alignments to build seeds, cores, and clusters. Image and caption taken from our recent [publication](https://www.sciencedirect.com/science/article/pii/S2211124724011288).
+Figure 1: PICB considers unique mapping piRNAs (NH=1), primary alignments of multimapping piRNAs (NH>1), and all possible alignments stepwise to build seeds, cores, and clusters. Find additional information in our recent [publication](https://www.sciencedirect.com/science/article/pii/S2211124724011288).
 
-Only very limited programming knowledge is needed to run PICB. Check out the following basic instructions and demonstration. 
+Only very limited programming knowledge is needed to run PICB. Check out the following instructions and demonstration. 
 
 # Getting Started
 
-It is possible to run PICB in RStudio, in an R script on your local machine or with HPCs (e.g., Biowulf) or in Jupyter Notebook (using R). Keep in mind that as for any handling of large-scale sequencing data you need to have sufficient memory on your device (or cluster) allocated. 
+It is possible to run PICB in RStudio, in an R script on your local machine or with High Performance Computing (HPC) resources or in Jupyter Notebook (using R). Keep in mind that as for any handling of large-scale sequencing data you need to have sufficient memory on your device (or cluster) allocated. 
 
 `PICB` requires the CRAN packages `r CRANpkg("data.table")`, `r CRANpkg("seqinr")`, `r CRANpkg("openxlsx")`, `r CRANpkg("dplyr")`, 
 and the Bioconductor packages `r Biocpkg("IRanges")`, `r Biocpkg("GenomicRanges")`, `r Biocpkg("GenomicAlignments")`, `r Biocpkg("Rsamtools")`, `r Biocpkg("Biostrings")`, `r Biocpkg("GenomeInfoDb")`, `r Biocpkg("BSgenome")` and `r Biocpkg("rtracklayer")` installed. 
@@ -89,9 +93,11 @@ PICB requires only two main inputs: a **BAM file** containing the piRNA alignmen
 
 ### BAM File Requirements
 
-- **piRNA dataset**: Verify your system! PiRNAs (short for PIWI-interacting RNAs) are defined by their association with PIWI proteins. Verify the **expression of PIWI proteins** before looking for piRNAs. If possible, work with **‘bona-fide’ piRNAs** that are prepared from purified PIWI-piRNA complexes [Girard et al., 2006](https://doi.org/10.1038/nature04917). Unrelated RNA fragments can be easily mistaken for ‘piRNAs’ in small RNA sequencing data. 
+- **piRNA dataset**: Verify your system! piRNAs (short for PIWI-interacting RNAs) are defined by their association with PIWI proteins. Verify the **expression of PIWI proteins** before looking for piRNAs. If possible, work with **‘bona-fide’ piRNAs** that are prepared from purified PIWI-piRNA complexes [Girard et al., 2006](https://doi.org/10.1038/nature04917). Unrelated RNA fragments can be easily mistaken for ‘piRNAs’ in small RNA sequencing data. 
 - **NH and NM tags**: The BAM file must include these tags. 
 - **Coordinate-sorted and indexed**: Ensure your BAM file is sorted and has an accompanying `.bai` index file.
+
+In the [Appendix](#appendix), we provide a short bash script to check if your BAM file meets above PICB requirements.
 
 ### Reference Genome
 
@@ -245,7 +251,7 @@ The library size can be adjusted as shown in our [PICB demo](#example-workflow),
 
 - **LIBRARY.SIZE**: default number of unique mapping alignments + number of primary multimapping alignments • number of reads in the library.
 - **VERBOSITY** default 2 • Allows choosing the quantity of progress messages while running `PICBbuild`. Depending on VERBOSITY's value, printed messages are missing (0), include current processing step (1), include additionally current processing sub-step (2) or include chosen parameters for `PICBbuild`.
-- **COMPUTE.1U.10A.FRACTIONS** default FALSE • Adds fraction of 1U and 10A for each read type (unique, multi.primary, multi.secondary). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`.
+- **COMPUTE.1U.10A.FRACTIONS** default FALSE • Calculates the fractions of piRNAs with a 1U (Uridine at the 5' most piRNA position) and a 10A (adenine at position 10). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`.
 
 PICBbuild integrates unique mapping (seeds), primary multimapping (cores) and secondary alignments stepwise using the sliding window algorithm. Each step allows following parameter adjustments. 
 
@@ -313,7 +319,6 @@ Next, we removed abundant cellular RNAs (rRNAs, tRNAs, snRNAs, snoRNAs) by annot
 Using samtools [Li et al., 2009](https://doi.org/10.1093/bioinformatics/btp352), we extracted alignments from chr2L:20000000-21000000. 
 To further reduce the file size, we retained only the essential tags for PICB (NH, NM) in the BAM file, replaced the sequence quality field (QUAL) with a placeholder * and downsampled the file to retain 22% of the reads. 
 Lastly, we applied a high level of compression to further reduce its size and indexed the compressed and sorted BAM file. More information on the processing steps can be found in the inst/script folder.
-
 
 The purpose of this entire reduction process was to significantly minimize the file size, making it manageable for storage. 
 It is important to note that this downsampling, combined with the prior restriction to a smaller genomic region (chr2L:20000000-21000000), 
@@ -459,7 +464,7 @@ When you export all resulting list items of `PICBbuild` (PICBbuildOutput with al
 When needed, you can import the results from an excel file using `PICBimportfromexcel`.
 
 ```{r import_results}
-myClusters <- PICBimportfromexcel(EXCEL.FILE.NAME = "myClusters_demonstration.xlsx")
+myClustersWithStrandAnalysis <- PICBimportfromexcel(EXCEL.FILE.NAME = "myClusters_demonstration.xlsx")
 ```
 
 
@@ -475,7 +480,23 @@ The Haase Lab at the National Institute of Health (NIH)
 
 Visit the lab website of [Astrid D. Haase, M.D., Ph.D.](https://www.niddk.nih.gov/about-niddk/staff-directory/biography/haase-astrid)
 
-# Session Information
+# Appendix
+
+## Unsure how the bam-files were mapped?
+
+You can test if your bam file has the NM and NH tags and is coordinate-sorted using the samtools package [Li et al., 2009](https://doi.org/10.1093/bioinformatics/btp352):
+```{bash BAMtest, eval = FALSE}
+# in bash terminal
+# NH and NM tags present?
+samtools view yourBamFile.bam | head -n 1000 | awk '{if($0 ~ /NM:i:/ && $0 ~ /NH:i:/) print "NM and NH tags found"; else if($0 ~ /NM:i:/) print "Only NM tag found"; else if($0 ~ /NH:i:/) print "Only NH tag found"; else print "Neither NM nor NH tag found"; exit}'
+# Coordinate-sorted?
+samtools view -H yourBamFile.bam" | grep '^@HD' | awk -F'\t' '{for(i=1;i<=NF;i++) if($i ~ /^SO:/) print $i}'
+```
+
+If the BAM file has both required tags, the output should be '_NM and NH tags found_'. 
+If the BAM file is coordinate-sorted, the output should be '_SO:coordinate_'. If you don't see any output, or if the SO field has a different value (e.g., SO:queryname for query name sorted or SO:unsorted), then the BAM file is not coordinate-sorted.
+
+## Session Information
 
 ```{r SessionInfo}
 sessionInfo()

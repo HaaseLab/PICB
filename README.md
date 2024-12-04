@@ -36,13 +36,13 @@
 
 ## Motivation[![](vignettes/double-helix-svgrepo-com.svg)](#motivation)
 
-piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. PiRNAs originate from genomic regions which are called _piRNA clusters_.
+piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. piRNAs originate from genomic regions which are called _piRNA clusters_.
 
 PICB identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed through stepwise integration of unique and multimapping piRNAs. 
 
 <div align="center"><a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288#sec2"><img src="vignettes/PICB_stepwiseIntegration.jpeg" alt="Stepwise Integration for PICB" style="width:50%;height:50%"/></a></div>
 
-PICB uses a stepwise integration of unique mapping piRNAs (map1), primary alignments of multimapping piRNAs (map>1), and all possible alignments to build seeds, cores, and clusters. Image and caption taken from <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank">our publication</a>.
+Figure 1: PICB considers unique mapping piRNAs (NH=1), primary alignments of multimapping piRNAs (NH>1), and all possible alignments stepwise to build seeds, cores, and clusters. Find additional information in our <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank"> recent publication</a>.
 
 Only very limited programming knowledge is needed to run PICB. Check out our step-by-step instructions and our [demonstration](#lets-give-it-a-try---an-example) below. 
 
@@ -58,7 +58,7 @@ PICB runs in R versions <span>&#8805;</span> 4.2. to 4.4.
 
 <!--<p style="color: orange;"> R version?? </p>--> 
 
-It is possible to run PICB in RStudio, in an R script on your local machine or with HPCs (e.g., Biowulf) or in Jupyter Notebook (using R). Keep in mind that as for any handling of large-scale sequencing data you need to have sufficient memory on your device (or cluster) allocated. 
+It is possible to run PICB in RStudio, in an R script on your local machine or with High Performance Computing (HPC) resources or in Jupyter Notebook (using R). Keep in mind that as for any handling of large-scale sequencing data you need to have sufficient memory on your device (or cluster) allocated. 
 
 <b>1. Load dependencies in R environment</b>
 
@@ -238,7 +238,7 @@ The library size can be adjusted as shown in our [PICB demo](#lets-give-it-a-try
 | LIBRARY.SIZE | _numeric_  |  number of unique mapping alignments + number of primary multimapping alignments  | number of reads in the library |
 | VERBOSITY | 0,1,2,3  |  2  | Allows choosing the quantity of progress messages while running `PICBbuild`. Depending on VERBOSITY's value, printed messages are missing (0), include current processing step (1), include additionally current processing sub-step (2) or include chosen parameters for `PICBbuild`)|
 | PROVIDE.NON.NORMALIZED | TRUE, FALSE  |  FALSE  | Includes non-normalized statistics in the output annotations|
-| COMPUTE.1U.10A.FRACTIONS | TRUE, FALSE  |  FALSE  | Adds fraction of 1U and 10A for each read type (unique, multi.primary, multi.secondary). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`|
+| COMPUTE.1U.10A.FRACTIONS | TRUE, FALSE  |  FALSE  | Calculates the fractions of piRNAs with a 1U (Uridine at the 5' most piRNA position) and a 10A (adenine at position 10). Requirement: GET.ORIGINAL.SEQUENCE set to TRUE in `PICBload`|
 
 <br>
 
@@ -375,9 +375,6 @@ Follow the steps in [Getting started](#getting-started) to install PICB. Do not 
 
 <b>Step 2: Data preparation </b>
 * PICB-Tutorial 2/3: Preparation of input
-<!-- 
-Download of example bam file to test run PICB. If you feel extra brave today, feel free to direcly use your own bam file. Skip to section * of this video. Terminal check if NH and NM tag is present if coord. sorted. If you know for sure then no need to check, proceed to next video. *Reference Genome: BSGenome, Load fasta, Coordinates
--->
 
 We showed different ways on how to load your genome. In the following the variant with using the  <a href= https://kasperdanielhansen.github.io/genbioconductor/html/BSgenome.html target="_blank" rel="noopener noreferrer">BSgenome</a> package. You will need to install your specific genome first. In our demo it is the <i>Drosophila melanogaster</i> genome. 
 

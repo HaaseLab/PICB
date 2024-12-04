@@ -13,7 +13,7 @@ PICBcombine(
 )
 }
 \arguments{
-\item{rangesList}{list of few PICBbuild outputs}
+\item{rangesList}{list of few PICBbuild outputs (with seeds, cores and clusters)}
 
 \item{alignmentsList}{named list of PICBload outputs. Names correspond to replicate names.}
 

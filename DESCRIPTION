@@ -1,6 +1,6 @@
 Package: PICB
 Title: piRNA Cluster Builder
-Version: 0.97.08
+Version: 0.97.09
 Authors@R: c(person("Pavol", "Genzor",  role = c("aut")),
     person("Aleksandr", "Friman", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
     person("Daniel", "Stoyko", role = c("aut")),
@@ -10,11 +10,14 @@ Authors@R: c(person("Pavol", "Genzor",  role = c("aut")),
     person("Yuejun", "Wang", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
     person("Hernan", "Lorenzi", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
     person("Astrid D", "Haase", email="haase-lab-bioinfo@nih.gov",  role = c("aut")))
-Description: piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility and 
-    maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. 
-    PiRNAs originate from genomic regions which are called piRNA clusters. The piRNA Cluster Builder (PICB) 
-    identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed 
-    through stepwise integration of unique and multimapping piRNAs.
+Description: piRNAs (short for PIWI-interacting RNAs) and their PIWI protein partners play a key role in fertility 
+    and maintaining genome integrity by restricting mobile genetic elements (transposons) in germ cells. 
+    piRNAs originate from genomic regions known as piRNA clusters. The piRNA Cluster Builder (PICB) is 
+    a versatile toolkit designed to identify genomic regions with a high density of piRNAs. It constructs 
+    piRNA clusters through a stepwise integration of unique and multimapping piRNAs and offers wide-ranging 
+    parameter settings, supported by an optimization function that allows users to test different parameter 
+    combinations to tailor the analysis to their specific piRNA system. The output includes extensive metadata 
+    columns, enabling researchers to rank clusters and extract cluster characteristics. 
 License: CC0
 Encoding: UTF-8
 Imports:

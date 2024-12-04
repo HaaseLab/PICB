@@ -35,7 +35,7 @@ test_that("PICBload throws error when BAMFILE is NULL", {
         BAMFILE = NULL,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
         ),
-        "Please provide full path to a .bam file !!!"
+        "Please provide full path to a .bam file!"
     )
 })
 

@@ -1,6 +1,6 @@
 #' Combine Granges from few replicate into a set of repeatable intervals
 #'
-#' @param rangesList list of few PICBbuild outputs
+#' @param rangesList list of few PICBbuild outputs (with seeds, cores and clusters)
 #' @param alignmentsList named list of PICBload outputs. Names correspond to replicate names.
 #' @param REFERENCE.GENOME name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"
 #' @param TYPE.OF.REGION "clusters" by default
@@ -22,7 +22,6 @@ PICBcombine <- function(rangesList = NULL, alignmentsList = NULL,
         }
     }
     GenomicRanges::mcols(commonRanges) <- NULL
-    pairs <- NULL
     # annotating mean coverage
 
     if (length(alignmentsList) > 0) {
