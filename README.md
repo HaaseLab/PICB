@@ -56,8 +56,6 @@ Please visit our <a href="https://www.sciencedirect.com/science/article/pii/S221
 
 PICB runs in R versions <span>&#8805;</span> 4.2. to 4.4.
 
-<!--<p style="color: orange;"> R version?? </p>--> 
-
 It is possible to run PICB in RStudio, in an R script on your local machine or with High Performance Computing (HPC) resources or in Jupyter Notebook (using R). Keep in mind that as for any handling of large-scale sequencing data you need to have sufficient memory on your device (or cluster) allocated. 
 
 <b>1. Load dependencies in R environment</b>
@@ -85,7 +83,6 @@ PICB is available to install from any of the following sources. If you choose to
 | Terminal | GitHub   | From GitHub repository: Clone Source Code: `git clone https://github.com/HaaseLab/PICB.git` <!--<br> In R: `install.packages()`--> |
 <!--| R     | Bioconductor     | Soon: BiocManager::install("PICB") |-->
 
-<!-- Refer to: https://cran.r-project.org/web/packages/githubinstall/vignettes/githubinstall.html --> 
 
 Now load PICB in your R environment: 
 ```R
@@ -102,8 +99,7 @@ From now on it gets even easier.
 There are just two required inputs: the **BAM File** and the **Reference Genome**.
 
 ### Data preparation
-<!--<details open>
-<summary> Click to show / hide <i>data preparation</i> </summary>--> 
+
 Checklist for having the right **BAM File**
 
 - [ ] NH and NM tags are included
@@ -164,11 +160,7 @@ myGenome <- PICBloadfasta(FASTA.NAME="/path/to/your/genome.fa")
 <!--</details>-->
 
 ### Running PICB
-<!--<details open>
-<summary>
-    Click to show / hide <i>How to run PICB</i>
-</summary>
-<br/>-->
+
 
 1. Load your mapped piRNAs with `PICBload`
 
@@ -389,9 +381,6 @@ myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 
 <b>Step 3: Running PICB</b>
 * PICB-Tutorial 3/3: Running PICBload and PICBbuild
-<!-- 
-Check for any warning of PICBload, PICBbuild. This code directly for clusters, if you want core and seeds w/o brackets. Wide ranging adjustments vs. e.g. genomes of low quality. Note to ranking: Dependent on what you want to investigate... uniq_reads_FPM
--->
 
 Load the alignments with `PICBload`.
 ```R
@@ -445,31 +434,13 @@ Visit the lab website of
 
 <br>
 
-**How to cite PICB**
+This project is licensed under the CC0.1.0 license - see the [LICENSE](/LICENSE) file for details.<br/>
 
-<i>Citation</i>
-<br><br>
-
-This project is licensed under the CC0.1.0 license - see the [LICENSE](/LICENSE.md) file for details.
-
-<!--
 Do you like this project? Please join us or [give a ⭐](/stargazers). Let us make piRNA clusters more comparable and easy to build!<br/>
--->
+
 <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
 
 ---
-<!--
-
-
-**Share** the project link with your network on social media.
-
-<a href="https://www.linkedin.com/sharing/share-offsite/?url=github.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=LinkedIn&logo=LinkedIn&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk" alt="Share on LinkedIn"/></a>&nbsp;
-<a href="https://twitter.com/intent/tweet?text=Check%20out%20%23PICB%20-%20The%20new%20piRNA%20Cluster%20Builder%20%0A%0Ahttps%3A//github.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=Twitter&logo=Twitter&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk" alt="Shared on Twitter"/></a>&nbsp;
-<a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fgithub.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=Facebook&logo=Facebook&style=social&url=https%3A%2F%2Fgithub.com%2HaaseLab%2PICB" alt="Share on Facebook"/></a>&nbsp;
-<a href="https://t.me/share/url?text=Check%20out%20this%20new%20piRNA%20Cluster%20Builder%20-%20PICB&url=https%3A%2F%2Fgithub.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=Telegram&logo=Telegram&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk" alt="Share on Telegram"/></a>&nbsp;
-<a href="https://wa.me/?text=Check%20out%20this%20new%20piRNA%20Cluster%20Builder%20-%20PICB%5Cn%20https%3A%2F%2Fgithub.com/HaaseLab/PICB" target="_blank"><img src="https://img.shields.io/twitter/url?label=Whatsapp&logo=Whatsapp&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk" alt="Share on Whatsapp"/></a>&nbsp;
-<a href="mailto:?subject=piRNA%20Cluster%20Builder&body=Check%20out%20this%20new%20piRNA%20Cluster%20Builder%20-%20PICB%20%3A%0Ahttps%3A//github.com/HaaseLab/PICB%0A" target="_blank"><img src="https://img.shields.io/twitter/url?label=GMail&logo=GMail&style=social&url=https%3A%2F%2Fgithub.com%2Faregtech%2Fareg-sdk"/></a>
--->
 
 ### List of papers utilizing PICB:
 
