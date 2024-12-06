@@ -49,7 +49,7 @@ PICBload <- function(
     TAGS = c("NH", "NM"),
     WHAT = c("flag"),
     ## EXTRA OPTIONS
-    SEQ.LEVELS.STYLE = "UCSC",
+    SEQ.LEVELS.STYLE = DEFAULT.SEQ.LEVELS.STYLE,
     GET.ORIGINAL.SEQUENCE = FALSE,
     VERBOSE = TRUE) {
   ## NOTE ON BAM INFO
@@ -73,8 +73,6 @@ PICBload <- function(
     justPrimaryOrSecondary <- function(IS.SECONDARY.ALIGNMENT) {
         ## PARAMETERS FOR LOADING BAM FILE
         if (isTRUE(STANDARD.CONTIGS.ONLY)) {
-            SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-
             REG.CHR <- GenomeInfoDb::seqnames(SI)
             BAM.FILE.HEADER <- Rsamtools::BamFile(BAMFILE)
             BAM.FILE.CHR <- GenomeInfoDb::seqnames(GenomeInfoDb::seqinfo(BAM.FILE.HEADER))
@@ -131,6 +129,7 @@ PICBload <- function(
             use.names = TRUE,
             param = PARAM
         )
+
         # checking the tags consistency
         for (tagcheck in TAGS) {
             if (any(is.na(GenomicRanges::mcols(GA)[[tagcheck]]))) {
@@ -199,7 +198,7 @@ PICBload <- function(
     if (VERBOSE) {
         message("\nSorting into uniquemappers vs multimappers and primary vs secondary alignments")
     }
-
+    SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
     if (is.na(IS.SECONDARY.ALIGNMENT)) { # justPrimaryOrSecondary
         if (VERBOSE) message("Loading primary only")
         PrimaryAlignments <- justPrimaryOrSecondary(IS.SECONDARY.ALIGNMENT = FALSE)
@@ -218,6 +217,10 @@ PICBload <- function(
         outputAlignments[["unique"]] <- PrimaryAlignments[GenomicRanges::mcols(PrimaryAlignments)[["NH"]] == 1]
         outputAlignments[["multi.primary"]] <- PrimaryAlignments[(GenomicRanges::mcols(PrimaryAlignments)[["NH"]] > 1)]
         outputAlignments[["multi.secondary"]] <- NULL
+    }
+    for (t in names(outputAlignments)){
+        GenomeInfoDb::seqlevels(outputAlignments[[t]]) <- GenomeInfoDb::seqlevelsInUse(outputAlignments[[t]])
+        GenomicRanges::seqinfo(outputAlignments[[t]]) <- SI
     }
     ## RETURN
     if (VERBOSE) {

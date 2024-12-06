@@ -43,7 +43,7 @@ PICBannotate <- function(
         REPLICATE.NAME = NULL,
         LIBRARY.SIZE = length(ALIGNMENTS$unique) + length(ALIGNMENTS$multi.primary),
         PROVIDE.NON.NORMALIZED = FALSE,
-        SEQ.LEVELS.STYLE = "UCSC",
+        SEQ.LEVELS.STYLE = DEFAULT.SEQ.LEVELS.STYLE,
         COMPUTE.1U.10A.FRACTIONS = FALSE
     ) {
     if (is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME")
@@ -55,20 +55,6 @@ PICBannotate <- function(
 
     SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
 
-    PICBfixCoverage <- function(inCov, SI) {
-        for (i in seq_along(SI)) {
-            chrname <- GenomeInfoDb::seqnames(SI)[i]
-            if (chrname %in% names(inCov)) {
-                targetLen <- GenomeInfoDb::seqlengths(SI)[chrname]
-                currentLen <- length(inCov[[chrname]])
-                deltaLen <- targetLen - currentLen
-                if (deltaLen > 0) {
-                    inCov[[chrname]] <- c(inCov[[chrname]], rep(0, deltaLen))
-                }
-            }
-        }
-        return(inCov)
-    }
 
     PICBannotateGranges <- function(INPUT.GRANGES, ALIGNMENTS,
                                     SI, LIBRARY.SIZE,
@@ -86,10 +72,10 @@ PICBannotate <- function(
         GenomicRanges::mcols(INPUT.GRANGES)[[paste0("multimapping_reads_primary_alignments_FPKM", SUFFIX)]] <- GenomicRanges::mcols(INPUT.GRANGES)[[paste0("multimapping_reads_primary_alignments_FPM", SUFFIX)]] * 1e3 / GenomicRanges::width(INPUT.GRANGES)
         GenomicRanges::mcols(INPUT.GRANGES)[[paste0("all_reads_primary_alignments_FPKM", SUFFIX)]] <- GenomicRanges::mcols(INPUT.GRANGES)[[paste0("all_reads_primary_alignments_FPM", SUFFIX)]] * 1e3 / GenomicRanges::width(INPUT.GRANGES)
         # coverage
+        GenomeInfoDb::seqlevels(ALIGNMENTS$unique) <- GenomeInfoDb::seqlevelsInUse(ALIGNMENTS$unique)
+        GenomicRanges::seqinfo(ALIGNMENTS$unique) <- SI
         UniqueMappingCoveragePlus <- GenomicRanges::coverage(ALIGNMENTS$unique[GenomicRanges::strand(ALIGNMENTS$unique) == "+"])
-        UniqueMappingCoveragePlus <- PICBfixCoverage(UniqueMappingCoveragePlus, SI)
         UniqueMappingCoverageMinus <- GenomicRanges::coverage(ALIGNMENTS$unique[GenomicRanges::strand(ALIGNMENTS$unique) == "-"])
-        UniqueMappingCoverageMinus <- PICBfixCoverage(UniqueMappingCoverageMinus, SI)
         GenomicRanges::mcols(INPUT.GRANGES)[[paste0("width_covered_by_unique_alignments", SUFFIX)]][as.vector(GenomicRanges::strand(INPUT.GRANGES) == "+")] <- sum(UniqueMappingCoveragePlus[INPUT.GRANGES[GenomicRanges::strand(INPUT.GRANGES) == "+"]] > 0)
         GenomicRanges::mcols(INPUT.GRANGES)[[paste0("width_covered_by_unique_alignments", SUFFIX)]][as.vector(GenomicRanges::strand(INPUT.GRANGES) == "-")] <- sum(UniqueMappingCoverageMinus[INPUT.GRANGES[GenomicRanges::strand(INPUT.GRANGES) == "-"]] > 0)
         GenomicRanges::mcols(INPUT.GRANGES)[[paste0("fraction_of_width_covered_by_unique_alignments", SUFFIX)]] <- GenomicRanges::mcols(INPUT.GRANGES)[[paste0("width_covered_by_unique_alignments", SUFFIX)]] / GenomicRanges::width(INPUT.GRANGES)
@@ -135,13 +121,12 @@ PICBannotate <- function(
     }
     # identification of cluster types
     PICBannotateTypesOfClusters <- function(INPUT.CLUSTERS, INPUT.CORES, SI) {
+        GenomicRanges::seqinfo(INPUT.CORES) <- SI # in case the ranges did not have defined seqinfo
         INPUT.CLUSTERS$cores_intersected <- GenomicRanges::countOverlaps(INPUT.CLUSTERS, INPUT.CORES)
         INPUT.CORES.plus <- INPUT.CORES[GenomicRanges::strand(INPUT.CORES) == "+"]
-        INPUT.CORES.minus <- INPUT.CORES[GenomicRanges::strand(INPUT.CORES) == "-"]
+        INPUT.CORES.minus <- INPUT.CORES[GenomicRanges::strand(INPUT.CORES) == "-"]        
         CORES.COV.PLUS <- GenomicRanges::coverage(INPUT.CORES.plus)
-        CORES.COV.PLUS <- PICBfixCoverage(inCov = CORES.COV.PLUS, SI = SI)
         CORES.COV.MINUS <- GenomicRanges::coverage(INPUT.CORES.minus)
-        CORES.COV.MINUS <- PICBfixCoverage(inCov = CORES.COV.MINUS, SI = SI)
         INPUT.CLUSTERS.plus <- INPUT.CLUSTERS[GenomicRanges::strand(INPUT.CLUSTERS) == "+"]
         INPUT.CLUSTERS.minus <- INPUT.CLUSTERS[GenomicRanges::strand(INPUT.CLUSTERS) == "-"]
         INPUT.CLUSTERS.plus$core_coverage <- sum(CORES.COV.PLUS[INPUT.CLUSTERS.plus])
