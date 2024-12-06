@@ -31,7 +31,7 @@ PICBoptimize <- function(
     LIBRARY.SIZE = length(IN.ALIGNMENTS$unique) + length(IN.ALIGNMENTS$multi.primary),
     VERBOSITY = 2,
     PROVIDE.INFO.SEEDS.AND.CORES = FALSE,
-    SEQ.LEVELS.STYLE = "UCSC",
+    SEQ.LEVELS.STYLE = DEFAULT.SEQ.LEVELS.STYLE,
     ...) {
 
     numberOfallReadsExplained <- function(gr, alignments) {

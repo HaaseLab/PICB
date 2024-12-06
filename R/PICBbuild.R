@@ -67,7 +67,7 @@ PICBbuild <- function(
         ## CLUSTER FILTERS
         THRESHOLD.SEEDS.GAP = 0, THRESHOLD.CORES.GAP = 0, THRESHOLD.CLUSTERS.GAP = 0,
         ## EXTRA OPTIONS
-        SEQ.LEVELS.STYLE = "UCSC",
+        SEQ.LEVELS.STYLE = DEFAULT.SEQ.LEVELS.STYLE,
         MIN.OVERLAP = 5,
         PROVIDE.NON.NORMALIZED = FALSE,
         COMPUTE.1U.10A.FRACTIONS = FALSE,
@@ -140,12 +140,13 @@ PICBbuild <- function(
     if (VERBOSITY > 1) message("\tSliding window analysis")
     if (VERBOSITY > 1) message("\t\tUNIQUE MAPPERS\n\t\tWINDOW: ", UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH, "\n\t\tSTEP: ", UNIQUEMAPPERS.SLIDING.WINDOW.STEP)
     AG.gr <- GenomicRanges::GRanges(data.table::data.table("chr" = GenomicRanges::seqnames(SI), "start" = 1, "end" = GenomeInfoDb::seqlengths(SI), "strand" = "*"))
+    GenomicRanges::seqinfo(AG.gr) <- SI
     AG.sw.uniq <- unlist(GenomicRanges::slidingWindows(x = AG.gr, width = UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH, step = UNIQUEMAPPERS.SLIDING.WINDOW.STEP))
 
     ## Make genome sliding window for multi mappers
 
     if (VERBOSITY > 1) message("\t\tPRIMARY MULTI MAPPERS\n\t\tWINDOW: ", PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH, "\n\t\tSTEP: ", PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP)
-    # AG.gr <- GRanges(data.table("chr"=seqnames(SI),"start"=1,"end"=seqlengths(SI),"strand"="*"))
+
     AG.sw.primary.mult <- unlist(GenomicRanges::slidingWindows(x = AG.gr, width = PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH, step = PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP))
     if (VERBOSITY > 1 && "multi.secondary" %in% typeAlignments) message("\t\tSECONDARY MULTI MAPPERS\n\t\tWINDOW: ", SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH, "\n\t\tSTEP: ", SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP)
 
