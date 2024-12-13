@@ -11,9 +11,9 @@
 #' @examples
 #' library(BSgenome.Dmelanogaster.UCSC.dm6)
 #' mySI <- PICBgetchromosomes("BSgenome.Dmelanogaster.UCSC.dm6", "UCSC")
-PICBgetchromosomes <- function(REFERENCE.GENOME, SEQ.LEVELS.STYLE = "UCSC") {
+PICBgetchromosomes <- function(REFERENCE.GENOME, SEQ.LEVELS.STYLE = DEFAULT.SEQ.LEVELS.STYLE) {
     if (typeof(REFERENCE.GENOME) == "character") {
-        SI <- GenomeInfoDb::keepStandardChromosomes(GenomeInfoDb::seqinfo(x = eval(parse(text = REFERENCE.GENOME))))
+        SI <- GenomeInfoDb::keepStandardChromosomes(GenomeInfoDb::seqinfo(x = BSgenome::getBSgenome(REFERENCE.GENOME)))
     } else {
         SI <- GenomeInfoDb::keepStandardChromosomes(REFERENCE.GENOME)
     }
