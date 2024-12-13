@@ -9,3 +9,4 @@ inst/doc
 /vignettes/*.html
 /vignettes/*.R
 *.Rproj
+/inst/extdata/*protocol.ipynb

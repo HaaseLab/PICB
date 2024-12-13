@@ -105,21 +105,7 @@ Checklist for having the right **BAM File**
 - [ ] NH and NM tags are included
 - [ ] Indexed (.bai file required) 
 
-<details close><summary title="Click to show/hide details"> <u>Click to show/hide solutions to the question: Unsure how the bam-files were mapped?</u></summary><br/>
-If you already mapped your sequencing data, but are unsure if these requirements are fulfilled, you can check them by using <a href=https://www.htslib.org/ target="_blank"> samtools</a>. 
-
-```bash
-#Test if bam file has NM and NH tags using samtools package
-samtools view yourBamFile.bam | head -n 1000 | awk '{if($0 ~ /NM:i:/ && $0 ~ /NH:i:/) print "NM and NH tags found"; else if($0 ~ /NM:i:/) print "Only NM tag found"; else if($0 ~ /NH:i:/) print "Only NH tag found"; else print "Neither NM nor NH tag found"; exit}'
-```
-If the BAM file has both required tags, the output should be '_NM and NH tags found_'.
-```bash
-#Test if bam file is coordinate-sorted using samtools package
-samtools view -H yourBamFile.bam" | grep '^@HD' | awk -F'\t' '{for(i=1;i<=NF;i++) if($i ~ /^SO:/) print $i}'
-```
-If the BAM file is coordinate-sorted, the output should be '_SO:coordinate_'. If you don't see any output, or if the SO field has a different value (e.g., SO:queryname for query name sorted or SO:unsorted), then the BAM file is not coordinate-sorted.
-
-</details>
+PICB stops when these requirements are not met and provides a descriptive error message.
 
 **Four options for providing the _Reference Genome_**
 
