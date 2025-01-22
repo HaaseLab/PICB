@@ -2,7 +2,7 @@
 % Please edit documentation in R/PICBimportfromexcel.R
 \name{PICBimportfromexcel}
 \alias{PICBimportfromexcel}
-\title{Import clustering object from an Excel file}
+\title{Import cluster object from an Excel file}
 \usage{
 PICBimportfromexcel(EXCEL.FILE.NAME = NULL)
 }
@@ -10,12 +10,17 @@ PICBimportfromexcel(EXCEL.FILE.NAME = NULL)
 \item{EXCEL.FILE.NAME}{file name to import from}
 }
 \value{
-list of annotated Granges objects named "seeds" for seeds,
+list of annotated GRanges objects named "seeds" for seeds,
 "cores" for cores,
 "clusters" for clusters
 }
 \description{
-Import clustering object from an Excel file
+Import cluster object from an Excel file
+}
+\examples{
+importedClusters <- PICBimportfromexcel(
+    EXCEL.FILE.NAME = system.file("extdata", "myClusters_demonstration.xlsx", package = "PICB")
+)
 }
 \author{
 Aleksandr Friman

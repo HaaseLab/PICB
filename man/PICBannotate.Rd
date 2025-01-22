@@ -2,7 +2,7 @@
 % Please edit documentation in R/PICBannotate.R
 \name{PICBannotate}
 \alias{PICBannotate}
-\title{Annotate Granges according to a piRNA library}
+\title{Annotate GRanges according to a piRNA library}
 \usage{
 PICBannotate(
   INPUT.GRANGES,
@@ -16,7 +16,7 @@ PICBannotate(
 )
 }
 \arguments{
-\item{INPUT.GRANGES}{Granges (seeds/cores/clusters) to annotate}
+\item{INPUT.GRANGES}{GRanges (seeds/cores/clusters) to annotate}
 
 \item{ALIGNMENTS}{list of alignments from PICBload}
 
@@ -33,10 +33,10 @@ PICBannotate(
 \item{COMPUTE.1U.10A.FRACTIONS}{for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.}
 }
 \value{
-Granges object with extra annotation columns
+GRanges object with extra annotation columns
 }
 \description{
-Annotate Granges according to a piRNA library
+Annotate GRanges according to a piRNA library
 }
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)

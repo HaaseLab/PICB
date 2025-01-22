@@ -1,7 +1,7 @@
 utils::globalVariables(c("queryHits", "oneT", "tenA"))
-#' Annotate Granges according to a piRNA library
+#' Annotate GRanges according to a piRNA library
 #'
-#' @param INPUT.GRANGES Granges (seeds/cores/clusters) to annotate
+#' @param INPUT.GRANGES GRanges (seeds/cores/clusters) to annotate
 #' @param ALIGNMENTS list of alignments from PICBload
 #' @param REFERENCE.GENOME name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"
 #' @param REPLICATE.NAME name of the replicate. NULL by default.
@@ -11,7 +11,7 @@ utils::globalVariables(c("queryHits", "oneT", "tenA"))
 #' @param COMPUTE.1U.10A.FRACTIONS for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.
 #'
 #' @author Aleksandr Friman
-#' @return Granges object with extra annotation columns
+#' @return GRanges object with extra annotation columns
 #' @export
 #'
 #' @examples

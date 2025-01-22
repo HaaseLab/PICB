@@ -40,7 +40,7 @@ piRNAs (PIWI-interacting RNAs) and their PIWI protein partners play a key role i
 
 PICB identifies genomic regions with a high density of piRNAs. This construction of piRNA clusters is performed through stepwise integration of unique and multimapping piRNAs. 
 
-<div align="center"><a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288#sec2"><img src="vignettes/PICB_stepwiseIntegration.jpeg" alt="Stepwise Integration for PICB" style="width:50%;height:50%"/></a></div>
+<div align="center"><a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288#sec2"><img src="vignettes/PICB_stepwiseIntegration.jpg" alt="Stepwise Integration for PICB" style="width:50%;height:50%"/></a></div>
 
 Figure 1: PICB considers unique mapping piRNAs (NH=1), primary alignments of multimapping piRNAs (NH>1), and all possible alignments stepwise to build seeds, cores, and clusters. Find additional information in our <a href="https://www.sciencedirect.com/science/article/pii/S2211124724011288" target="_blank"> recent publication</a>.
 
@@ -122,7 +122,8 @@ myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 
 
 ```R
-myGenome <- GenomeInfoDb::Seqinfo(seqnames = c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY"), 
+myGenome <- GenomeInfoDb::Seqinfo(
+    seqnames = c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY"), 
     seqlengths = c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352))
 ```
 
@@ -130,7 +131,7 @@ myGenome <- GenomeInfoDb::Seqinfo(seqnames = c("chr2L", "chr2R", "chr3L", "chr3R
 
 Or use an existing `Seqinfo` object:
 
-```{r load_myGenome3, eval = FALSE}
+```R
 myGenome <- GenomeInfoDb::Seqinfo(genome = "dm6")
 ```
 
@@ -151,14 +152,20 @@ myGenome <- PICBloadfasta(FASTA.NAME="/path/to/your/genome.fa")
 1. Load your mapped piRNAs with `PICBload`
 
 ```R
-myAlignments <- PICBload(bam_directory, myGenome)
+myAlignments <- PICBload(
+    BAMFILE = bam_file,
+    REFERENCE.GENOME = myGenome
+)
 ```
 
 
 2. Build piRNA clusters with `PICBbuild`
 
 ```R
-myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME= myGenome)$clusters
+myClusters <- PICBbuild(
+    IN.ALIGNMENTS = myAlignments,
+    REFERENCE.GENOME = myGenome
+)$clusters
 ```
 
 > 💡 Both `PICBload` and `PICBbuild` allow wide-ranging adjustments: Read the below section [Parameter adjustments](#parameter-adjustments) to adapt to sparse reference genomes and specific limitations of the data set.
@@ -318,7 +325,11 @@ The goal is to find a set of parameters that maximize the number of piRNAs accom
 Make sure to provide the values for the parameters as a vector. An example is shown below:
 
 ```R
-parameterExploration <- PICBoptimize(IN.ALIGNMENTS = myAlignments, REFERENCE.GENOME=myGenome, MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5))
+parameterExploration <- PICBoptimize(
+    IN.ALIGNMENTS = myAlignments, 
+    REFERENCE.GENOME=myGenome, 
+    MIN.UNIQUE.ALIGNMENTS.PER.WINDOW=c(1,2,3,4,5)
+)
 ```
 
 This function works on numerical parameters and returns a dataframe with any combination of your chosen parameters and their corresponding number of clusters, the total width of the clusters in nucleotides, the number of reads explained by the clusters, the mean RPKM of the clusters, the fraction of reads explained by the clusters and fraction of genomic space occupied by the clusters.
@@ -330,7 +341,10 @@ Be aware that for most datasets, the default parameters will yield great results
 Next to the standard analysis, `PICBstrandanalysis` allows strand-specific analysis of piRNA clusters. The function computes the sense/antisense ratio of piRNAs per cluster (non-collapsed) and adds this information to a new metadata column (`s_as_ratio`). 
 
 ```R
-myClustersWithStrandAnalysis <- PICBstrandanalysis(IN.ALIGNMENTS = myAlignments, IN.RANGES = myClusters)
+myClustersWithStrandAnalysis <- PICBstrandanalysis(
+    IN.ALIGNMENTS = myAlignments,
+    IN.RANGES = myClusters
+)
 ```
 
 To visualize the sense/antisense ratio of the clusters, you can plot the sense/antisense ratio of the clusters in a violin plot. Higher numbers indicate a higher ratio of sense to antisense piRNAs, while values close to 1 indicate an equal ratio of sense and antisense piRNAs.
@@ -370,12 +384,18 @@ myGenome <- "BSgenome.Dmelanogaster.UCSC.dm6"
 
 Load the alignments with `PICBload`.
 ```R
-myAlignments <- PICBload(system.file("extdata","Fly_Ov1_chr2L_20To21mb_filtered.bam", package="PICB"), REFERENCE.GENOME = myGenome)
+myAlignments <- PICBload(
+    BAMFILE = system.file("extdata","Fly_Ov1_chr2L_20To21mb_filtered.bam", package="PICB"), 
+    REFERENCE.GENOME = myGenome)
 ```
 Next, we want to form the piRNA clusters using the `PICBbuild` function. Usually you would not need to include the size of the library (`LIBRARY.SIZE`) since PICB calculates it automatically. However, just for this demo, please include this parameter to adjust to the subset we chose to create this demo. 
 
 ```R
-myClusters <- PICBbuild(myAlignments, REFERENCE.GENOME = myGenome, LIBRARY.SIZE = 12799826)$clusters
+myClusters <- PICBbuild(
+    IN.ALIGNMENTS = myAlignments,
+    REFERENCE.GENOME = myGenome,
+    LIBRARY.SIZE = 12799826 #usually not necessary
+)$clusters
 ```
 
 <!--Possibilities of optimizing the parameters to adjust to the quality of sequencing reads and reference genome are described in the [protocol]().--> We note that ranking piRNA clusters is essential for proper interpretation. 

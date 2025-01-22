@@ -84,7 +84,7 @@ PICBbuild(
 \item{VERBOSITY}{verbosity level 0/1/2/3. 2 by default.}
 }
 \value{
-list of annotated Granges objects named "seeds" for seeds,
+list of annotated GRanges objects named "seeds" for seeds,
 "cores" for cores,
 "clusters" for clusters
 }

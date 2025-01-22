@@ -1,13 +1,17 @@
-#' Import clustering object from an Excel file
+#' Import cluster object from an Excel file
 #'
 #' @param EXCEL.FILE.NAME file name to import from
 #'
 #' @author Aleksandr Friman
 #'
-#' @return list of annotated Granges objects named "seeds" for seeds,
+#' @return list of annotated GRanges objects named "seeds" for seeds,
 #' "cores" for cores,
 #' "clusters" for clusters
 #' @export
+#' @examples
+#' importedClusters <- PICBimportfromexcel(
+#'     EXCEL.FILE.NAME = system.file("extdata", "myClusters_demonstration.xlsx", package = "PICB")
+#' )
 PICBimportfromexcel <- function(EXCEL.FILE.NAME = NULL) {
     availbsheets <- openxlsx::getSheetNames(EXCEL.FILE.NAME)
     output <- list()

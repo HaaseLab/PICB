@@ -1,10 +1,10 @@
-#' Add sense/antisense ratio of unique piRNAs per piRNAcluster
+#' Add sense/antisense ratio of unique piRNAs per piRNA cluster
 #'
 #' @param IN.ALIGNMENTS list of alignments from PICBload
 #' @param IN.RANGES single GRanges object (seeds, cores or clusters from PICBbuild)
 #' @param VERBOSE enables progress output. True by default.
 #'
-#' @return Granges object with an additional annotation column
+#' @return GRanges object with an additional annotation column
 #' @author Parthena Konstantinidou
 #' @author Zuzana Loubalova
 #' @author Franziska Ahrend

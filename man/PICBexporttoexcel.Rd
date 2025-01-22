@@ -2,7 +2,7 @@
 % Please edit documentation in R/PICBexporttoexcel.R
 \name{PICBexporttoexcel}
 \alias{PICBexporttoexcel}
-\title{Export clustering object into an Excel file}
+\title{Export cluster object into an Excel file}
 \usage{
 PICBexporttoexcel(IN.RANGES = NULL, EXCEL.FILE.NAME = NULL)
 }
@@ -15,7 +15,7 @@ PICBexporttoexcel(IN.RANGES = NULL, EXCEL.FILE.NAME = NULL)
 no values returned
 }
 \description{
-Export clustering object into an Excel file
+Export cluster object into an Excel file
 }
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)
@@ -28,6 +28,7 @@ myAlignmentsFromPICBload <- PICBload(
 outputOfPICBbuild <- PICBbuild(
     IN.ALIGNMENTS = myAlignmentsFromPICBload,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    LIBRARY.SIZE = 12799826, #usually not necessary
     VERBOSITY = 0
 )
 PICBexporttoexcel(
@@ -37,4 +38,6 @@ PICBexporttoexcel(
 }
 \author{
 Aleksandr Friman
+
+Franziska Ahrend
 }

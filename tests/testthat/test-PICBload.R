@@ -10,7 +10,6 @@ test_that("PICBload loads BAM file with default parameters correctly", {
     result <- PICBload(
         BAMFILE = bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        VERBOSE = FALSE
     )
     expect_type(result, "list")
     expect_named(result, c("unique", "multi.primary", "multi.secondary"))
@@ -49,12 +48,21 @@ test_that("PICBload throws error when REFERENCE.GENOME is NULL", {
     )
 })
 
+test_that("PICBload throws error when REFERENCE.GENOME is NULL", {
+    expect_error(
+        PICBload(
+        BAMFILE = bam,
+        REFERENCE.GENOME = NULL
+        ),
+        "Please provide REFERENCE.GENOME"
+    )
+})
+
 test_that("PICBload handles SIMPLE.CIGAR = FALSE correctly", {
     result <- PICBload(
         BAMFILE = bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        SIMPLE.CIGAR = FALSE,
-        VERBOSE = FALSE
+        SIMPLE.CIGAR = FALSE
     )
     expect_type(result, "list")
     expect_named(result, c("unique", "multi.primary", "multi.secondary"))
@@ -71,8 +79,7 @@ test_that("PICBload loads secondary alignments when IS.SECONDARY.ALIGNMENT = TRU
     result <- PICBload(
         BAMFILE = bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        IS.SECONDARY.ALIGNMENT = TRUE,
-        VERBOSE = FALSE
+        IS.SECONDARY.ALIGNMENT = TRUE
     )
     expect_type(result, "list")
     expect_named(result, c("multi.secondary"))
@@ -87,8 +94,7 @@ test_that("PICBload loads primary alignments when IS.SECONDARY.ALIGNMENT = FALSE
     result <- PICBload(
         BAMFILE = bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        IS.SECONDARY.ALIGNMENT = FALSE,
-        VERBOSE = FALSE
+        IS.SECONDARY.ALIGNMENT = FALSE
     )
     expect_type(result, "list")
     expect_named(result, c("unique", "multi.primary"))
@@ -104,8 +110,7 @@ test_that("PICBload loads primary alignments when IS.SECONDARY.ALIGNMENT = FALSE
 test_that("PICBload loads BAM file with default parameters the same with using the same reference genome but different methods", {
     expectedResult <- PICBload(
         BAMFILE = bam,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        VERBOSE = FALSE
+        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
     )
     # Using chromosome names and lengths
     seqnames <- c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY")
@@ -114,8 +119,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
 
     result <- PICBload(
         BAMFILE = bam,
-        REFERENCE.GENOME = myGenome,
-        VERBOSE = FALSE
+        REFERENCE.GENOME = myGenome
     )
     expect_equal(result, expectedResult)
 
@@ -123,8 +127,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
     myGenome <- GenomeInfoDb::Seqinfo(genome = "dm6")
     result <- PICBload(
         BAMFILE = bam,
-        REFERENCE.GENOME = myGenome,
-        VERBOSE = FALSE
+        REFERENCE.GENOME = myGenome
     )
     expect_equal(result, expectedResult)
 
@@ -137,8 +140,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
     myGenome <- PICBloadfasta(FASTA.NAME = temp_fasta)
     result <- PICBload(
         BAMFILE = bam,
-        REFERENCE.GENOME = myGenome,
-        VERBOSE = FALSE
+        REFERENCE.GENOME = myGenome
     )
     expect_equal(result, expectedResult)
     unlink(temp_fasta)
@@ -150,8 +152,7 @@ test_that("PICBload filters alignments based on custom READ.SIZE.RANGE", {
         BAMFILE = bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         USE.SIZE.FILTER = TRUE,
-        READ.SIZE.RANGE = custom_size_range,
-        VERBOSE = FALSE
+        READ.SIZE.RANGE = custom_size_range
     )
     expect_type(result, "list")
     expect_named(result, c("unique", "multi.primary", "multi.secondary"))
@@ -171,8 +172,7 @@ test_that("PICBload retrieves original sequences when GET.ORIGINAL.SEQUENCE = TR
     result <- PICBload(
         BAMFILE = bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        GET.ORIGINAL.SEQUENCE = TRUE,
-        VERBOSE = FALSE
+        GET.ORIGINAL.SEQUENCE = TRUE
     )
     expect_type(result, "list")
     expect_equal(length(result$unique), 31165)
@@ -192,8 +192,7 @@ test_that("PICBload changes seqlevels style when SEQ.LEVELS.STYLE is specified",
     result <- PICBload(
         BAMFILE = bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        SEQ.LEVELS.STYLE = custom_style,
-        VERBOSE = FALSE
+        SEQ.LEVELS.STYLE = custom_style
     )
     expect_type(result, "list")
     # Check that seqlevels style is updated
@@ -210,15 +209,14 @@ test_that("PICBload works correctly with a combination of custom parameters", {
         IS.SECONDARY.ALIGNMENT = FALSE,
         STANDARD.CONTIGS.ONLY = TRUE,
         PERFECT.MATCH.ONLY = TRUE,
-        FILTER.BY.FLAG = TRUE,
+        FILTER.BY.FLAG = FALSE,
         SELECT.FLAG = c(0, 16),
         USE.SIZE.FILTER = TRUE,
         READ.SIZE.RANGE = c(20, 30),
         TAGS = c("NH", "NM"),
         WHAT = c("flag", "qwidth"),
         SEQ.LEVELS.STYLE = "NCBI",
-        GET.ORIGINAL.SEQUENCE = TRUE,
-        VERBOSE = FALSE
+        GET.ORIGINAL.SEQUENCE = TRUE
     )
     expect_type(result, "list")
     expect_named(result, c("unique", "multi.primary"))
@@ -238,4 +236,29 @@ test_that("PICBload works correctly with a combination of custom parameters", {
     expect_equal(ncol(mcols(result$multi.primary)), 5)
     # Check seqlevels style
     expect_equal(GenomeInfoDb::seqlevelsStyle(result$unique), "NCBI")
+})
+
+test_that("PICBload VERBOSE parameter works correctly", {
+    # Capture messages when VERBOSE is TRUE
+    verbose_messages <- capture_messages({
+    PICBload(
+        BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB"),
+        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+        VERBOSE = TRUE
+    )
+    })
+
+    # Capture messages when VERBOSE is FALSE
+    silent_messages <- capture_messages({
+    PICBload(
+        BAMFILE = system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB"),
+        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+        VERBOSE = FALSE
+    )
+    })
+
+    # Test expectations
+    expect_true(length(verbose_messages) > 0, "VERBOSE=TRUE should produce messages")
+    expect_true(any(grepl("Processing", verbose_messages)), "Should contain 'Processing' message when VERBOSE=TRUE")
+    expect_identical(length(silent_messages), 0L, "VERBOSE=FALSE should not produce any messages")
 })

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PICBload.R
 \name{PICBload}
 \alias{PICBload}
-\title{Load piRNA library bam file}
+\title{Load and preprocess BAM files containing piRNA alignments}
 \usage{
 PICBload(
   BAMFILE = NULL,
@@ -54,12 +54,12 @@ PICBload(
 \item{VERBOSE}{enables progress output. True by default.}
 }
 \value{
-list of Granges objects named "unique" for unique mapping alignments,
+list of GRanges objects named "unique" for unique mapping alignments,
 "multi.primary" for primary multimapping alignments,
 "multi.secondary" for secondary multimapping alignments
 }
 \description{
-Load piRNA library bam file
+Load and preprocess BAM files containing piRNA alignments
 }
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)

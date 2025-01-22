@@ -2,7 +2,6 @@
 
 export(PICBannotate)
 export(PICBbuild)
-export(PICBcombine)
 export(PICBexporttoexcel)
 export(PICBgetchromosomes)
 export(PICBimportfromexcel)

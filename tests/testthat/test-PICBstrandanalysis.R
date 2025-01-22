@@ -135,6 +135,18 @@ test_that("PICBstrandanalysis returns expected output when IN.ALIGNMENTS not cor
         PICBstrandanalysis(alignments, ranges),
         "No overlaps detected between IN.ALIGNMENTS and clusters on the minus strand. Please verify that IN.ALIGNMENTS and IN.RANGES are valid and correctly correspond to each other. Continuing ..."
     )
+    
+    #invertStrand 
+    alignmentsAS <- alignments
+    alignmentsAS$unique <- GenomicRanges::invertStrand(alignments$unique)
+    alignmentsAS$multi.primary <- GenomicRanges::invertStrand(alignments$multi.primary)
+    rangesAS <- GenomicRanges::invertStrand(ranges)
+
+    resultAS <- expect_warning(
+        PICBstrandanalysis(alignmentsAS, rangesAS),
+        "No overlaps detected between IN.ALIGNMENTS and clusters on the plus strand. Please verify that IN.ALIGNMENTS and IN.RANGES are valid and correctly correspond to each other. Continuing ..."
+    )
+
     # piC on minus strand: sense+1/antisense+1 = 1/5 = 0.2
     expect_equal(
         result,
@@ -142,6 +154,16 @@ test_that("PICBstrandanalysis returns expected output when IN.ALIGNMENTS not cor
         seqnames = c("chr1"),
         ranges = IRanges::IRanges(start = c(40), width = c(60)),
         strand = c("-"),
+        s_as_ratio = c(0.2)
+        )
+    )
+
+    expect_equal(
+        resultAS,
+        GenomicRanges::GRanges(
+        seqnames = c("chr1"),
+        ranges = IRanges::IRanges(start = c(40), width = c(60)),
+        strand = c("+"),
         s_as_ratio = c(0.2)
         )
     )

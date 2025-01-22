@@ -131,12 +131,12 @@ library(ggplot2)
 #Specify parameter to optimize for.
 x_column <- "MIN.UNIQUE.ALIGNMENTS.PER.WINDOW" #change parameter to optimize, if applicable
 
-scaling_factor <- max(parameterExploration$fraction.of.library.explained.by.clusters) / max(parameterExploration$clusters.fraction.of.genome.space)
+scaling_factor <- max(parameterExploration$fraction.of.library.explained.by.clusters) / max(parameterExploration$fraction.of.genome.space.clusters)
 ggplot(parameterExploration, aes(x = .data[[x_column]])) +
     geom_line(aes(y = fraction.of.library.explained.by.clusters * 100, color = "piRNAs Explained"), linewidth = 1) +
     geom_point(aes(y = fraction.of.library.explained.by.clusters * 100, color = "piRNAs Explained"), size = 3) +
-    geom_line(aes(y = clusters.fraction.of.genome.space * scaling_factor * 100, color = "Genome Space"), linewidth = 1) +
-    geom_point(aes(y = clusters.fraction.of.genome.space * scaling_factor * 100, color = "Genome Space"), size = 3) +
+    geom_line(aes(y = fraction.of.genome.space.clusters * scaling_factor * 100, color = "Genome Space"), linewidth = 1) +
+    geom_point(aes(y = fraction.of.genome.space.clusters * scaling_factor * 100, color = "Genome Space"), size = 3) +
     scale_y_continuous(name = "piRNAs Explained by Clusters (%, piRNA sample)", sec.axis = sec_axis(~ . / scaling_factor, name = "Total piRNA cluster-length (Genome, %)")) +
     scale_x_reverse(name = paste0("Parameter chosen: ", x_column), breaks = parameterExploration[[x_column]], labels = parameterExploration[[x_column]]) +
     scale_color_manual(name = "Metrics", values = c("piRNAs Explained" = "#00a100", "Genome Space" = "black")) +

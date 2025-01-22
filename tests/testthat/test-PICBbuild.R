@@ -96,8 +96,7 @@ test_that("PICBbuild example subset builds piRNA seeds, cores, and clusters corr
     result <- PICBbuild(
         IN.ALIGNMENTS = myAlignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        LIBRARY.SIZE = 12799826,
-        VERBOSITY = 0
+        LIBRARY.SIZE = 12799826
     )
     expect_type(result, "list")
     expect_named(result, c("seeds", "cores", "clusters"))
@@ -128,8 +127,7 @@ test_that("PICBbuild handles custom sliding window sizes correctly", {
         PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = custom_primary_mult_window_width,
         PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = custom_primary_mult_window_step,
         SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = custom_secondary_mult_window_width,
-        SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = custom_secondary_mult_window_step,
-        VERBOSITY = 0
+        SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = custom_secondary_mult_window_step
     )
     expect_type(result, "list")
     expect_named(result, c("seeds", "cores", "clusters"))
@@ -157,8 +155,7 @@ test_that("PICBbuild filters based on custom thresholds correctly", {
         MIN.OVERLAP = custom_min_overlap,
         THRESHOLD.SEEDS.GAP = custom_threshold_seeds_gap,
         THRESHOLD.CORES.GAP = custom_threshold_cores_gap,
-        THRESHOLD.CLUSTERS.GAP = custom_threshold_clusters_gap,
-        VERBOSITY = 0
+        THRESHOLD.CLUSTERS.GAP = custom_threshold_clusters_gap
     )
     expect_type(result, "list")
     expect_named(result, c("seeds", "cores", "clusters"))
@@ -180,8 +177,7 @@ test_that("PICBbuild provides non-normalized statistics when PROVIDE.NON_NORMALI
     result <- PICBbuild(
         IN.ALIGNMENTS = myAlignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        PROVIDE.NON.NORMALIZED = TRUE,
-        VERBOSITY = 0
+        PROVIDE.NON.NORMALIZED = TRUE
     )
     expect_type(result, "list")
     expect_named(result, c("seeds", "cores", "clusters"))
@@ -197,8 +193,7 @@ test_that("PICBbuild provides non-normalized statistics when PROVIDE.NON_NORMALI
 test_that("PICBbuild loads BAM file with default parameters the same with using the same reference genome but different methods", {
     expectedResult <- PICBbuild(
         IN.ALIGNMENTS = myAlignments,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        VERBOSITY = 0
+        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
     )
     # Using chromosome names and lengths
     seqnames <- c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY")
@@ -207,8 +202,7 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
 
     result <- PICBbuild(
         IN.ALIGNMENTS = myAlignments,
-        REFERENCE.GENOME = myGenome,
-        VERBOSITY = 0
+        REFERENCE.GENOME = myGenome
     )
     expect_equal(result, expectedResult)
 
@@ -266,8 +260,7 @@ test_that("PICBbuild computes 1U and 10A fractions when COMPUTE.1U.10A.FRACTIONS
         PICBbuild(
         IN.ALIGNMENTS = myAlignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        COMPUTE.1U.10A.FRACTIONS = TRUE,
-        VERBOSITY = 0
+        COMPUTE.1U.10A.FRACTIONS = TRUE
         ),
         regexp = "^Alignments 'unique' does not contain sequence"
     )
@@ -282,8 +275,7 @@ test_that("PICBbuild computes 1U and 10A fractions when COMPUTE.1U.10A.FRACTIONS
     result <- PICBbuild(
         IN.ALIGNMENTS = ouputPICBloadWseq,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        COMPUTE.1U.10A.FRACTIONS = TRUE,
-        VERBOSITY = 0
+        COMPUTE.1U.10A.FRACTIONS = TRUE
     )
 
     expect_type(result, "list")
@@ -308,8 +300,55 @@ test_that("PICBbuild handles empty alignments gracefully", {
     expect_error(
         PICBbuild(
         IN.ALIGNMENTS = alignments_empty,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        VERBOSITY = 0
+        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
         ), "The IN.ALIGNMENTS must contain NH information !"
     )
+})
+
+test_that("PICBbuild VERBOSITY parameter works correctly", {
+  
+  # Test VERBOSITY = 0 (silent)
+  silent_messages <- capture_messages({
+    PICBbuild(
+      IN.ALIGNMENTS = myAlignments,
+      REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+      VERBOSITY = 0
+    )
+  })
+  
+  # Test VERBOSITY = 1 (basic messages)
+  basic_messages <- capture_messages({
+    PICBbuild(
+      IN.ALIGNMENTS = myAlignments,
+      REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+      VERBOSITY = 1
+    )
+  })
+  
+  # Test VERBOSITY = 2 (detailed messages)
+  detailed_messages <- capture_messages({
+    PICBbuild(
+      IN.ALIGNMENTS = myAlignments,
+      REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+      VERBOSITY = 2
+    )
+  })
+  
+  # Test expectations
+  expect_identical(length(silent_messages), 0L, "VERBOSITY=0 should not produce any messages")
+  
+  expect_true(length(basic_messages) == 4, "VERBOSITY=1 should produce messages")
+  expect_true(
+    any(grepl("Starting", basic_messages)) && 
+    any(grepl("Done", basic_messages)),
+    "VERBOSITY=1 should contain basic progress messages"
+  )
+  
+  expect_true(length(detailed_messages) > length(basic_messages), 
+              "VERBOSITY=2 should produce more messages than VERBOSITY=1")
+  expect_true(
+    any(grepl("Sliding window analysis", detailed_messages)) && 
+    any(grepl("Annotating", detailed_messages)),
+    "VERBOSITY=2 should contain detailed progress messages"
+  )
 })

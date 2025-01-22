@@ -28,7 +28,7 @@
 #' @author Daniel Stoyko
 #' @author Aleksandr Friman
 #' @author Franziska Ahrend
-#' @return list of annotated Granges objects named "seeds" for seeds,
+#' @return list of annotated GRanges objects named "seeds" for seeds,
 #' "cores" for cores,
 #' "clusters" for clusters
 #' @export

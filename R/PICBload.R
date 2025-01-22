@@ -1,4 +1,4 @@
-#' Load piRNA library bam file
+#' Load and preprocess BAM files containing piRNA alignments
 #'
 #' @param BAMFILE name of the bam file to load. Should be sorted and indexed.
 #' @param REFERENCE.GENOME name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6"
@@ -20,7 +20,7 @@
 #' @author Daniel Stoyko
 #' @author Aleksandr Friman
 #' @author Franziska Ahrend
-#' @return list of Granges objects named "unique" for unique mapping alignments,
+#' @return list of GRanges objects named "unique" for unique mapping alignments,
 #' "multi.primary" for primary multimapping alignments,
 #' "multi.secondary" for secondary multimapping alignments
 #' @export
@@ -52,10 +52,10 @@ PICBload <- function(
     SEQ.LEVELS.STYLE = "UCSC",
     GET.ORIGINAL.SEQUENCE = FALSE,
     VERBOSE = TRUE) {
-  ## NOTE ON BAM INFO
-  ## Flag: 256 = not primary alignment; 272 = reverse strand not primary alignment;
-  ## Flag: 0 = forward unpaired unique alignment; 16 = reverse unpaired unique alignment
-  ## Tags: NH:i:1 = unique alignment; NM = edit distance to the reference
+    ## NOTE ON BAM INFO
+    ## Flag: 256 = not primary alignment; 272 = reverse strand not primary alignment;
+    ## Flag: 0 = forward unpaired unique alignment; 16 = reverse unpaired unique alignment
+    ## Tags: NH:i:1 = unique alignment; NM = edit distance to the reference
 
     outputAlignments <- list()
     ## check input

@@ -34,6 +34,15 @@ PICBoptimize <- function(
     SEQ.LEVELS.STYLE = "UCSC",
     ...) {
 
+    if (VERBOSITY > 0) message("PICB v", utils::packageVersion("PICB"), " Starting ... ")
+
+    # checking the inputs
+    if (VERBOSITY > 0) {
+        message("Checking the inputs")
+    }
+    if (is.null(IN.ALIGNMENTS)) stop("Please provide IN.ALIGNMENTS !")
+    if (is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME !")
+
     numberOfallReadsExplained <- function(gr, alignments) {
         foundnames <- c()
         if (typeof(alignments) == "list") {
@@ -73,12 +82,7 @@ PICBoptimize <- function(
         }
     }
 
-    if (VERBOSITY == TRUE) message("PICB v", utils::packageVersion("PICB"), " Starting ... ")
-
-    # checking the inputs
-    if (VERBOSITY > 0) {
-        message("Checking the inputs")
-    }
+    
     if (is.null(ArgsToIterate)) {
         stop("Provide arguments to iterave over. See example.")
     }
@@ -131,14 +135,14 @@ PICBoptimize <- function(
             outDF[[paste0("number.of.", locustype)]] <- NA
         }
         for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-            outDF[[paste0(locustype, ".total.width")]] <- NA
+            outDF[[paste0("total.width.", locustype)]] <- NA
         }
         for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
             outDF[[paste0("reads.explained.by.", locustype)]] <- NA
         }
     } else {
         outDF[[paste0("number.of.clusters")]] <- NA
-        outDF[[paste0("clusters.total.width")]] <- NA
+        outDF[[paste0("total.width.clusters")]] <- NA
         outDF[[paste0("reads.explained.by.clusters")]] <- NA
     }
     # running PICBbuild for every possible combation
@@ -165,12 +169,12 @@ PICBoptimize <- function(
         if (PROVIDE.INFO.SEEDS.AND.CORES) {
         for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
             outDF[[paste0("number.of.", locustype)]][i] <- length(tmrLoci[[locustype]])
-            outDF[[paste0(locustype, ".total.width")]][i] <- as.numeric(sum(GenomicRanges::width(tmrLoci[[locustype]])))
+            outDF[[paste0("total.width.", locustype)]][i] <- as.numeric(sum(GenomicRanges::width(tmrLoci[[locustype]])))
             outDF[[paste0("reads.explained.by.", locustype)]][i] <- as.numeric(numberOfallReadsExplained(tmrLoci[[locustype]], IN.ALIGNMENTS.ALL))
         }
         } else {
             outDF[["number.of.clusters"]][i] <- length(tmrLoci[[allalignments]])
-            outDF[["clusters.total.width"]][i] <- as.numeric(sum(GenomicRanges::width(tmrLoci[[allalignments]])))
+            outDF[["total.width.clusters"]][i] <- as.numeric(sum(GenomicRanges::width(tmrLoci[[allalignments]])))
             outDF[["reads.explained.by.clusters"]][i] <- as.numeric(numberOfallReadsExplained(tmrLoci[[allalignments]], IN.ALIGNMENTS.ALL))
         }
         i <- i + 1
@@ -185,21 +189,21 @@ PICBoptimize <- function(
             outDF[[paste0("fraction.of.library.explained.by.", locustype)]] <- outDF[[paste0("reads.explained.by.", locustype)]] / totalReads
         }
         for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-            outDF[[paste0(locustype, ".mean.RPKM")]] <- outDF[[paste0("reads.explained.by.", locustype)]] * 1e9 / (outDF[[paste0(locustype, ".total.width")]] * totalReads)
-            outDF[[paste0(locustype, ".mean.RPKM")]][is.na(outDF[[paste0(locustype, ".mean.RPKM")]])] <- 0
+            outDF[[paste0("mean.RPKM.", locustype)]] <- outDF[[paste0("reads.explained.by.", locustype)]] * 1e9 / (outDF[[paste0("total.width.", locustype)]] * totalReads)
+            outDF[[paste0("mean.RPKM.", locustype)]][is.na(outDF[[paste0("mean.RPKM.", locustype)]])] <- 0
         }
         SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
         GenomeSize <- sum(GenomeInfoDb::seqlengths(SI))
         for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
-        outDF[[paste0(locustype, ".fraction.of.genome.space")]] <- outDF[[paste0(locustype, ".total.width")]] / (2 * GenomeSize)
+        outDF[[paste0("fraction.of.genome.space.", locustype)]] <- outDF[[paste0("total.width.", locustype)]] / (2 * GenomeSize)
         }
     } else {
         outDF[["fraction.of.library.explained.by.clusters"]] <- outDF[["reads.explained.by.clusters"]] / totalReads
-        outDF[["clusters.mean.RPKM"]] <- outDF[["reads.explained.by.clusters"]] * 1e9 / (outDF[["clusters.total.width"]] * totalReads)
-        outDF[["clusters.mean.RPKM"]][is.na(outDF[["clusters.mean.RPKM"]])] <- 0
+        outDF[["mean.RPKM.clusters"]] <- outDF[["reads.explained.by.clusters"]] * 1e9 / (outDF[["total.width.clusters"]] * totalReads)
+        outDF[["mean.RPKM.clusters"]][is.na(outDF[["mean.RPKM.clusters"]])] <- 0
         SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
         GenomeSize <- sum(GenomeInfoDb::seqlengths(SI))
-        outDF[["clusters.fraction.of.genome.space"]] <- outDF[["clusters.total.width"]] / (2 * GenomeSize)
+        outDF[["fraction.of.genome.space.clusters"]] <- outDF[["total.width.clusters"]] / (2 * GenomeSize)
     }
     return(outDF)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PICBstrandanalysis.R
 \name{PICBstrandanalysis}
 \alias{PICBstrandanalysis}
-\title{Add sense/antisense ratio of unique piRNAs per piRNAcluster}
+\title{Add sense/antisense ratio of unique piRNAs per piRNA cluster}
 \usage{
 PICBstrandanalysis(IN.ALIGNMENTS, IN.RANGES, VERBOSE = TRUE)
 }
@@ -14,10 +14,10 @@ PICBstrandanalysis(IN.ALIGNMENTS, IN.RANGES, VERBOSE = TRUE)
 \item{VERBOSE}{enables progress output. True by default.}
 }
 \value{
-Granges object with an additional annotation column
+GRanges object with an additional annotation column
 }
 \description{
-Add sense/antisense ratio of unique piRNAs per piRNAcluster
+Add sense/antisense ratio of unique piRNAs per piRNA cluster
 }
 \examples{
 library(BSgenome.Dmelanogaster.UCSC.dm6)
