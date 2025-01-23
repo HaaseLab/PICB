@@ -1,6 +1,6 @@
 Package: PICB
 Title: piRNA Cluster Builder
-Version: 0.99.8
+Version: 0.99.9
 Authors@R: c(person("Pavol", "Genzor",  role = c("aut")),
     person("Aleksandr", "Friman", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
     person("Daniel", "Stoyko", role = c("aut")),

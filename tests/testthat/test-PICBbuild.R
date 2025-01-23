@@ -6,6 +6,11 @@ myAlignments <- PICBload(
     VERBOSE = FALSE
 )
 
+defaultClusters <- PICBbuild(
+    IN.ALIGNMENTS = myAlignments,
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
+)
+
 test_that("Example data (BAM and corresponding BAI file) is present", {
     expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")), info = "BAM file does not exist in inst/extdata.")
     expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam.bai", package = "PICB")), info = "BAI file does not exist in inst/extdata.")
@@ -72,23 +77,18 @@ test_that("PICBbuild warns when IN.ALIGNMENTS is missing 'multi.secondary' colum
 })
 
 test_that("PICBbuild builds piRNA seeds, cores, and clusters with default parameters correctly", {
-    result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        VERBOSITY = 0
-    )
-    expect_type(result, "list")
-    expect_named(result, c("seeds", "cores", "clusters"))
-    expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
+    expect_type(defaultClusters, "list")
+    expect_named(defaultClusters, c("seeds", "cores", "clusters"))
+    expect_true(all(sapply(defaultClusters, function(x) inherits(x, "GRanges"))))
 
-    expect_equal(length(result$seeds), 42)
-    expect_equal(length(result$cores), 38)
-    expect_equal(length(result$clusters), 27)
+    expect_equal(length(defaultClusters$seeds), 42)
+    expect_equal(length(defaultClusters$cores), 38)
+    expect_equal(length(defaultClusters$clusters), 27)
     # Check metadata columns
     expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
-    expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
-    expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
-    expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
+    expect_equal(colnames(mcols(defaultClusters$seeds)), expectedOutputCols)
+    expect_equal(colnames(mcols(defaultClusters$cores)), expectedOutputCols)
+    expect_equal(colnames(mcols(defaultClusters$clusters)), c(expectedOutputCols, "type"))
 })
 
 
@@ -191,10 +191,8 @@ test_that("PICBbuild provides non-normalized statistics when PROVIDE.NON_NORMALI
 })
 
 test_that("PICBbuild loads BAM file with default parameters the same with using the same reference genome but different methods", {
-    expectedResult <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
-    )
+    # Using BSgenome as myGenome shown above. 
+
     # Using chromosome names and lengths
     seqnames <- c("chr2L", "chr2R", "chr3L", "chr3R", "chr4", "chrX", "chrY")
     seqlengths <- c(23513712, 25286936, 28110227, 32079331, 1348131, 23542271, 3667352)
@@ -204,7 +202,7 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
         IN.ALIGNMENTS = myAlignments,
         REFERENCE.GENOME = myGenome
     )
-    expect_equal(result, expectedResult)
+    expect_equal(result, defaultClusters)
 
     # Using genome name
     myGenome <- GenomeInfoDb::Seqinfo(genome = "dm6")
@@ -213,7 +211,7 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
         REFERENCE.GENOME = myGenome,
         VERBOSITY = 0
     )
-    expect_equal(result, expectedResult)
+    expect_equal(result, defaultClusters)
 
     # Using a FASTA file
     chr2L_seq <- BSgenome.Dmelanogaster.UCSC.dm6[["chr2L"]]
@@ -228,12 +226,12 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
         VERBOSITY = 0
     )
     # seqinfo is expected to be different (all standard chromosomes in above examples vs just chr2L in subset genome)
-    seqInfoExp <- seqinfo(expectedResult$seeds)
+    seqInfoExp <- seqinfo(defaultClusters$seeds)
     seqinfo(result$seeds) <- seqInfoExp
     seqinfo(result$cores) <- seqInfoExp
     seqinfo(result$clusters) <- seqInfoExp
 
-    expect_equal(result, expectedResult)
+    expect_equal(result, defaultClusters)
     unlink(temp_fasta)
 })
 

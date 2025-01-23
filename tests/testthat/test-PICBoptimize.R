@@ -45,15 +45,7 @@ test_that("PICBoptimize throws error when nothing to optimize for", {
 
 
 test_that("PICBoptimize returns correct number of rows for MIN.UNIQUE.ALIGNMENTS.PER.WINDOW", {
-    optOutput <- PICBoptimize(
-            IN.ALIGNMENTS = myAlignments,
-            REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-            VERBOSITY = 0, 
-            MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 50)
-    )
-    expect_equal(
-        nrow(optOutput), length(c(1, 50))
-    ) 
+    expect_equal(nrow(optOutput), 2) 
 })
 
 test_that("PICBoptimize handles different verbosity levels", {
