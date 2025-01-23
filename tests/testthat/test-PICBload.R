@@ -1,6 +1,3 @@
-library("BSgenome.Dmelanogaster.UCSC.dm6")
-bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
-
 test_that("example data (bam and corresponding bai file) is present", {
     expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")))
     expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam.bai", package = "PICB")))
@@ -8,7 +5,7 @@ test_that("example data (bam and corresponding bai file) is present", {
 
 test_that("PICBload loads BAM file with default parameters correctly", {
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
     )
     expect_type(result, "list")
@@ -41,7 +38,7 @@ test_that("PICBload throws error when BAMFILE is NULL", {
 test_that("PICBload throws error when REFERENCE.GENOME is NULL", {
     expect_error(
         PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = NULL
         ),
         "Please provide REFERENCE.GENOME"
@@ -51,7 +48,7 @@ test_that("PICBload throws error when REFERENCE.GENOME is NULL", {
 test_that("PICBload throws error when REFERENCE.GENOME is NULL", {
     expect_error(
         PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = NULL
         ),
         "Please provide REFERENCE.GENOME"
@@ -60,7 +57,7 @@ test_that("PICBload throws error when REFERENCE.GENOME is NULL", {
 
 test_that("PICBload handles SIMPLE.CIGAR = FALSE correctly", {
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         SIMPLE.CIGAR = FALSE
     )
@@ -77,7 +74,7 @@ test_that("PICBload handles SIMPLE.CIGAR = FALSE correctly", {
 
 test_that("PICBload loads secondary alignments when IS.SECONDARY.ALIGNMENT = TRUE", {
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         IS.SECONDARY.ALIGNMENT = TRUE
     )
@@ -92,7 +89,7 @@ test_that("PICBload loads secondary alignments when IS.SECONDARY.ALIGNMENT = TRU
 
 test_that("PICBload loads primary alignments when IS.SECONDARY.ALIGNMENT = FALSE", {
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         IS.SECONDARY.ALIGNMENT = FALSE
     )
@@ -109,7 +106,7 @@ test_that("PICBload loads primary alignments when IS.SECONDARY.ALIGNMENT = FALSE
 
 test_that("PICBload loads BAM file with default parameters the same with using the same reference genome but different methods", {
     expectedResult <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
     )
     # Using chromosome names and lengths
@@ -118,7 +115,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
     myGenome <- Seqinfo(seqnames = seqnames, seqlengths = seqlengths)
 
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = myGenome
     )
     expect_equal(result, expectedResult)
@@ -126,7 +123,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
     # Using genome name
     myGenome <- GenomeInfoDb::Seqinfo(genome = "dm6")
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = myGenome
     )
     expect_equal(result, expectedResult)
@@ -139,7 +136,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
     writeXStringSet(chr2L_seq_set, temp_fasta)
     myGenome <- PICBloadfasta(FASTA.NAME = temp_fasta)
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = myGenome
     )
     expect_equal(result, expectedResult)
@@ -149,7 +146,7 @@ test_that("PICBload loads BAM file with default parameters the same with using t
 test_that("PICBload filters alignments based on custom READ.SIZE.RANGE", {
     custom_size_range <- c(24, 27) # not recommended size range! Just here for testing
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         USE.SIZE.FILTER = TRUE,
         READ.SIZE.RANGE = custom_size_range
@@ -170,7 +167,7 @@ test_that("PICBload filters alignments based on custom READ.SIZE.RANGE", {
 
 test_that("PICBload retrieves original sequences when GET.ORIGINAL.SEQUENCE = TRUE", {
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         GET.ORIGINAL.SEQUENCE = TRUE
     )
@@ -190,7 +187,7 @@ test_that("PICBload retrieves original sequences when GET.ORIGINAL.SEQUENCE = TR
 test_that("PICBload changes seqlevels style when SEQ.LEVELS.STYLE is specified", {
     custom_style <- "NCBI"
     result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         SEQ.LEVELS.STYLE = custom_style
     )
@@ -203,7 +200,7 @@ test_that("PICBload changes seqlevels style when SEQ.LEVELS.STYLE is specified",
 
 test_that("PICBload works correctly with a combination of custom parameters", {
      result <- PICBload(
-        BAMFILE = bam,
+        BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         SIMPLE.CIGAR = FALSE,
         IS.SECONDARY.ALIGNMENT = FALSE,

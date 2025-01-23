@@ -173,26 +173,20 @@ test_that("PICBstrandanalysis returns expected output when IN.ALIGNMENTS not cor
 # test with example data
 
 test_that("PICBload loads BAM file with default parameters correctly", {
-    bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
-    resultPICBload <- PICBload(
-        BAMFILE = bam,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        VERBOSE = FALSE
-    )
-    expect_type(resultPICBload, "list")
-    expect_named(resultPICBload, c("unique", "multi.primary", "multi.secondary"))
-    expect_true(all(sapply(resultPICBload, function(x) inherits(x, "GRanges"))))
+    expect_type(test_alignments, "list")
+    expect_named(test_alignments, c("unique", "multi.primary", "multi.secondary"))
+    expect_true(all(sapply(test_alignments, function(x) inherits(x, "GRanges"))))
 
     myClusters <- PICBbuild(
-        IN.ALIGNMENTS = resultPICBload,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         VERBOSITY = 0,
         LIBRARY.SIZE = 12799826
     )$clusters
     expect_equal(
-        length(PICBstrandanalysis(IN.ALIGNMENTS = resultPICBload, IN.RANGES = myClusters)$s_as_ratio), 4
+        length(PICBstrandanalysis(IN.ALIGNMENTS = test_alignments, IN.RANGES = myClusters)$s_as_ratio), 4
     )
     expect_equal(
-        round(PICBstrandanalysis(IN.ALIGNMENTS = resultPICBload, IN.RANGES = myClusters)$s_as_ratio, digits = 3), round(c(3.91609, 1.68109, 0.25495, 0.59485), digits = 3)
+        round(PICBstrandanalysis(IN.ALIGNMENTS = test_alignments, IN.RANGES = myClusters)$s_as_ratio, digits = 3), round(c(3.91609, 1.68109, 0.25495, 0.59485), digits = 3)
     )
 })

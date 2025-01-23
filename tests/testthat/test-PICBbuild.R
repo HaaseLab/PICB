@@ -1,20 +1,3 @@
-test_bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
-library("BSgenome.Dmelanogaster.UCSC.dm6")
-myAlignments <- PICBload(
-    BAMFILE = test_bam,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-    VERBOSE = FALSE
-)
-
-defaultClusters <- PICBbuild(
-    IN.ALIGNMENTS = myAlignments,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
-)
-
-test_that("Example data (BAM and corresponding BAI file) is present", {
-    expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")), info = "BAM file does not exist in inst/extdata.")
-    expect_true(file.exists(system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam.bai", package = "PICB")), info = "BAI file does not exist in inst/extdata.")
-})
 
 test_that("PICBbuild throws error when IN.ALIGNMENTS is NULL", {
     expect_error(
@@ -30,7 +13,7 @@ test_that("PICBbuild throws error when IN.ALIGNMENTS is NULL", {
 test_that("PICBbuild throws error when REFERENCE.GENOME is NULL", {
     expect_error(
         PICBbuild(
-            IN.ALIGNMENTS = myAlignments,
+            IN.ALIGNMENTS = test_alignments,
             REFERENCE.GENOME = NULL,
             VERBOSITY = 0
         ), "Please provide REFERENCE.GENOME !"
@@ -39,11 +22,11 @@ test_that("PICBbuild throws error when REFERENCE.GENOME is NULL", {
 
 
 test_that("PICBbuild throws error when IN.ALIGNMENTS is missing 'unique' column", {
-    myAlignments_unique_missing <- myAlignments
-    myAlignments_unique_missing$unique <- NULL
+    test_alignments_unique_missing <- test_alignments
+    test_alignments_unique_missing$unique <- NULL
     expect_error(
         PICBbuild(
-            IN.ALIGNMENTS = myAlignments_unique_missing,
+            IN.ALIGNMENTS = test_alignments_unique_missing,
             REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6"
         ),
         regexp = "^IN.ALIGNMENTS must contain 'unique' column! "
@@ -51,11 +34,11 @@ test_that("PICBbuild throws error when IN.ALIGNMENTS is missing 'unique' column"
 })
 
 test_that("PICBbuild throws error when IN.ALIGNMENTS is missing 'multi.primary' column", {
-    myAlignments_multi_primary_missing <- myAlignments
-    myAlignments_multi_primary_missing$multi.primary <- NULL
+    test_alignments_multi_primary_missing <- test_alignments
+    test_alignments_multi_primary_missing$multi.primary <- NULL
     expect_error(
         PICBbuild(
-            IN.ALIGNMENTS = myAlignments_multi_primary_missing,
+            IN.ALIGNMENTS = test_alignments_multi_primary_missing,
             REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
             VERBOSITY = 0
         ),
@@ -64,11 +47,11 @@ test_that("PICBbuild throws error when IN.ALIGNMENTS is missing 'multi.primary' 
 })
 
 test_that("PICBbuild warns when IN.ALIGNMENTS is missing 'multi.secondary' column", {
-    myAlignments_multi_secondary_missing <- myAlignments
-    myAlignments_multi_secondary_missing$multi.secondary <- NULL
+    test_alignments_multi_secondary_missing <- test_alignments
+    test_alignments_multi_secondary_missing$multi.secondary <- NULL
     expect_warning(
         PICBbuild(
-            IN.ALIGNMENTS = myAlignments_multi_secondary_missing,
+            IN.ALIGNMENTS = test_alignments_multi_secondary_missing,
             REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
             VERBOSITY = 0
         ),
@@ -77,24 +60,24 @@ test_that("PICBbuild warns when IN.ALIGNMENTS is missing 'multi.secondary' colum
 })
 
 test_that("PICBbuild builds piRNA seeds, cores, and clusters with default parameters correctly", {
-    expect_type(defaultClusters, "list")
-    expect_named(defaultClusters, c("seeds", "cores", "clusters"))
-    expect_true(all(sapply(defaultClusters, function(x) inherits(x, "GRanges"))))
+    expect_type(test_ranges, "list")
+    expect_named(test_ranges, c("seeds", "cores", "clusters"))
+    expect_true(all(sapply(test_ranges, function(x) inherits(x, "GRanges"))))
 
-    expect_equal(length(defaultClusters$seeds), 42)
-    expect_equal(length(defaultClusters$cores), 38)
-    expect_equal(length(defaultClusters$clusters), 27)
+    expect_equal(length(test_ranges$seeds), 42)
+    expect_equal(length(test_ranges$cores), 38)
+    expect_equal(length(test_ranges$clusters), 27)
     # Check metadata columns
     expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
-    expect_equal(colnames(mcols(defaultClusters$seeds)), expectedOutputCols)
-    expect_equal(colnames(mcols(defaultClusters$cores)), expectedOutputCols)
-    expect_equal(colnames(mcols(defaultClusters$clusters)), c(expectedOutputCols, "type"))
+    expect_equal(colnames(mcols(test_ranges$seeds)), expectedOutputCols)
+    expect_equal(colnames(mcols(test_ranges$cores)), expectedOutputCols)
+    expect_equal(colnames(mcols(test_ranges$clusters)), c(expectedOutputCols, "type"))
 })
 
 
 test_that("PICBbuild example subset builds piRNA seeds, cores, and clusters correctly with defined LIBRARY.SIZE", {
     result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         LIBRARY.SIZE = 12799826
     )
@@ -120,7 +103,7 @@ test_that("PICBbuild handles custom sliding window sizes correctly", {
     custom_secondary_mult_window_width <- 1200
     custom_secondary_mult_window_step <- 120
     result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH = custom_uniq_window_width,
         UNIQUEMAPPERS.SLIDING.WINDOW.STEP = custom_uniq_window_step,
@@ -150,7 +133,7 @@ test_that("PICBbuild filters based on custom thresholds correctly", {
     custom_threshold_cores_gap <- 200
     custom_threshold_clusters_gap <- 300
     result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         MIN.OVERLAP = custom_min_overlap,
         THRESHOLD.SEEDS.GAP = custom_threshold_seeds_gap,
@@ -175,7 +158,7 @@ test_that("PICBbuild filters based on custom thresholds correctly", {
 
 test_that("PICBbuild provides non-normalized statistics when PROVIDE.NON_NORMALIZED = TRUE", {
     result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         PROVIDE.NON.NORMALIZED = TRUE
     )
@@ -199,19 +182,19 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
     myGenome <- Seqinfo(seqnames = seqnames, seqlengths = seqlengths)
 
     result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = myGenome
     )
-    expect_equal(result, defaultClusters)
+    expect_equal(result, test_ranges)
 
     # Using genome name
     myGenome <- GenomeInfoDb::Seqinfo(genome = "dm6")
     result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = myGenome,
         VERBOSITY = 0
     )
-    expect_equal(result, defaultClusters)
+    expect_equal(result, test_ranges)
 
     # Using a FASTA file
     chr2L_seq <- BSgenome.Dmelanogaster.UCSC.dm6[["chr2L"]]
@@ -221,17 +204,17 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
     writeXStringSet(chr2L_seq_set, temp_fasta)
     myGenome <- PICBloadfasta(FASTA.NAME = temp_fasta)
     result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = myGenome,
         VERBOSITY = 0
     )
     # seqinfo is expected to be different (all standard chromosomes in above examples vs just chr2L in subset genome)
-    seqInfoExp <- seqinfo(defaultClusters$seeds)
+    seqInfoExp <- seqinfo(test_ranges$seeds)
     seqinfo(result$seeds) <- seqInfoExp
     seqinfo(result$cores) <- seqInfoExp
     seqinfo(result$clusters) <- seqInfoExp
 
-    expect_equal(result, defaultClusters)
+    expect_equal(result, test_ranges)
     unlink(temp_fasta)
 })
 
@@ -239,7 +222,7 @@ test_that("PICBbuild loads BAM file with default parameters the same with using 
 test_that("PICBbuild changes seqlevels style when SEQ.LEVELS.STYLE is specified", {
     custom_style <- "NCBI"
     result <- PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         SEQ.LEVELS.STYLE = custom_style,
         VERBOSITY = 0
@@ -253,16 +236,16 @@ test_that("PICBbuild changes seqlevels style when SEQ.LEVELS.STYLE is specified"
 })
 
 test_that("PICBbuild computes 1U and 10A fractions when COMPUTE.1U.10A.FRACTIONS = TRUE", {
-    # for error when column seq not provided in PICBload() output (myAlignments)
+    # for error when column seq not provided in PICBload() output (test_alignments)
     expect_error(
         PICBbuild(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         COMPUTE.1U.10A.FRACTIONS = TRUE
         ),
         regexp = "^Alignments 'unique' does not contain sequence"
     )
-    # proper calculations with column seq in myAlignments
+    # proper calculations with column seq in test_alignments
     ouputPICBloadWseq <- PICBload(
         BAMFILE = test_bam,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
@@ -308,7 +291,7 @@ test_that("PICBbuild VERBOSITY parameter works correctly", {
   # Test VERBOSITY = 0 (silent)
   silent_messages <- capture_messages({
     PICBbuild(
-      IN.ALIGNMENTS = myAlignments,
+      IN.ALIGNMENTS = test_alignments,
       REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
       VERBOSITY = 0
     )
@@ -317,7 +300,7 @@ test_that("PICBbuild VERBOSITY parameter works correctly", {
   # Test VERBOSITY = 1 (basic messages)
   basic_messages <- capture_messages({
     PICBbuild(
-      IN.ALIGNMENTS = myAlignments,
+      IN.ALIGNMENTS = test_alignments,
       REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
       VERBOSITY = 1
     )
@@ -326,7 +309,7 @@ test_that("PICBbuild VERBOSITY parameter works correctly", {
   # Test VERBOSITY = 2 (detailed messages)
   detailed_messages <- capture_messages({
     PICBbuild(
-      IN.ALIGNMENTS = myAlignments,
+      IN.ALIGNMENTS = test_alignments,
       REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
       VERBOSITY = 2
     )

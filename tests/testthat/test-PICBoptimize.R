@@ -1,17 +1,3 @@
-library("BSgenome.Dmelanogaster.UCSC.dm6")
-bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
-myAlignments <- PICBload(
-    BAMFILE = bam,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-    VERBOSE = FALSE
-)
-optOutput <- PICBoptimize(
-    IN.ALIGNMENTS = myAlignments,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-    VERBOSITY = 0,
-    MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2)
-)
-
 test_that("PICBoptimize throws error when IN.ALIGNMENTS is NULL", {
     expect_error(
         PICBoptimize(
@@ -26,7 +12,7 @@ test_that("PICBoptimize throws error when IN.ALIGNMENTS is NULL", {
 test_that("PICBoptimize throws error when REFERENCE.GENOME is NULL", {
     expect_error(
         PICBoptimize(
-            IN.ALIGNMENTS = myAlignments,
+            IN.ALIGNMENTS = test_alignments,
             REFERENCE.GENOME = NULL,
             VERBOSITY = 0
         ), "Please provide REFERENCE.GENOME !"
@@ -36,7 +22,7 @@ test_that("PICBoptimize throws error when REFERENCE.GENOME is NULL", {
 test_that("PICBoptimize throws error when nothing to optimize for", {
     expect_error(
         PICBoptimize(
-            IN.ALIGNMENTS = myAlignments,
+            IN.ALIGNMENTS = test_alignments,
             REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
             VERBOSITY = 0
         ), "Provide arguments to iterave over. See example."
@@ -45,14 +31,14 @@ test_that("PICBoptimize throws error when nothing to optimize for", {
 
 
 test_that("PICBoptimize returns correct number of rows for MIN.UNIQUE.ALIGNMENTS.PER.WINDOW", {
-    expect_equal(nrow(optOutput), 2) 
+    expect_equal(nrow(test_ranges), 2) 
 })
 
 test_that("PICBoptimize handles different verbosity levels", {
     # Test verbosity = 2 (should show version message)
     expect_message(
         PICBoptimize(
-            IN.ALIGNMENTS = myAlignments,
+            IN.ALIGNMENTS = test_alignments,
             REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
             VERBOSITY = 2,
             MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2)
@@ -65,7 +51,7 @@ test_that("PICBoptimize handles different verbosity levels", {
 test_that("PICBoptimize handles basic parameter iteration correctly", {
     # Test single parameter iteration
     result1 <- PICBoptimize(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         VERBOSITY = 0,
         MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2, 3)
@@ -75,7 +61,7 @@ test_that("PICBoptimize handles basic parameter iteration correctly", {
     
     # Test multiple parameter iteration
     result2 <- PICBoptimize(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         VERBOSITY = 0,
         MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2),
@@ -90,7 +76,7 @@ test_that("PICBoptimize handles library size correctly", {
     # Library size warning should be triggered
     expect_warning(
         PICBoptimize(
-            IN.ALIGNMENTS = myAlignments,
+            IN.ALIGNMENTS = test_alignments,
             REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
             LIBRARY.SIZE = custom_library_size,
             MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2)
@@ -110,12 +96,12 @@ test_that("PICBoptimize output contains expected columns", {
         "mean.RPKM.clusters",
         "fraction.of.genome.space.clusters"
     )
-    expect_true(all(expected_cols %in% colnames(optOutput)))
+    expect_true(all(expected_cols %in% colnames(test_ranges)))
 })
 
 test_that("PICBoptimize handles PROVIDE.INFO.SEEDS.AND.CORES correctly", {
     result <- PICBoptimize(
-        IN.ALIGNMENTS = myAlignments,
+        IN.ALIGNMENTS = test_alignments,
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         VERBOSITY = 0,
         PROVIDE.INFO.SEEDS.AND.CORES = TRUE,

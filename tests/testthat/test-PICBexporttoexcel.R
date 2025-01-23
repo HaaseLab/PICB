@@ -1,20 +1,7 @@
-test_bam <- system.file("extdata", "Fly_Ov1_chr2L_20To21mb_filtered.bam", package = "PICB")
-library("BSgenome.Dmelanogaster.UCSC.dm6")
-myAlignments <- PICBload(
-    BAMFILE = test_bam,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-    VERBOSE = FALSE
-)
-myRanges <- PICBbuild(
-    IN.ALIGNMENTS = myAlignments,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-    VERBOSITY = 0
-)
-
 test_that("PICBexporttoexcel creates correct Excel files", {
   # Test full export with multiple sheets
   temp_file <- tempfile(fileext = ".xlsx")
-  PICBexporttoexcel(IN.RANGES = myRanges, EXCEL.FILE.NAME = temp_file)
+  PICBexporttoexcel(IN.RANGES = test_ranges, EXCEL.FILE.NAME = temp_file)
   
   # Read the Excel file back
   xlsx_data <- openxlsx::loadWorkbook(temp_file)
@@ -31,7 +18,7 @@ test_that("PICBexporttoexcel creates correct Excel files", {
   
   # Test single GRanges export
   single_temp_file <- tempfile(fileext = ".xlsx")
-  PICBexporttoexcel(IN.RANGES = myRanges$clusters, 
+  PICBexporttoexcel(IN.RANGES = test_ranges$clusters, 
                     EXCEL.FILE.NAME = single_temp_file)
   
   # Read single sheet Excel file back
