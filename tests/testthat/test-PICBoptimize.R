@@ -1,3 +1,10 @@
+optOutput <- PICBoptimize(
+    IN.ALIGNMENTS = test_alignments,
+    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+    VERBOSITY = 0,
+    MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2)
+)
+
 test_that("PICBoptimize throws error when IN.ALIGNMENTS is NULL", {
     expect_error(
         PICBoptimize(
@@ -31,7 +38,7 @@ test_that("PICBoptimize throws error when nothing to optimize for", {
 
 
 test_that("PICBoptimize returns correct number of rows for MIN.UNIQUE.ALIGNMENTS.PER.WINDOW", {
-    expect_equal(nrow(test_ranges), 2) 
+    expect_equal(nrow(optOutput), 2) 
 })
 
 test_that("PICBoptimize handles different verbosity levels", {
@@ -96,7 +103,7 @@ test_that("PICBoptimize output contains expected columns", {
         "mean.RPKM.clusters",
         "fraction.of.genome.space.clusters"
     )
-    expect_true(all(expected_cols %in% colnames(test_ranges)))
+    expect_true(all(expected_cols %in% colnames(optOutput)))
 })
 
 test_that("PICBoptimize handles PROVIDE.INFO.SEEDS.AND.CORES correctly", {
