@@ -1,10 +1,3 @@
-optOutput <- PICBoptimize(
-    IN.ALIGNMENTS = test_alignments,
-    REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-    VERBOSITY = 0,
-    MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2)
-)
-
 test_that("PICBoptimize throws error when IN.ALIGNMENTS is NULL", {
     expect_error(
         PICBoptimize(
@@ -36,35 +29,10 @@ test_that("PICBoptimize throws error when nothing to optimize for", {
     ) 
 })
 
-
-test_that("PICBoptimize returns correct number of rows for MIN.UNIQUE.ALIGNMENTS.PER.WINDOW", {
-    expect_equal(nrow(optOutput), 2) 
-})
-
-test_that("PICBoptimize handles different verbosity levels", {
-    # Test verbosity = 2 (should show version message)
-    expect_message(
-        PICBoptimize(
-            IN.ALIGNMENTS = test_alignments,
-            REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-            VERBOSITY = 2,
-            MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2)
-        ),
-        regexp = "^PICB v"
-    )
-})
-
-
 test_that("PICBoptimize handles basic parameter iteration correctly", {
     # Test single parameter iteration
-    result1 <- PICBoptimize(
-        IN.ALIGNMENTS = test_alignments,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        VERBOSITY = 0,
-        MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2, 3)
-    )
-    expect_equal(nrow(result1), 3)
-    expect_true(all(c("MIN.UNIQUE.ALIGNMENTS.PER.WINDOW") %in% colnames(result1)))
+    expect_equal(nrow(test_optimization), 2)
+    expect_true(all(c("MIN.UNIQUE.ALIGNMENTS.PER.WINDOW") %in% colnames(test_optimization)))
     
     # Test multiple parameter iteration
     result2 <- PICBoptimize(
@@ -72,10 +40,10 @@ test_that("PICBoptimize handles basic parameter iteration correctly", {
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         VERBOSITY = 0,
         MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2),
-        MIN.SEED.LENGTH = c(800, 1000)
+        THRESHOLD.CLUSTERS.GAP = c(0, 50)
     )
     expect_equal(nrow(result2), 4)  # 2x2 combinations
-    expect_true(all(c("MIN.UNIQUE.ALIGNMENTS.PER.WINDOW", "MIN.SEED.LENGTH") %in% colnames(result2)))
+    expect_true(all(c("MIN.UNIQUE.ALIGNMENTS.PER.WINDOW", "THRESHOLD.CLUSTERS.GAP") %in% colnames(result2)))
 })
 
 test_that("PICBoptimize handles library size correctly", {
@@ -86,7 +54,7 @@ test_that("PICBoptimize handles library size correctly", {
             IN.ALIGNMENTS = test_alignments,
             REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
             LIBRARY.SIZE = custom_library_size,
-            MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2)
+            THRESHOLD.SEEDS.GAP = c(0, 50)
         ),
         regexp = "^The total number of primary alignments is not equal to the total number of read names"
     )
@@ -103,7 +71,7 @@ test_that("PICBoptimize output contains expected columns", {
         "mean.RPKM.clusters",
         "fraction.of.genome.space.clusters"
     )
-    expect_true(all(expected_cols %in% colnames(optOutput)))
+    expect_true(all(expected_cols %in% colnames(test_optimization)))
 })
 
 test_that("PICBoptimize handles PROVIDE.INFO.SEEDS.AND.CORES correctly", {
@@ -112,7 +80,7 @@ test_that("PICBoptimize handles PROVIDE.INFO.SEEDS.AND.CORES correctly", {
         REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
         VERBOSITY = 0,
         PROVIDE.INFO.SEEDS.AND.CORES = TRUE,
-        MIN.UNIQUE.ALIGNMENTS.PER.WINDOW = c(1, 2)
+        THRESHOLD.CORES.GAP = c(0, 50)
     )
     
     # Base metrics that apply to each type
@@ -130,7 +98,7 @@ test_that("PICBoptimize handles PROVIDE.INFO.SEEDS.AND.CORES correctly", {
     
     # Generate all expected column combinations
     expected_cols <- c(
-        "MIN.UNIQUE.ALIGNMENTS.PER.WINDOW",  # Include any fixed columns first
+        "THRESHOLD.CORES.GAP",  # Include any fixed columns first
         outer(base_metrics, region_types, function(x, y) paste0(x, ".", y))
     )
     

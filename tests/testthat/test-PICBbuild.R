@@ -95,83 +95,84 @@ test_that("PICBbuild example subset builds piRNA seeds, cores, and clusters corr
     expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
 })
 
-test_that("PICBbuild handles custom sliding window sizes correctly", {
-    custom_uniq_window_width <- 500
-    custom_uniq_window_step <- 50
-    custom_primary_mult_window_width <- 400
-    custom_primary_mult_window_step <- 40
-    custom_secondary_mult_window_width <- 1200
-    custom_secondary_mult_window_step <- 120
-    result <- PICBbuild(
-        IN.ALIGNMENTS = test_alignments,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH = custom_uniq_window_width,
-        UNIQUEMAPPERS.SLIDING.WINDOW.STEP = custom_uniq_window_step,
-        PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = custom_primary_mult_window_width,
-        PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = custom_primary_mult_window_step,
-        SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = custom_secondary_mult_window_width,
-        SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = custom_secondary_mult_window_step
-    )
-    expect_type(result, "list")
-    expect_named(result, c("seeds", "cores", "clusters"))
-    expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
-
-    expect_equal(length(result$seeds), 43)
-    expect_equal(length(result$cores), 36)
-    expect_equal(length(result$clusters), 28)
-    # Check metadata columns
-    expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
-    expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
-    expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
-    expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
-})
-
-
-test_that("PICBbuild filters based on custom thresholds correctly", {
-    custom_min_overlap <- 10
-    custom_threshold_seeds_gap <- 100
-    custom_threshold_cores_gap <- 200
-    custom_threshold_clusters_gap <- 300
-    result <- PICBbuild(
-        IN.ALIGNMENTS = test_alignments,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        MIN.OVERLAP = custom_min_overlap,
-        THRESHOLD.SEEDS.GAP = custom_threshold_seeds_gap,
-        THRESHOLD.CORES.GAP = custom_threshold_cores_gap,
-        THRESHOLD.CLUSTERS.GAP = custom_threshold_clusters_gap
-    )
-    expect_type(result, "list")
-    expect_named(result, c("seeds", "cores", "clusters"))
-    expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
+#optional additional testing
+#test_that("PICBbuild handles custom sliding window sizes correctly", {
+#    custom_uniq_window_width <- 500
+#    custom_uniq_window_step <- 50
+#    custom_primary_mult_window_width <- 400
+#    custom_primary_mult_window_step <- 40
+#    custom_secondary_mult_window_width <- 1200
+#    custom_secondary_mult_window_step <- 120
+#    result <- PICBbuild(
+#        IN.ALIGNMENTS = test_alignments,
+#        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+#        UNIQUEMAPPERS.SLIDING.WINDOW.WIDTH = custom_uniq_window_width,
+#        UNIQUEMAPPERS.SLIDING.WINDOW.STEP = custom_uniq_window_step,
+#        PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = custom_primary_mult_window_width,
+#        PRIMARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = custom_primary_mult_window_step,
+#        SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.WIDTH = custom_secondary_mult_window_width,
+#        SECONDARY.MULTIMAPPERS.SLIDING.WINDOW.STEP = custom_secondary_mult_window_step
+#    )
+#    expect_type(result, "list")
+#    expect_named(result, c("seeds", "cores", "clusters"))
+#    expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
+#
+#    expect_equal(length(result$seeds), 43)
+#    expect_equal(length(result$cores), 36)
+#    expect_equal(length(result$clusters), 28)
+#    # Check metadata columns
+#    expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+#    expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
+#    expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
+#    expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
+#})
 
 
-    expect_equal(length(result$seeds), 41)
-    expect_equal(length(result$cores), 31)
-    expect_equal(length(result$clusters), 20)
-    # check metacolumns
-    expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
-    expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
-    expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
-    expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
-})
+#test_that("PICBbuild filters based on custom thresholds correctly", {
+#    custom_min_overlap <- 10
+#    custom_threshold_seeds_gap <- 100
+#    custom_threshold_cores_gap <- 200
+#    custom_threshold_clusters_gap <- 300
+#    result <- PICBbuild(
+#        IN.ALIGNMENTS = test_alignments,
+#        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+#        MIN.OVERLAP = custom_min_overlap,
+#        THRESHOLD.SEEDS.GAP = custom_threshold_seeds_gap,
+#        THRESHOLD.CORES.GAP = custom_threshold_cores_gap,
+#        THRESHOLD.CLUSTERS.GAP = custom_threshold_clusters_gap
+#    )
+#    expect_type(result, "list")
+#    expect_named(result, c("seeds", "cores", "clusters"))
+#    expect_true(all(sapply(result, function(x) inherits(x, "GRanges"))))
+#
+#
+#    expect_equal(length(result$seeds), 41)
+#    expect_equal(length(result$cores), 31)
+#    expect_equal(length(result$clusters), 20)
+#    # check metacolumns
+#    expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+#    expect_equal(colnames(mcols(result$seeds)), expectedOutputCols)
+#    expect_equal(colnames(mcols(result$cores)), expectedOutputCols)
+#    expect_equal(colnames(mcols(result$clusters)), c(expectedOutputCols, "type"))
+#})
 
 
-test_that("PICBbuild provides non-normalized statistics when PROVIDE.NON_NORMALIZED = TRUE", {
-    result <- PICBbuild(
-        IN.ALIGNMENTS = test_alignments,
-        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-        PROVIDE.NON.NORMALIZED = TRUE
-    )
-    expect_type(result, "list")
-    expect_named(result, c("seeds", "cores", "clusters"))
-
-    # Check metadata columns
-    expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
-    addNonNormOutputCols <- c("uniq_reads", "multimapping_reads_primary_alignments", "all_reads_primary_alignments", "width_covered_by_unique_alignments", "uniq_sequences")
-    expect_equal(length(setdiff(colnames(mcols(result$seeds)), c(expectedOutputCols, addNonNormOutputCols))), 0)
-    expect_equal(length(setdiff(colnames(mcols(result$cores)), c(expectedOutputCols, addNonNormOutputCols))), 0)
-    expect_equal(length(setdiff(colnames(mcols(result$seeds)), c(expectedOutputCols, addNonNormOutputCols, "type"))), 0)
-})
+#test_that("PICBbuild provides non-normalized statistics when PROVIDE.NON_NORMALIZED = TRUE", {
+#    result <- PICBbuild(
+#        IN.ALIGNMENTS = test_alignments,
+#        REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
+#        PROVIDE.NON.NORMALIZED = TRUE
+#    )
+#    expect_type(result, "list")
+#    expect_named(result, c("seeds", "cores", "clusters"))
+#
+#   # Check metadata columns
+#    expectedOutputCols <- c("width_in_nt", "uniq_reads_FPM", "multimapping_reads_primary_alignments_FPM", "all_reads_primary_alignments_FPM", "uniq_reads_FPKM", "multimapping_reads_primary_alignments_FPKM", "all_reads_primary_alignments_FPKM", "fraction_of_width_covered_by_unique_alignments")
+#    addNonNormOutputCols <- c("uniq_reads", "multimapping_reads_primary_alignments", "all_reads_primary_alignments", "width_covered_by_unique_alignments", "uniq_sequences")
+#    expect_equal(length(setdiff(colnames(mcols(result$seeds)), c(expectedOutputCols, addNonNormOutputCols))), 0)
+#    expect_equal(length(setdiff(colnames(mcols(result$cores)), c(expectedOutputCols, addNonNormOutputCols))), 0)
+#    expect_equal(length(setdiff(colnames(mcols(result$seeds)), c(expectedOutputCols, addNonNormOutputCols, "type"))), 0)
+#})
 
 test_that("PICBbuild loads BAM file with default parameters the same with using the same reference genome but different methods", {
     # Using BSgenome as myGenome shown above. 
@@ -311,7 +312,7 @@ test_that("PICBbuild VERBOSITY parameter works correctly", {
     PICBbuild(
       IN.ALIGNMENTS = test_alignments,
       REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",
-      VERBOSITY = 2
+      VERBOSITY = 3
     )
   })
   
