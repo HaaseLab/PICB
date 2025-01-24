@@ -85,6 +85,5 @@
 #'     EXCEL.FILE.NAME = system.file("extdata", "myClusters_demonstration.xlsx", package = "PICB")
 #' )
 #' 
-#' @docType package
-#' @name PICB
+#' @keywords internal
 "_PACKAGE"
