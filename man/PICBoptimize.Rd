@@ -25,7 +25,7 @@ PICBoptimize(
 
 \item{PROVIDE.INFO.SEEDS.AND.CORES}{FALSE by default.}
 
-\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
+\item{SEQ.LEVELS.STYLE}{naming of chromosomes style. "UCSC" by default.}
 
 \item{...}{rest of the parameters used by PICBbuild and provided as iteratable vectors}
 }

@@ -18,6 +18,7 @@ test_ranges <- PICBbuild(
     VERBOSITY = 0
 )
 
+# Optimize once
 test_optimization <- PICBoptimize(
     IN.ALIGNMENTS = test_alignments,
     REFERENCE.GENOME = "BSgenome.Dmelanogaster.UCSC.dm6",

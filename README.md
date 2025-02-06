@@ -196,6 +196,7 @@ Adjustable parameters:
 |----------------|-----------------|---------------|-------------|
 | VERBOSE | TRUE, FALSE  | TRUE | Allows disabling progress messages while running `PICBload`. |
 | IS.SECONDARY.ALIGNMENT | TRUE, FALSE, NA | NA  (all alignments) | Determines which alignment types (primary multimappers and secondary multimappers) will be loaded. |
+| SEQ.LEVELS.STYLE | _character_ | "UCSC" | Allows changing the style of chromosome names in the output. Supported styles are listed in GenomeInfoDb::genomeStyles(). NA allows keeping all chromosomes from REFERENCE.GENOME and does not filter by standard linear chromosome names. |
 | STANDARD.CONTIGS.ONLY   | TRUE, FALSE  | TRUE        | Determines whether alignments from non-standard contigs are used. |
 | FILTER.BY.FLAG   | TRUE, FALSE | TRUE | Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG. Default values of SELECT.FLAG are 0, 16, 272 and 256 (primary and secondary alignments on plus and minus strands). If FALSE, includes all flags. |
 | USE.SIZE.FILTER   | TRUE, FALSE | TRUE | Allows filtering of alignments based on size. Default value is 18-50 nt. |

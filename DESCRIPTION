@@ -1,6 +1,6 @@
 Package: PICB
 Title: piRNA Cluster Builder
-Version: 0.99.14
+Version: 0.99.15
 Authors@R: c(person("Pavol", "Genzor",  role = c("aut")),
     person("Aleksandr", "Friman", email="haase-lab-bioinfo@nih.gov",  role = c("aut")),
     person("Daniel", "Stoyko", role = c("aut")),
@@ -33,7 +33,8 @@ Imports:
     stats,
     openxlsx,
     dplyr, 
-    S4Vectors
+    S4Vectors,
+    methods
 Suggests: 
     knitr,
     rtracklayer, 

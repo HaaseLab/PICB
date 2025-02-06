@@ -7,7 +7,7 @@ utils::globalVariables(c("queryHits", "oneT", "tenA"))
 #' @param REPLICATE.NAME name of the replicate. NULL by default.
 #' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.
 #' @param PROVIDE.NON.NORMALIZED provide annotations in non-normalized format. False by default.
-#' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
+#' @param SEQ.LEVELS.STYLE naming of chromosomes style. "UCSC" by default.
 #' @param COMPUTE.1U.10A.FRACTIONS for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.
 #'
 #' @author Aleksandr Friman
@@ -53,7 +53,7 @@ PICBannotate <- function(
         SUFFIX <- ""
     }
 
-    SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+    SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)$SeqInfo
 
     PICBfixCoverage <- function(inCov, SI) {
         for (i in seq_along(SI)) {

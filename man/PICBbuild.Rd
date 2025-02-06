@@ -73,7 +73,7 @@ PICBbuild(
 
 \item{THRESHOLD.CLUSTERS.GAP}{minimum gap between clusters to not merge them. 0 by default.}
 
-\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
+\item{SEQ.LEVELS.STYLE}{naming of chromosomes style. "UCSC" by default.}
 
 \item{MIN.OVERLAP}{minimum overlap between seeds and cores, as well as between cores and clusters 5 nt by default.}
 

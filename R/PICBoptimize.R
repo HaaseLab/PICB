@@ -5,7 +5,7 @@
 #' @param LIBRARY.SIZE number of reads in the library. By default computed as number of unique mapping alignments + number of primary multimapping alignments.
 #' @param VERBOSITY verbosity level 0/1/2/3. 2 by default.
 #' @param PROVIDE.INFO.SEEDS.AND.CORES FALSE by default.
-#' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
+#' @param SEQ.LEVELS.STYLE naming of chromosomes style. "UCSC" by default.
 #' @param ... rest of the parameters used by PICBbuild and provided as iteratable vectors
 #'
 #' @author Aleksandr Friman
@@ -192,7 +192,7 @@ PICBoptimize <- function(
             outDF[[paste0("mean.RPKM.", locustype)]] <- outDF[[paste0("reads.explained.by.", locustype)]] * 1e9 / (outDF[[paste0("total.width.", locustype)]] * totalReads)
             outDF[[paste0("mean.RPKM.", locustype)]][is.na(outDF[[paste0("mean.RPKM.", locustype)]])] <- 0
         }
-        SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+        SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)$SeqInfo
         GenomeSize <- sum(GenomeInfoDb::seqlengths(SI))
         for (locustype in c(uniqueonly, uniqueandprimary, allalignments)) {
         outDF[[paste0("fraction.of.genome.space.", locustype)]] <- outDF[[paste0("total.width.", locustype)]] / (2 * GenomeSize)
@@ -201,7 +201,7 @@ PICBoptimize <- function(
         outDF[["fraction.of.library.explained.by.clusters"]] <- outDF[["reads.explained.by.clusters"]] / totalReads
         outDF[["mean.RPKM.clusters"]] <- outDF[["reads.explained.by.clusters"]] * 1e9 / (outDF[["total.width.clusters"]] * totalReads)
         outDF[["mean.RPKM.clusters"]][is.na(outDF[["mean.RPKM.clusters"]])] <- 0
-        SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+        SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)$SeqInfo
         GenomeSize <- sum(GenomeInfoDb::seqlengths(SI))
         outDF[["fraction.of.genome.space.clusters"]] <- outDF[["total.width.clusters"]] / (2 * GenomeSize)
     }

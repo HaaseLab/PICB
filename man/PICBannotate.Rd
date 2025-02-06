@@ -28,7 +28,7 @@ PICBannotate(
 
 \item{PROVIDE.NON.NORMALIZED}{provide annotations in non-normalized format. False by default.}
 
-\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
+\item{SEQ.LEVELS.STYLE}{naming of chromosomes style. "UCSC" by default.}
 
 \item{COMPUTE.1U.10A.FRACTIONS}{for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.}
 }

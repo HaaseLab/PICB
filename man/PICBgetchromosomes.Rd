@@ -7,9 +7,9 @@
 PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE = "UCSC")
 }
 \arguments{
-\item{REFERENCE.GENOME}{name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6", or directly a SeqInfo object}
+\item{REFERENCE.GENOME}{name of genome. For example "BSgenome.Dmelanogaster.UCSC.dm6", or directly a SeqInfo object.}
 
-\item{SEQ.LEVELS.STYLE}{naming of chromosomes style. "UCSC" by default}
+\item{SEQ.LEVELS.STYLE}{naming of chromosomes style. "UCSC" by default.}
 }
 \value{
 SeqInfo object with standard non-circular chromosome names

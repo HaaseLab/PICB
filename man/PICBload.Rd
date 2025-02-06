@@ -47,7 +47,7 @@ PICBload(
 
 \item{WHAT}{"what" parameter of Rsamtools::ScanBamParam. c("flag") by default.}
 
-\item{SEQ.LEVELS.STYLE}{style of chromosome names for BSgenome. "UCSC" by default.}
+\item{SEQ.LEVELS.STYLE}{naming of chromosomes style. "UCSC" by default.}
 
 \item{GET.ORIGINAL.SEQUENCE}{adds "seq" to WHAT. False by default.}
 

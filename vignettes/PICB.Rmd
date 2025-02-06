@@ -115,7 +115,7 @@ has drastically reduced the coverage and scope of the data, rendering it no long
 
 ### Reference Genome
 
-You can provide the reference genome to PICB in one of four ways. Make sure to use the same reference genome version as used for mapping.
+You can provide the reference genome to PICB in **one of four ways**. Make sure to use the same reference genome version as used for mapping.
 
 a. **Using a BSgenome package**
 
@@ -323,6 +323,7 @@ Optional parameters:
 
 - **VERBOSE** default TRUE • Allows disabling progress messages while running `PICBload`.
 - **IS.SECONDARY.ALIGNMENT** default NA (all alignments) • Determines which alignment types (primary multimappers and secondary multimappers) will be loaded.
+- **SEQ.LEVELS.STYLE** default "UCSC" • Allows changing the style of chromosome names in the output. Supported styles are listed in GenomeInfoDb::genomeStyles(). NA allows keeping all chromosomes from REFERENCE.GENOME and does not filter by standard linear chromosome names.
 - **STANDARD.CONTIGS.ONLY** default TRUE • Determines whether alignments from non-standard contigs are used.
 - **FILTER.BY.FLAG** default TRUE • Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG. Default values of SELECT.FLAG are 0, 16, 272 and 256 (primary and secondary alignments on plus and minus strands). If FALSE, includes all flags.
 - **USE.SIZE.FILTER** default TRUE • Allows filtering of alignments based on size. Default value is 18-50 nt.

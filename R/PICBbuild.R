@@ -18,7 +18,7 @@
 #' @param THRESHOLD.SEEDS.GAP minimum gap between seeds to not merge them. 0 by default.
 #' @param THRESHOLD.CORES.GAP minimum gap between cores to not merge them. 0 by default.
 #' @param THRESHOLD.CLUSTERS.GAP minimum gap between clusters to not merge them. 0 by default.
-#' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
+#' @param SEQ.LEVELS.STYLE naming of chromosomes style. "UCSC" by default.
 #' @param MIN.OVERLAP minimum overlap between seeds and cores, as well as between cores and clusters 5 nt by default.
 #' @param PROVIDE.NON.NORMALIZED include non-normalized to the library size statistics in the output annotations
 #' @param COMPUTE.1U.10A.FRACTIONS for each locus and each alignments type (unique mapping, primary multimapping, secodnary multimapping) compute fraction 1U and 10A containing reads overlapping the locus. Default FALSE.
@@ -98,33 +98,37 @@ PICBbuild <- function(
     ##
     if (VERBOSITY > 0) message("PICB v", utils::packageVersion("PICB"), " Starting ... ")
     ##
-
+    chrom_mismatch_flag <- FALSE
     ## KEEP STANDARD CHROMOSOMES
-    SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
-
+    genome_result <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+    SI <- genome_result$SeqInfo
+    chrom_mismatch_flag <- genome_result$chrom_mismatch 
     ##
     ## Clean data
-    if (VERBOSITY > 1) message("\n\tKeeping standard linear chromosomes")
-
+    if (VERBOSITY > 1) {
+        if (!is.na(SEQ.LEVELS.STYLE)) {
+            message("\n\tKeeping standard linear chromosomes")
+        } else {
+            message("\n\tKeeping all chromosomes in REFERENCE.GENOME")
+        }
+    }
+    # Change seqlevels style unless chrom_mismatch_flag is TRUE. Only show 
     for (columnName in typeAlignments) {
-        # trying to change the seqlevels style.
-        # read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README
-        # for more info
-        tryCatch(
-            expr = {
+        if (!chrom_mismatch_flag) {
             GenomeInfoDb::seqlevelsStyle(IN.ALIGNMENTS[[columnName]]) <- SEQ.LEVELS.STYLE
-            },
-            error = function(e) {
-                message(e)
-                message("Failed to change SEQ.LEVELS.STYLE")
-                message("read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README")
-                message("Continuing hoping for the best")
-            }
-        )
-
-        KEEP.SEQLEVELS <- GenomeInfoDb::seqlevels(SI)
-        KEEP.SEQLEVELS <- KEEP.SEQLEVELS[KEEP.SEQLEVELS %in% GenomeInfoDb::seqlevels(IN.ALIGNMENTS[[columnName]])]
-        IN.ALIGNMENTS[[columnName]] <- GenomeInfoDb::keepSeqlevels(x = IN.ALIGNMENTS[[columnName]], value = KEEP.SEQLEVELS, pruning.mode = "coarse")
+        } else if (!is.na(SEQ.LEVELS.STYLE) && chrom_mismatch_flag) {
+            warning(
+                "Unable to change SEQ.LEVELS.STYLE: chromosome names in REFERENCE.GENOME do not match any supported genome style.",
+                "\nTo see supported styles, use: GenomeInfoDb::genomeStyles() and read https://github.com/Bioconductor/GenomeInfoDb/blob/devel/inst/extdata/dataFiles/README.",
+                "\nContinuing using original chromosome names. If you do not want to filter or change chromosome names set SEQ.LEVELS.STYLE to NA."
+            )
+            SEQ.LEVELS.STYLE <- NA
+        }
+        if (is.na(SEQ.LEVELS.STYLE)) {
+            KEEP.SEQLEVELS <- GenomeInfoDb::seqlevels(SI)
+            KEEP.SEQLEVELS <- KEEP.SEQLEVELS[KEEP.SEQLEVELS %in% GenomeInfoDb::seqlevels(IN.ALIGNMENTS[[columnName]])]
+            IN.ALIGNMENTS[[columnName]] <- GenomeInfoDb::keepSeqlevels(x = IN.ALIGNMENTS[[columnName]], value = KEEP.SEQLEVELS, pruning.mode = "coarse")
+        }
     }
 
     WGRU <- IN.ALIGNMENTS$unique

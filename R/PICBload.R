@@ -12,7 +12,7 @@
 #' @param READ.SIZE.RANGE allowed alignment sizes. c(18,50) by default.
 #' @param TAGS tags to import from bam file. c("NH","NM") by default.
 #' @param WHAT "what" parameter of Rsamtools::ScanBamParam. c("flag") by default.
-#' @param SEQ.LEVELS.STYLE style of chromosome names for BSgenome. "UCSC" by default.
+#' @param SEQ.LEVELS.STYLE naming of chromosomes style. "UCSC" by default.
 #' @param GET.ORIGINAL.SEQUENCE adds "seq" to WHAT. False by default.
 #' @param VERBOSE enables progress output. True by default.
 #'
@@ -58,6 +58,7 @@ PICBload <- function(
     ## Tags: NH:i:1 = unique alignment; NM = edit distance to the reference
 
     outputAlignments <- list()
+    chrom_mismatch_flag <- FALSE
     ## check input
     if (is.null(BAMFILE)) stop("Please provide full path to a .bam file!")
     if (is.null(REFERENCE.GENOME)) stop("Please provide REFERENCE.GENOME")
@@ -72,8 +73,10 @@ PICBload <- function(
 
     justPrimaryOrSecondary <- function(IS.SECONDARY.ALIGNMENT) {
         ## PARAMETERS FOR LOADING BAM FILE
-        if (isTRUE(STANDARD.CONTIGS.ONLY)) {
-            SI <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+        if (isTRUE(STANDARD.CONTIGS.ONLY) && !is.na(SEQ.LEVELS.STYLE)) {
+            genome_result <- PICBgetchromosomes(REFERENCE.GENOME, SEQ.LEVELS.STYLE)
+            SI <- genome_result$SeqInfo
+            chrom_mismatch_flag <- genome_result$chrom_mismatch
 
             REG.CHR <- GenomeInfoDb::seqnames(SI)
             BAM.FILE.HEADER <- Rsamtools::BamFile(BAMFILE)
@@ -81,7 +84,7 @@ PICBload <- function(
             REG.CHR <- REG.CHR[REG.CHR %in% BAM.FILE.CHR]
             WHICH <- GenomicRanges::GRanges(
                 seqnames = REG.CHR,
-                ranges = IRanges::IRanges(start = rep(1, length(REG.CHR)), end = GenomeInfoDb::seqlengths(SI[REG.CHR])),
+                ranges = IRanges::IRanges(start = rep(1, length(REG.CHR)), end = GenomeInfoDb::seqlengths(SI)[REG.CHR]),
                 strand = rep("*", length(REG.CHR))
             )
             PARAM <- Rsamtools::ScanBamParam(
@@ -92,6 +95,7 @@ PICBload <- function(
                 tag = TAGS, simpleCigar = SIMPLE.CIGAR, what = WHAT, which = WHICH
             )
         } else {
+            SI <- PICBgetchromosomes(REFERENCE.GENOME, NA)$SeqInfo
             PARAM <- Rsamtools::ScanBamParam(
                 flag = Rsamtools::scanBamFlag(
                     isUnmappedQuery = FALSE,
@@ -189,16 +193,21 @@ PICBload <- function(
 
         if (VERBOSE) message("\nconverting to GRanges")
         GARP.GR <- GenomicRanges::granges(GARP, use.names = TRUE, use.mcols = TRUE)
-
-        if (!SEQ.LEVELS.STYLE %in% "UCSC") {
-        if (VERBOSE) message("\nchanging seqlevels style to: ", SEQ.LEVELS.STYLE)
-        GenomeInfoDb::seqlevelsStyle(GARP.GR) <- SEQ.LEVELS.STYLE
+        # if no chromosomes mismatch and SEQ.LEVELS.STYLE is not NA, set the seqlevels style
+        if (!chrom_mismatch_flag && !is.na(SEQ.LEVELS.STYLE)) {
+            if (VERBOSE) message("\nSeqlevels style set to: ", SEQ.LEVELS.STYLE)
+            GenomeInfoDb::seqlevelsStyle(GARP.GR) <- SEQ.LEVELS.STYLE
         }
+
+        if (!all(unique(GenomeInfoDb::seqnames(GARP.GR)) %in% GenomeInfoDb::seqnames(SI))) {
+            chrom_mismatch_flag <- TRUE
+            warning("Some or all chromosome names in BAM file do not match those in REFERENCE.GENOME.",
+                "\nNot filtered by chromosome names. Ensure REFERENCE.GENOME is compatible with the BAMFILE.")
+        }
+
         return(GARP.GR)
     }
-    if (VERBOSE) {
-        message("\nSorting into uniquemappers vs multimappers and primary vs secondary alignments")
-    }
+    if (VERBOSE) message("\nSorting into uniquemappers vs multimappers and primary vs secondary alignments")
 
     if (is.na(IS.SECONDARY.ALIGNMENT)) { # justPrimaryOrSecondary
         if (VERBOSE) message("Loading primary only")
@@ -220,6 +229,12 @@ PICBload <- function(
         outputAlignments[["multi.secondary"]] <- NULL
     }
     ## RETURN
+    if (chrom_mismatch_flag && !is.na(SEQ.LEVELS.STYLE)) {
+        warning("No chromosome names in REFERENCE.GENOME match GenomeInfoDb::genomeStyle().",
+        "\nKeeping all chromosomes given in REFERENCE.GENOME. No change of SEQ.LEVELS.STYLE.",
+        "\nIf desired, filter REFERENCE.GENOME's SeqInfo for chromosomes (e.g. keeping only standard chromosomes).", 
+        "\nTo not attempt to filter chromosomes or change SEQ.LEVELS.STYLE, set SEQ.LEVELS.STYLE to NA.")
+    }
     if (VERBOSE) {
         message("\nDone!")
         message("")
