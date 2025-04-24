@@ -299,7 +299,7 @@ The **clusters** follow *GRanges* convention including the genomic coordinates (
 | uniq_reads_FPKM | Number of unique reads normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (unique reads FPM per kilobase) |
 | multimapping_reads_primary_alignments_FPKM | Number of multimapping reads normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (primary alignments of multimapping reads FPM per kilobase) |
 | all_reads_primary_alignments_FPKM | Number of all reads primary alignments normalized to the number of all aligned reads and to the size of the corresponding seed/core/cluster length (primary alignments of all reads FPM per kilobase) |
-| fraction_of_width_covered_by_unique_alignments | Fraction of seed/core/cluster length coreved by at least 1 unique mapping piRNA read |
+| fraction_of_width_covered_by_unique_alignments | Fraction of seed/core/cluster length covered by at least 1 unique mapping piRNA read |
 
 <!-- 
 | uniq_reads | Number of uniquely mapping piRNA reads aligned to the seed/core/cluster |
@@ -451,6 +451,7 @@ Do you like this project? Please join us or [give a ⭐](/stargazers). Let us ma
 
 ### List of papers utilizing PICB:
 
+- [Protocol for assembling, prioritizing, and characterizing piRNA clusters using the piRNA Cluster Builder](https://doi.org/10.1016/j.xpro.2025.103759) (2025) by Franziska Ahrend*, Parthena Konstantinidou, Zuzana Loubalova, Yuejun Wang, Hernan Lorenzi, Gunter Meister, Astrid D. Haase*.
 - [A comparative roadmap of PIWI-interacting RNAs across seven species reveals insights into de novo piRNA-precursor formation in mammals](https://www.sciencedirect.com/science/article/pii/S2211124724011288) (2024) by Parthena Konstantinidou*, Zuzana Loubalova*, Franziska Ahrend*, Aleksandr Friman*, Miguel Vasconcelos Almeida, Axel Poulet, Filip Horvat, Yuejun Wang, Wolfgang Losert, Hernan Lorenzi, Petr Svoboda, Eric A. Miska, Josien C. van Wolfswinkel, Astrid D. Haase*.
 - [Dynamic co-evolution of transposable elements and the piRNA pathway in African cichlid fishes](https://www.biorxiv.org/content/10.1101/2024.04.01.587621v1) (2024) by Miguel Vasconcelos Almeida*, Moritz Blumer, Chengwei Ulrika Yuan, Pío Sierra, Jonathan L. Price, Fu Xiang Quah, Aleksandr Friman, Alexandra Dallaire, Grégoire Vernaz, Audrey L. K. Putman, Alan M. Smith, Domino A. Joyce, Falk Butter, Astrid D. Haase, Richard Durbin, M. Emília Santos, Eric A. Miska*.
 
