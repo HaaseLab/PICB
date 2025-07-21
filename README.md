@@ -196,7 +196,7 @@ Adjustable parameters:
 |----------------|-----------------|---------------|-------------|
 | VERBOSE | TRUE, FALSE  | TRUE | Allows disabling progress messages while running `PICBload`. |
 | IS.SECONDARY.ALIGNMENT | TRUE, FALSE, NA | NA  (all alignments) | Determines which alignment types (primary multimappers and secondary multimappers) will be loaded. |
-| SEQ.LEVELS.STYLE | _character_ | "UCSC" | Allows changing the style of chromosome names in the output. Supported styles are listed in GenomeInfoDb::genomeStyles(). NA allows keeping all chromosomes from REFERENCE.GENOME and does not filter by standard linear chromosome names. |
+| SEQ.LEVELS.STYLE | _character_ | "UCSC" | Allows changing the style of chromosome names in the output. Supported styles are listed in GenomeInfoDb::genomeStyles(). NA allows keeping all chromosomes from REFERENCE.GENOME and does not filter by standard linear chromosome names. Make sure that chromosome names must match between bam file and provided reference genome. |
 | STANDARD.CONTIGS.ONLY   | TRUE, FALSE  | TRUE        | Determines whether alignments from non-standard contigs are used. |
 | FILTER.BY.FLAG   | TRUE, FALSE | TRUE | Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG. Default values of SELECT.FLAG are 0, 16, 272 and 256 (primary and secondary alignments on plus and minus strands). If FALSE, includes all flags. |
 | USE.SIZE.FILTER   | TRUE, FALSE | TRUE | Allows filtering of alignments based on size. Default value is 18-50 nt. |
@@ -321,7 +321,7 @@ The **clusters** follow *GRanges* convention including the genomic coordinates (
 
 You can use `PICBoptimize` to find the optimal parameters for `PICBbuild` for your dataset.
 This is especially useful if you are not sure about the quality of your data or your reference genome.
-The goal is to find a set of parameters that maximize the number of piRNAs accomodated in the clusters while minimizing genomic space occupied by the clusters. 
+The goal is to find a set of parameters that maximize the number of piRNAs accommodated in the clusters while minimizing genomic space occupied by the clusters. 
 
 Make sure to provide the values for the parameters as a vector. An example is shown below:
 
@@ -443,7 +443,7 @@ Visit the lab website of
 
 This project is licensed under the CC0.1.0 license - see the [LICENSE](/LICENSE) file for details.<br/>
 
-Do you like this project? Please join us or [give a ⭐](/stargazers). Let us make piRNA clusters more comparable and easy to build!<br/>
+Do you like this project? Please join us or [give a ⭐](https://github.com/HaaseLab/PICB/stargazers). Let us make piRNA clusters more comparable and easy to build!<br/>
 
 <div align="right">[ <a href="#table-of-contents">↑ Back to top ↑</a> ]</div>
 

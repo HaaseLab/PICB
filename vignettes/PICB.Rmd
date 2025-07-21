@@ -204,7 +204,7 @@ We note that ranking piRNA clusters is essential for proper interpretation. PICB
 
 You can use `PICBoptimize` to find the optimal parameters for `PICBbuild` for your dataset.
 This is especially useful if you are not sure about the quality of your data or your reference genome.
-The goal is to find a set of parameters that maximize the number of piRNAs accomodated in the clusters while minimizing genomic space occupied by the clusters. 
+The goal is to find a set of parameters that maximize the number of piRNAs accommodated in the clusters while minimizing genomic space occupied by the clusters. 
 
 Make sure to provide the values for the parameters as a vector. An example is shown below:
 
@@ -323,7 +323,7 @@ Optional parameters:
 
 - **VERBOSE** default TRUE • Allows disabling progress messages while running `PICBload`.
 - **IS.SECONDARY.ALIGNMENT** default NA (all alignments) • Determines which alignment types (primary multimappers and secondary multimappers) will be loaded.
-- **SEQ.LEVELS.STYLE** default "UCSC" • Allows changing the style of chromosome names in the output. Supported styles are listed in GenomeInfoDb::genomeStyles(). NA allows keeping all chromosomes from REFERENCE.GENOME and does not filter by standard linear chromosome names.
+- **SEQ.LEVELS.STYLE** default "UCSC" • Allows changing the style of chromosome names in the output. Supported styles are listed in GenomeInfoDb::genomeStyles(). NA allows keeping all chromosomes from REFERENCE.GENOME and does not filter by standard linear chromosome names. Ensure that all chromosome names in the bam file must be in the reference genome.
 - **STANDARD.CONTIGS.ONLY** default TRUE • Determines whether alignments from non-standard contigs are used.
 - **FILTER.BY.FLAG** default TRUE • Allows only those alignments with flag values present in the vector of allowed flags SELECT.FLAG. Default values of SELECT.FLAG are 0, 16, 272 and 256 (primary and secondary alignments on plus and minus strands). If FALSE, includes all flags.
 - **USE.SIZE.FILTER** default TRUE • Allows filtering of alignments based on size. Default value is 18-50 nt.

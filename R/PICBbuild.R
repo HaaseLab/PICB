@@ -276,8 +276,8 @@ PICBbuild <- function(
     used_mult <- sum(GenomicRanges::mcols(outputList[[allalignments]])[["multimapping_reads_primary_alignments"]])
     used_mult_primary_piRNA <- round(((used_mult / length(WGRMP)) * 100), 3)
     if (VERBOSITY > 1) {
-        message("\t\tAccomodated UNIQUE MAPPERS: ", used_uniq, " (", used_uniq_piRNA, " %)")
-        message("\t\tAccomodated PRIMARY MULTI MAPPERS: ", used_mult, " (", used_mult_primary_piRNA, " %)")
+        message("\t\tAccommodated UNIQUE MAPPERS: ", used_uniq, " (", used_uniq_piRNA, " %)")
+        message("\t\tAccommodated PRIMARY MULTI MAPPERS: ", used_mult, " (", used_mult_primary_piRNA, " %)")
     }
 
     if (!PROVIDE.NON.NORMALIZED) { # removing stats hard to understand
